@@ -1,0 +1,205 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>dk.netarkivet</groupId>
+	<artifactId>research</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>research</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<netarchivesuite.version>5.0</netarchivesuite.version>
+		<jwat.version>1.0.4</jwat.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.jwat</groupId>
+			<artifactId>jwat-common</artifactId>
+			<version>${jwat.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jwat</groupId>
+			<artifactId>jwat-warc</artifactId>
+			<version>${jwat.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.netarchivesuite</groupId>
+			<artifactId>archive-core</artifactId>
+			<version>${netarchivesuite.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.netpreserve.openwayback</groupId>
+			<artifactId>openwayback-core</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.1</version>
+		</dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.9.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jaccept</groupId>
+            <artifactId>jaccept-core</artifactId>
+            <version>0.4</version>
+            <scope>test</scope>
+        </dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+            <plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+<!-- 			<plugin> -->
+<!--                 <artifactId>maven-surefire-plugin</artifactId> -->
+<!--                 <configuration> -->
+<!--                     <groups>regressiontest</groups> -->
+<!--                     <runOrder>random</runOrder> -->
+<!--                 </configuration> -->
+<!--             </plugin> -->
+<!--             <plugin> -->
+<!--                 <artifactId>maven-jar-plugin</artifactId> -->
+<!--                 <configuration> -->
+<!--                     <archive> -->
+<!--                         <manifest> -->
+<!--                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries> -->
+<!--                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries> -->
+<!--                         </manifest> -->
+<!--                         <manifestEntries> -->
+<!--                             <key>value</key> -->
+<!--                         </manifestEntries> -->
+<!--                     </archive> -->
+<!--                     <forceCreation>true</forceCreation> -->
+<!--                 </configuration> -->
+<!--                 <executions> -->
+<!--                     <execution> -->
+<!--                         <goals> -->
+<!--                             <goal>test-jar</goal> -->
+<!--                         </goals> -->
+<!--                     </execution> -->
+<!--                 </executions> -->
+<!--             </plugin> -->
+<!--             <plugin> -->
+<!--                 <artifactId>maven-release-plugin</artifactId> -->
+<!--                 <configuration> -->
+<!--                     Auto-Version all modules the same as the parent module -->
+<!--                     <autoVersionSubmodules>true</autoVersionSubmodules> -->
+<!--                 </configuration> -->
+<!--             </plugin> -->
+<!--             <plugin> -->
+<!--                 <artifactId>maven-war-plugin</artifactId> -->
+<!--                 <configuration> -->
+<!--                     <packagingExcludes> -->
+<!--                         WEB-INF/lib/commons-logging-*.jar, -->
+<!--                         %regex[WEB-INF/lib/log4j-(?!over-slf4j).*.jar] -->
+<!--                     </packagingExcludes> -->
+<!--                 </configuration> -->
+<!--             </plugin> -->
+		</plugins>
+		<pluginManagement>
+		    <plugins>
+		        <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>1.8</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.1</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.2.1</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.9.1</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+<!--                 <plugin> -->
+<!--                     <artifactId>maven-surefire-plugin</artifactId> -->
+<!--                     <version>2.19.1</version> -->
+<!--                 </plugin> -->
+                <plugin>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>2.17</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.6</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-remote-resources-plugin</artifactId>
+                    <version>1.5</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.5.1</version>
+                </plugin>
+<!--                 <plugin> -->
+<!--                     <artifactId>maven-deploy-plugin</artifactId> -->
+<!--                     <version>2.8.1</version> -->
+<!--                 </plugin> -->
+                <plugin>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>2.8</version>
+                </plugin>
+<!--                 <plugin> -->
+<!--                     <groupId>org.jvnet.jaxb2.maven2</groupId> -->
+<!--                     <artifactId>maven-jaxb2-plugin</artifactId> -->
+<!--                     <version>0.11.0</version> -->
+<!--                 </plugin> -->
+<!--                 <plugin> -->
+<!--                     <groupId>org.apache.tomcat.maven</groupId> -->
+<!--                     <artifactId>tomcat7-maven-plugin</artifactId> -->
+<!--                     <version>2.2</version> -->
+<!--                 </plugin> -->
+<!--                 <plugin> -->
+<!--                     <groupId>org.codehaus.mojo</groupId> -->
+<!--                     <artifactId>exec-maven-plugin</artifactId> -->
+<!--                     <version>1.2.1</version> -->
+<!--                 </plugin> -->
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
