@@ -8,7 +8,6 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dk.netarkivet.common.distribute.arcrepository.ArcRepositoryClientFactory;
 import dk.netarkivet.common.distribute.arcrepository.BitarchiveRecord;
 import dk.netarkivet.common.distribute.arcrepository.ViewerArcRepositoryClient;
 import dk.netarkivet.common.utils.FileUtils;
@@ -25,8 +24,8 @@ public class NASArchiveExtractor implements ArchiveExtractor {
     /**
      * Constructor.
      */
-    public NASArchiveExtractor() {
-        client = ArcRepositoryClientFactory.getViewerInstance();
+    public NASArchiveExtractor(ViewerArcRepositoryClient client) {
+        this.client = client;
     }
     
 	@Override

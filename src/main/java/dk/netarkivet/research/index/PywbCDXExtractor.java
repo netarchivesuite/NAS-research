@@ -41,14 +41,14 @@ public class PywbCDXExtractor implements CDXExtractor {
 	/** Map between CDX format element and their cdx-server fl argument (separated by ,). */
 	public static final Map<Character, String> CDX_ARGUMENTS = new HashMap<Character, String>();
 	static {
-		CDX_ARGUMENTS.put(CDXEntry.CDX_CHAR_ORIGINAL_URL, "url");
-		CDX_ARGUMENTS.put(CDXEntry.CDX_CHAR_DATE, "timestamp");
-		CDX_ARGUMENTS.put(CDXEntry.CDX_CHAR_FILE_NAME, "filename");
-		CDX_ARGUMENTS.put(CDXEntry.CDX_CHAR_COMPRESSED_ARC_FILE_OFFSET, "offset");
+		CDX_ARGUMENTS.put(CDXConstants.CDX_CHAR_ORIGINAL_URL, "url");
+		CDX_ARGUMENTS.put(CDXConstants.CDX_CHAR_DATE, "timestamp");
+		CDX_ARGUMENTS.put(CDXConstants.CDX_CHAR_FILE_NAME, "filename");
+		CDX_ARGUMENTS.put(CDXConstants.CDX_CHAR_COMPRESSED_ARC_FILE_OFFSET, "offset");
 //		CDX_ARGUMENTS.put(CDXEntry.CDX_CHAR_ARC_DOCUMENT_LENGTH, "length");
-		CDX_ARGUMENTS.put(CDXEntry.CDX_CHAR_MIME_TYPE, "mime");
-		CDX_ARGUMENTS.put(CDXEntry.CDX_CHAR_RESPONSE_CODE, "status");
-		CDX_ARGUMENTS.put(CDXEntry.CDX_CHAR_NEW_STYLE_CHECKSUM, "digest");
+		CDX_ARGUMENTS.put(CDXConstants.CDX_CHAR_MIME_TYPE, "mime");
+		CDX_ARGUMENTS.put(CDXConstants.CDX_CHAR_RESPONSE_CODE, "status");
+		CDX_ARGUMENTS.put(CDXConstants.CDX_CHAR_NEW_STYLE_CHECKSUM, "digest");
 	}
 	
 	/** The prefix for the URL argument in the HTTP request.*/

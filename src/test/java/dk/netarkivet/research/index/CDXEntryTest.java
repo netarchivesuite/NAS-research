@@ -33,7 +33,7 @@ public class CDXEntryTest extends ExtendedTestCase {
     public void testCreatingCDXExtractFromLineSplit() throws Exception {
     	addDescription("Test creating a simple CDX entry from a line and a format");
     	
-    	char[] format = new char[]{'A', 'b', 'a', 'm', 's', 'k', 'r', 'V', 'g'};
+    	Character[] format = new Character[]{'A', 'b', 'a', 'm', 's', 'k', 'r', 'V', 'g'};
     			
     	CDXEntry entry = CDXEntry.createCDXEntry(cdxLineExtract.split(" "), format);
     	
@@ -55,7 +55,7 @@ public class CDXEntryTest extends ExtendedTestCase {
     public void testCreatingCDXExtractFromLineAndFormatDefaultOrder() throws Exception {
     	addDescription("Test creating a simple CDX entry from a line and a format");
     	
-    	char[] format = new char[]{'A', 'b', 'a', 'm', 's', 'k', 'r', 'V', 'g'};
+    	Character[] format = new Character[]{'A', 'b', 'a', 'm', 's', 'k', 'r', 'V', 'g'};
     	String[] cdxLine = new String[]{A, b, a, m, s, k, r, V, g};
     			
     	CDXEntry entry = CDXEntry.createCDXEntry(cdxLine, format);
@@ -78,7 +78,7 @@ public class CDXEntryTest extends ExtendedTestCase {
     public void testCreatingCDXExtractFromLineAndFormatRandomOrder() throws Exception {
     	addDescription("Test creating a simple CDX entry from a line and a format. But in a non-default order");
     	
-    	char[] format = new char[]{'V', 'A', 's', 'r', 'n', 'm', 'k', 'g', 'e', 'b', 'a'};
+    	Character[] format = new Character[]{'V', 'A', 's', 'r', 'n', 'm', 'k', 'g', 'e', 'b', 'a'};
     	String[] cdxLine = new String[]{V, A, s, r, n, m, k, g, e, b, a};
     			
     	CDXEntry entry = CDXEntry.createCDXEntry(cdxLine, format);
@@ -129,7 +129,7 @@ public class CDXEntryTest extends ExtendedTestCase {
     public void testCreatingCDXExtractFailureFewerLineElements() throws Exception {
     	addDescription("Test that creating a simple CDX entry fails, when it has fewer line elements than format elements");
     	
-    	char[] format = new char[]{'A', 'b', 'a', 'm', 's', 'k', 'r', 'V', 'g'};
+    	Character[] format = new Character[]{'A', 'b', 'a', 'm', 's', 'k', 'r', 'V', 'g'};
     	String[] cdxLine = new String[]{A, b, a, m};
     	
     	CDXEntry entry = CDXEntry.createCDXEntry(cdxLine, format);
@@ -140,7 +140,7 @@ public class CDXEntryTest extends ExtendedTestCase {
     public void testCreatingCDXExtractFailureFewerFormatElements() throws Exception {
     	addDescription("Test that creating a simple CDX entry fails, when it has fewer format elements than line elements");
     	
-    	char[] format = new char[]{'A', 'b', 'a', 'm'};
+    	Character[] format = new Character[]{'A', 'b', 'a', 'm'};
     	String[] cdxLine = new String[]{A, b, a, m, s, k, r, V, g};
     	
     	CDXEntry entry = CDXEntry.createCDXEntry(cdxLine, format);

@@ -2,6 +2,7 @@ package dk.netarkivet.research.index;
 
 import java.text.ParseException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,63 +21,6 @@ import dk.netarkivet.research.utils.DateUtils;
 public class CDXEntry {
 	/** The log.*/
 	private static Logger logger = LoggerFactory.getLogger(CDXEntry.class);
-
-	/** A canonized url */
-	public static final char CDX_CHAR_CANONIZED_URL = 'A';
-	/** B news group - UNUSED! */
-	public static final char CDX_CHAR_NEWS_GROUP = 'B';
-	/** C rulespace category - UNUSED! */
-	public static final char CDX_CHAR_RULESPACE_CATEGORY = 'C';
-	/** D compressed dat file offset - UNUSED! */
-	public static final char CDX_CHAR_COMPRESSED_DAT_FILE_OFFSET = 'D';
-	/** F canonized frame - UNUSED! */
-	public static final char CDX_CHAR_CANONIZED_FRAME = 'F';
-	/** G multi-columm language description - UNUSED! */
-	public static final char CDX_CHAR_MULTI_COLUMM_LANGUAGE_DESCRIPTION = 'G';
-	/** H canonized host - UNUSED! */
-	public static final char CDX_CHAR_CANONIZED_HOST = 'H';
-	/** N massaged url */
-	public static final char CDX_CHAR_MASSAGED_URL = 'N';
-	/** Q language string - UNUSED! */
-	public static final char CDX_CHAR_LANGUAGE_STRING = 'Q';
-	/** R canonized redirect - UNUSED! */
-	public static final char CDX_CHAR_CANONIZED_REDIRECT = 'R';
-	/** U uniqness - UNUSED! */
-	public static final char CDX_CHAR_UNIQNESS = 'U';
-	/** V compressed arc file offset */
-	public static final char CDX_CHAR_COMPRESSED_ARC_FILE_OFFSET = 'V';
-	/** a original url */
-	public static final char CDX_CHAR_ORIGINAL_URL = 'a';
-	/** b date */
-	public static final char CDX_CHAR_DATE = 'b';
-	/** c old style checksum */
-	public static final char CDX_CHAR_OLD_STYLE_CHECKSUM = 'c';
-	/** d uncompressed dat file offset - UNUSED! */
-	public static final char CDX_CHAR_UNCOMPRESSED_DAT_FILE_OFFSET = 'd';
-	/** e IP */
-	public static final char CDX_CHAR_IP = 'e';
-	/** f frame - UNUSED! */
-	public static final char CDX_CHAR_FRAME = 'f';
-	/** g file name */
-	public static final char CDX_CHAR_FILE_NAME = 'g';
-	/** h original host - UNUSED! */
-	public static final char CDX_CHAR_ORIGINAL_HOST = 'h';
-	/** k new style checksum */
-	public static final char CDX_CHAR_NEW_STYLE_CHECKSUM = 'k';
-	/** m mime type of original document */
-	public static final char CDX_CHAR_MIME_TYPE = 'm';
-	/** n arc document length */
-	public static final char CDX_CHAR_ARC_DOCUMENT_LENGTH = 'n';
-	/** p original path - UNUSED! */
-	public static final char CDX_CHAR_ORIGINAL_PATH = 'p';
-	/** r redirect */
-	public static final char CDX_CHAR_REDIRECT = 'r';
-	/** s response code */
-	public static final char CDX_CHAR_RESPONSE_CODE = 's';
-	/** t title - UNUSED! */
-	public static final char CDX_CHAR_TITLE = 't';
-	/** v uncompressed arc file offset */
-	public static final char CDX_CHAR_UNCOMPRESSED_ARC_FILE_OFFSET = 'v';
 
 	/** CDX element A or N. */
 	protected String urlNorm;
@@ -153,6 +97,61 @@ public class CDXEntry {
 	}
 
 	/**
+	 * Extract this CDXEntry as a line for a CDX file.
+	 * @param charKeys The CDX char keys for extracting in the wanted order.
+	 * @return The line for the CDXEntry.
+	 */
+	public String extractCDXAsLine(Collection<Character> charKeys) {
+		StringBuilder res = new StringBuilder();
+		for(Character c : charKeys) {
+			switch(c) {
+			case CDXConstants.CDX_CHAR_DATE:
+				res.append(DateUtils.dateToWaybackDate(new Date(date)));
+				break;
+			case CDXConstants.CDX_CHAR_IP:
+				res.append(ip);
+				break;
+			case CDXConstants.CDX_CHAR_CANONIZED_URL:
+			case CDXConstants.CDX_CHAR_MASSAGED_URL:
+				res.append(urlNorm);
+				break;
+			case CDXConstants.CDX_CHAR_ORIGINAL_URL:
+				res.append(url);
+				break;
+			case CDXConstants.CDX_CHAR_MIME_TYPE:
+				res.append(contentType);
+				break;
+			case CDXConstants.CDX_CHAR_RESPONSE_CODE:
+				res.append(statusCode.toString());
+				break;
+			case CDXConstants.CDX_CHAR_OLD_STYLE_CHECKSUM:
+			case CDXConstants.CDX_CHAR_NEW_STYLE_CHECKSUM:
+				res.append(digest);
+				break;
+			case CDXConstants.CDX_CHAR_COMPRESSED_ARC_FILE_OFFSET:
+			case CDXConstants.CDX_CHAR_UNCOMPRESSED_ARC_FILE_OFFSET:
+				res.append(offset.toString());
+				break;
+			case CDXConstants.CDX_CHAR_ARC_DOCUMENT_LENGTH:
+				res.append(length.toString());
+				break;
+			case CDXConstants.CDX_CHAR_FILE_NAME:
+				res.append(filename);
+				break;
+			case CDXConstants.CDX_CHAR_REDIRECT:
+				res.append(redirect);
+				break;
+			default:
+				logger.warn("Cannot handle cdx element '" + c + "'.");
+				break;
+			}
+			
+			res.append(" ");
+		}
+		return res.toString();
+	}
+	
+	/**
 	 * Instantiation method.
 	 * @param cdxMapping The mapping between CDX element and value.
 	 * @return The CDXEntry 
@@ -165,40 +164,40 @@ public class CDXEntry {
 					continue;
 				}
 				switch (cdxElement.getKey()) {
-				case CDX_CHAR_DATE:
+				case CDXConstants.CDX_CHAR_DATE:
 					cdxEntry.date = DateUtils.waybackDateToDate(cdxElement.getValue()).getTime();
 					break;
-				case CDX_CHAR_IP:
+				case CDXConstants.CDX_CHAR_IP:
 					cdxEntry.ip = cdxElement.getValue();
 					break;
-				case CDX_CHAR_CANONIZED_URL:
-				case CDX_CHAR_MASSAGED_URL:
+				case CDXConstants.CDX_CHAR_CANONIZED_URL:
+				case CDXConstants.CDX_CHAR_MASSAGED_URL:
 					cdxEntry.urlNorm = cdxElement.getValue();
 					break;
-				case CDX_CHAR_ORIGINAL_URL:
+				case CDXConstants.CDX_CHAR_ORIGINAL_URL:
 					cdxEntry.url = cdxElement.getValue();
 					break;
-				case CDX_CHAR_MIME_TYPE:
+				case CDXConstants.CDX_CHAR_MIME_TYPE:
 					cdxEntry.contentType = cdxElement.getValue();
 					break;
-				case CDX_CHAR_RESPONSE_CODE:
+				case CDXConstants.CDX_CHAR_RESPONSE_CODE:
 					cdxEntry.statusCode = Integer.parseInt(cdxElement.getValue());
 					break;
-				case CDX_CHAR_OLD_STYLE_CHECKSUM:
-				case CDX_CHAR_NEW_STYLE_CHECKSUM:
+				case CDXConstants.CDX_CHAR_OLD_STYLE_CHECKSUM:
+				case CDXConstants.CDX_CHAR_NEW_STYLE_CHECKSUM:
 					cdxEntry.digest = cdxElement.getValue();
 					break;
-				case CDX_CHAR_COMPRESSED_ARC_FILE_OFFSET:
-				case CDX_CHAR_UNCOMPRESSED_ARC_FILE_OFFSET:
+				case CDXConstants.CDX_CHAR_COMPRESSED_ARC_FILE_OFFSET:
+				case CDXConstants.CDX_CHAR_UNCOMPRESSED_ARC_FILE_OFFSET:
 					cdxEntry.offset = Long.parseLong(cdxElement.getValue());
 					break;
-				case CDX_CHAR_ARC_DOCUMENT_LENGTH:
+				case CDXConstants.CDX_CHAR_ARC_DOCUMENT_LENGTH:
 					cdxEntry.length = Long.parseLong(cdxElement.getValue());
 					break;
-				case CDX_CHAR_FILE_NAME:
+				case CDXConstants.CDX_CHAR_FILE_NAME:
 					cdxEntry.filename = cdxElement.getValue();
 					break;
-				case CDX_CHAR_REDIRECT:
+				case CDXConstants.CDX_CHAR_REDIRECT:
 					cdxEntry.redirect = cdxElement.getValue();
 					break;
 				default:
@@ -224,7 +223,7 @@ public class CDXEntry {
 	 * @param format Array of the format for the CDX value.
 	 * @return The CDX entry, or null if it failed to 
 	 */
-	public static CDXEntry createCDXEntry(String[] cdxLine, char[] format) {
+	public static CDXEntry createCDXEntry(String[] cdxLine, Character[] format) {
 		if (cdxLine.length != format.length) {
 			logger.warn("CDX line ('" + cdxLine.length + "') and CDX format ('" + format.length + "') does not have "
 					+ "same size.");
