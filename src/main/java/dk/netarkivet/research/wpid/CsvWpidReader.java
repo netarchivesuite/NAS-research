@@ -19,6 +19,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dk.netarkivet.research.utils.DateUtils;
+
 /**
  * Readers a CSV file with WPIDs from research projects in Netarkivet.dk.
  * 
@@ -33,8 +35,6 @@ import org.slf4j.LoggerFactory;
 public class CsvWpidReader implements WPidReader {
     /** Logging mechanism. */
     private static Logger logger = LoggerFactory.getLogger(CsvWpidReader.class);
-    /** The expected format for the date, 2012-04-02T23:52:39Z.*/
-    private static final String DATE_FORMAT = "yyyy-MM-ddTHH:mm:ssZ";
     
 	/** The CSV file with the WPID data.*/
 	protected File csvFile;
@@ -84,6 +84,12 @@ public class CsvWpidReader implements WPidReader {
 			split = line.split(",");
 		}
 		
+		// Ignore, if it is an empty line
+		if(split.length == 0) {
+			logger.debug("Ignoring an empty line.");
+			return null;
+		}
+		
 		// Ignore, if first column is not X
 		if(!split[0].equalsIgnoreCase("x")) {
 			logger.trace("Failed to extract PWID from line '" + line + "', since "
@@ -98,7 +104,7 @@ public class CsvWpidReader implements WPidReader {
 			return null;
 		}
 		
-		String url = split[1];
+		String url = split[2];
 		// Ignore, if the url is empty or not valid
 		if(url == null || url.isEmpty()) {
 			logger.info("Failed to extract PWID from line '" + line + "', since "
@@ -113,14 +119,14 @@ public class CsvWpidReader implements WPidReader {
 			return null;
 		}
 		
-		String dateString = split[2];
+		String dateString = split[3];
 		// Ignore, if the date is missing or invalid
 		if(dateString == null || dateString.isEmpty()) {
 			logger.info("Failed to extract PWID from line '" + line + "', since "
 					+ "the date is missing.");
 			return null;
 		}
-		Date date = extractDate(dateString);
+		Date date = DateUtils.extractCsvDate(dateString);
 		if(date == null) {
 			logger.info("Failed to extract PWID from line '" + line + "', since "
 					+ "the date cannot be extracted.");
@@ -129,27 +135,5 @@ public class CsvWpidReader implements WPidReader {
 		
 		return WPID.createNarkWPid(url, date);
 	}
-	
-	/**
-	 * Extract the actual date from the date-string. 
-	 * @param date The date string to parse.
-	 * @return The date, or null if it could not be extracted/had a different format.
-	 */
-	private Date extractDate(String date) {
-        try {
-            DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-            Date d = formatter.parse(date);
-            return d;
-        } catch (ParseException e) {
-            logger.warn("Could not parse the timeout date, '" + date + "' with dateformat '" + DATE_FORMAT 
-                    + "' and default locale", e);
-        }
-        // Try parsing the date in the system default dateformat.
-        try {
-            return DateFormat.getDateInstance().parse(date);
-        } catch (ParseException e) {
-            logger.debug("Could not parse the timeout date, '" + date + "' with the system default dateformat", e);
-        }
-        return null;
-	}
+
 }

@@ -6,10 +6,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Simple utility class for converting dates between Java date format and the Wayback date format.
  */
 public class DateUtils {
+    /** Logging mechanism. */
+    private static Logger logger = LoggerFactory.getLogger(DateUtils.class);
+    /** The expected format for the date, 2012-04-02T23:52:39Z.*/
+    private static final String CSV_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
 	/** CDX date format string as specified in the CDX documentation. */
 	public static final String CDX_DATE_FORMAT = "yyyyMMddHHmmss";
 
@@ -41,5 +49,28 @@ public class DateUtils {
 	 */
 	public static Date waybackDateToDate(String date) throws ParseException {
 		return CDX_DATE_PARSER_THREAD.get().parse(date);		
+	}
+	
+	/**
+	 * Extract the actual date from the date-string. 
+	 * @param date The date string to parse.
+	 * @return The date, or null if it could not be extracted/had a different format.
+	 */
+	public static Date extractCsvDate(String date) {
+        try {
+            DateFormat formatter = new SimpleDateFormat(CSV_DATE_FORMAT);
+            Date d = formatter.parse(date);
+            return d;
+        } catch (ParseException e) {
+            logger.warn("Could not parse the timeout date, '" + date + "' with dateformat '" + CSV_DATE_FORMAT 
+                    + "' and default locale", e);
+        }
+        // Try parsing the date in the system default dateformat.
+        try {
+            return DateFormat.getDateInstance().parse(date);
+        } catch (ParseException e) {
+            logger.debug("Could not parse the timeout date, '" + date + "' with the system default dateformat", e);
+        }
+        return null;
 	}
 }
