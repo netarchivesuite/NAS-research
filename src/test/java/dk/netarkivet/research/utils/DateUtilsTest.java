@@ -1,9 +1,8 @@
 package dk.netarkivet.research.utils;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertNotNull;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.Date;
 
 import org.jaccept.structure.ExtendedTestCase;

@@ -1,8 +1,14 @@
 package dk.netarkivet.research.index;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpResponse;
@@ -64,7 +70,7 @@ public class PywbCDXExtractor implements CDXExtractor {
 	
 	@Override
 	public CDXEntry retrieveCDX(WPID wpid) {
-		String requestUrlString = createRequestUrl(wpid.getUrl(), wpid.getDate());getClass();
+		String requestUrlString = createRequestUrlForWPID(wpid);
 		try {
 			CloseableHttpClient httpClient = HttpClients.createDefault();
 			HttpGet httpGet = new HttpGet(requestUrlString);
@@ -83,13 +89,71 @@ public class PywbCDXExtractor implements CDXExtractor {
 		}
 	}
 
+	@Override
+	public Collection<CDXEntry> retrieveAllCDX(String url) {
+		String requestUrlString = createRequestUrlForWID(url);
+		try {
+			CloseableHttpClient httpClient = HttpClients.createDefault();
+			HttpGet httpGet = new HttpGet(requestUrlString);
+			
+			HttpResponse response = httpClient.execute(httpGet);
+			if(response.getStatusLine().getStatusCode() != 200) {
+				logger.warn("Failed to retrieve data. Received response code " + response.getStatusLine().getStatusCode());
+				return null;
+			}
+			
+			InputStreamReader isr = new InputStreamReader(response.getEntity().getContent(), Charset.forName("UTF-8"));
+			BufferedReader br = new BufferedReader(isr);
+
+			List<CDXEntry> res = new ArrayList<CDXEntry>();
+			String line;
+			while((line = br.readLine()) != null) {
+				res.add(CDXEntry.createCDXEntry(createCdxMap(line)));
+			}
+			
+			return res;
+		} catch (IOException e) {
+			logger.warn("Failed to retrieve CDX indices for URL '" + url + "'. Returning a null", e);
+			return null;
+		}
+	}
+
+	/**
+	 * Creates the request URL for retrieving the CDX entry for a given. 
+	 * @param wpid The WPID with the URL and the specific date.
+	 * @return The request URL for retrieving the CDX from the CDX server.
+	 */
+	protected String createRequestUrlForWPID(WPID wpid) {
+		StringBuilder res = new StringBuilder();
+		res.append(cdxUrl);
+		if(!cdxUrl.endsWith(ARGUMENT_INITIALISER)) {
+			res.append(ARGUMENT_INITIALISER);
+		}
+		res.append(URL_ARGUMENT_PREFIX);
+		res.append(wpid.getUrl());
+		res.append(ARGUMENT_SEPARATOR);
+		res.append(DATE_ARGUMENT_PREFIX);
+		res.append(DateUtils.dateToWaybackDate(wpid.getDate()));
+		res.append(ARGUMENT_SEPARATOR);
+		res.append(LIMIT_1_ARGUMENT);
+		res.append(ARGUMENT_SEPARATOR);
+		res.append(FL_ARGUMENT_PREFIX);
+		for(String s : CDX_ARGUMENTS.values()) {
+			res.append(s);
+			res.append(",");
+		}
+		res.delete(res.length() - 1, res.length()); // remove last ','
+		return res.toString();
+	}
+
+	
 	/**
 	 * Creates the request URL for retrieving the CDX entry for a given. 
 	 * @param url The URL for the web-resource.
 	 * @param date The date when the web-resource was harvested.
 	 * @return The request URL for retrieving the CDX from the CDX server.
 	 */
-	protected String createRequestUrl(String url, Date date) {
+	protected String createRequestUrlForWID(String url) {
 		StringBuilder res = new StringBuilder();
 		res.append(cdxUrl);
 		if(!cdxUrl.endsWith(ARGUMENT_INITIALISER)) {
@@ -97,11 +161,6 @@ public class PywbCDXExtractor implements CDXExtractor {
 		}
 		res.append(URL_ARGUMENT_PREFIX);
 		res.append(url);
-		res.append(ARGUMENT_SEPARATOR);
-		res.append(DATE_ARGUMENT_PREFIX);
-		res.append(DateUtils.dateToWaybackDate(date));
-		res.append(ARGUMENT_SEPARATOR);
-		res.append(LIMIT_1_ARGUMENT);
 		res.append(ARGUMENT_SEPARATOR);
 		res.append(FL_ARGUMENT_PREFIX);
 		for(String s : CDX_ARGUMENTS.values()) {
