@@ -1,4 +1,4 @@
-package dk.netarkivet.research.index;
+package dk.netarkivet.research.cdx;
 
 import java.io.BufferedReader;
 import java.io.File;

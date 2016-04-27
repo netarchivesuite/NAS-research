@@ -9,9 +9,9 @@ import java.util.List;
 
 import dk.netarkivet.common.distribute.arcrepository.ArcRepositoryClientFactory;
 import dk.netarkivet.common.distribute.arcrepository.ViewerArcRepositoryClient;
-import dk.netarkivet.research.index.CDXEntry;
-import dk.netarkivet.research.index.CDXExtractor;
-import dk.netarkivet.research.index.PywbCDXExtractor;
+import dk.netarkivet.research.cdx.CDXEntry;
+import dk.netarkivet.research.cdx.CDXExtractor;
+import dk.netarkivet.research.cdx.PywbCDXExtractor;
 import dk.netarkivet.research.warc.ArchiveExtractor;
 import dk.netarkivet.research.warc.NASArchiveExtractor;
 import dk.netarkivet.research.warc.WarcPacker;

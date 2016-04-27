@@ -1,4 +1,4 @@
-package dk.netarkivet.research.index;
+package dk.netarkivet.research.cdx;
 
 import java.text.ParseException;
 import java.util.Collection;

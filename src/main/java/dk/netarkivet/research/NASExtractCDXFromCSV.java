@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import dk.netarkivet.research.index.CDXEntry;
-import dk.netarkivet.research.index.CDXExtractor;
-import dk.netarkivet.research.index.PywbCDXExtractor;
+import dk.netarkivet.research.cdx.CDXEntry;
+import dk.netarkivet.research.cdx.CDXExtractor;
+import dk.netarkivet.research.cdx.PywbCDXExtractor;
 import dk.netarkivet.research.wpid.CsvWpidReader;
 import dk.netarkivet.research.wpid.WPID;
 import dk.netarkivet.research.wpid.WPidReader;

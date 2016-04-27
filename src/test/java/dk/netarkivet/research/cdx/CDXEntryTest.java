@@ -1,4 +1,4 @@
-package dk.netarkivet.research.index;
+package dk.netarkivet.research.cdx;
 
 import static org.testng.Assert.*;
 
@@ -9,6 +9,7 @@ import java.util.Map;
 import org.jaccept.structure.ExtendedTestCase;
 import org.testng.annotations.Test;
 
+import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.utils.DateUtils;
 
 public class CDXEntryTest extends ExtendedTestCase {

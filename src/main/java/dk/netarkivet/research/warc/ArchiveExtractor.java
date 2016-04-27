@@ -3,7 +3,7 @@ package dk.netarkivet.research.warc;
 import java.io.File;
 import java.io.IOException;
 
-import dk.netarkivet.research.index.CDXEntry;
+import dk.netarkivet.research.cdx.CDXEntry;
 
 public interface ArchiveExtractor {
 	/**

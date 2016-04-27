@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dk.netarkivet.research.index.CDXEntry;
-import dk.netarkivet.research.index.CDXExtractor;
+import dk.netarkivet.research.cdx.CDXEntry;
+import dk.netarkivet.research.cdx.CDXExtractor;
 
 /**
  * Finds duplicates.

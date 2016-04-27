@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import dk.netarkivet.common.distribute.arcrepository.BitarchiveRecord;
 import dk.netarkivet.common.distribute.arcrepository.ViewerArcRepositoryClient;
 import dk.netarkivet.common.utils.FileUtils;
-import dk.netarkivet.research.index.CDXEntry;
+import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.wpid.CsvWpidReader;
 
 public class NASArchiveExtractor implements ArchiveExtractor {

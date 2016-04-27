@@ -1,4 +1,4 @@
-package dk.netarkivet.research.index;
+package dk.netarkivet.research.cdx;
 
 public class CDXConstants {
 	/** A canonized url */

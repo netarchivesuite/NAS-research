@@ -18,7 +18,7 @@ import org.jwat.warc.WarcWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dk.netarkivet.research.index.CDXEntry;
+import dk.netarkivet.research.cdx.CDXEntry;
 
 /**
  * Packing WARC files by using CDX entries to extract records from the archive.

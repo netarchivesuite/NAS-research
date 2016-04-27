@@ -1,4 +1,4 @@
-package dk.netarkivet.research.index;
+package dk.netarkivet.research.cdx;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +17,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dk.netarkivet.research.utils.UrlUtils;
 import dk.netarkivet.research.wpid.WPID;
 
 /**
@@ -119,15 +120,13 @@ public class DabCDXExtractor implements CDXExtractor {
 	 * @return The request URL for retrieving the CDX from the CDX server.
 	 */
 	protected String createRequestUrlForURL(String url) {
-		if(url.contains("://")) {
-			url = url.split("://")[1];
-		}
+		String urlWithoutProtocol = UrlUtils.stripProtocol(url);
 		StringBuilder res = new StringBuilder();
 		res.append(cdxUrl);
 		if(!cdxUrl.endsWith(QUERY_PREFIX)) {
 			res.append(QUERY_PREFIX);
 		}
-		res.append(url);
+		res.append(urlWithoutProtocol);
 		if(!url.contains(QUERY_SLASH)) {
 			res.append(QUERY_SLASH);
 		}

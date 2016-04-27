@@ -13,8 +13,8 @@ import java.util.Map;
 import org.jaccept.structure.ExtendedTestCase;
 import org.testng.annotations.Test;
 
-import dk.netarkivet.research.index.CDXEntry;
-import dk.netarkivet.research.index.CDXExtractor;
+import dk.netarkivet.research.cdx.CDXEntry;
+import dk.netarkivet.research.cdx.CDXExtractor;
 
 public class DuplicateFinderTest extends ExtendedTestCase {
 	
