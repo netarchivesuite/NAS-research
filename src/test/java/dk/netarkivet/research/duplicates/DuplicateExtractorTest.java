@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
 
 import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.cdx.CDXExtractor;
+import dk.netarkivet.research.utils.DateUtils;
 
 public class DuplicateExtractorTest extends ExtendedTestCase {
 	
@@ -52,6 +53,49 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 		Map<String, List<Long>> map = finder.makeDuplicateMap(testUrl, null, null);
 		
 		assertEquals(map.size(), 0);		
+	}
+	
+	@Test
+	public void testDateInterval() throws Exception {
+		addDescription("Test both interval date arguments");
+		CDXExtractor extractor = mock(CDXExtractor.class);
+		
+		when(extractor.retrieveAllCDX(anyString())).thenReturn(testEntries);
+		
+		DuplicateExtractor finder = new DuplicateExtractor(extractor);
+		Map<String, List<Long>> map = finder.makeDuplicateMap(testUrl, DateUtils.waybackDateToDate("20120101000000"), DateUtils.waybackDateToDate("20140101000000"));
+		
+		assertEquals(map.size(), 1);
+		assertEquals(map.get("VJ3CKK3ZH2FR7V2KM5TSI3TENA7ZSWKM").size(), 2);
+	}
+
+	@Test
+	public void testLowerInterval() throws Exception {
+		addDescription("Test the earliest date argument for the duplicate finder.");
+		CDXExtractor extractor = mock(CDXExtractor.class);
+		
+		when(extractor.retrieveAllCDX(anyString())).thenReturn(testEntries);
+		
+		DuplicateExtractor finder = new DuplicateExtractor(extractor);
+		Map<String, List<Long>> map = finder.makeDuplicateMap(testUrl, DateUtils.waybackDateToDate("20120101000000"), null);
+		
+		assertEquals(map.size(), 2);
+		assertEquals(map.get("VJ3CKK3ZH2FR7V2KM5TSI3TENA7ZSWKM").size(), 3);
+		assertEquals(map.get("a9f5f03efdc6d97874959c1e838f1343").size(), 2);
+	}
+	
+	@Test
+	public void testUpperInterval() throws Exception {
+		addDescription("Test the latest date argument for the duplicate finder.");
+		CDXExtractor extractor = mock(CDXExtractor.class);
+		
+		when(extractor.retrieveAllCDX(anyString())).thenReturn(testEntries);
+		
+		DuplicateExtractor finder = new DuplicateExtractor(extractor);
+		Map<String, List<Long>> map = finder.makeDuplicateMap(testUrl, null, DateUtils.waybackDateToDate("20140101000000"));
+		
+		assertEquals(map.size(), 1);
+		assertEquals(map.get("VJ3CKK3ZH2FR7V2KM5TSI3TENA7ZSWKM").size(), 3);
 	}
 }
 
