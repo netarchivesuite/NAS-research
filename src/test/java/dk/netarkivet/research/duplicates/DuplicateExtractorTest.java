@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.cdx.CDXExtractor;
 
-public class DuplicateFinderTest extends ExtendedTestCase {
+public class DuplicateExtractorTest extends ExtendedTestCase {
 	
 	String testUrl = "netarkivet.dk";
 	List<CDXEntry> testEntries = Arrays.asList(
@@ -34,8 +34,8 @@ public class DuplicateFinderTest extends ExtendedTestCase {
 		
 		when(extractor.retrieveAllCDX(anyString())).thenReturn(testEntries);
 		
-		DuplicateFinder finder = new DuplicateFinder(extractor);
-		Map<String, List<Long>> map = finder.makeDuplicateMap(testUrl);
+		DuplicateExtractor finder = new DuplicateExtractor(extractor);
+		Map<String, List<Long>> map = finder.makeDuplicateMap(testUrl, null, null);
 		
 		assertEquals(map.size(), 2);
 		assertEquals(map.get("VJ3CKK3ZH2FR7V2KM5TSI3TENA7ZSWKM").size(), 4);
@@ -48,8 +48,8 @@ public class DuplicateFinderTest extends ExtendedTestCase {
 		
 		when(extractor.retrieveAllCDX(anyString())).thenReturn(new ArrayList<CDXEntry>());
 		
-		DuplicateFinder finder = new DuplicateFinder(extractor);
-		Map<String, List<Long>> map = finder.makeDuplicateMap(testUrl);
+		DuplicateExtractor finder = new DuplicateExtractor(extractor);
+		Map<String, List<Long>> map = finder.makeDuplicateMap(testUrl, null, null);
 		
 		assertEquals(map.size(), 0);		
 	}

@@ -13,71 +13,93 @@ import java.util.Map;
 
 import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.cdx.DabCDXExtractor;
-import dk.netarkivet.research.duplicates.DuplicateFinder;
+import dk.netarkivet.research.duplicates.DuplicateExtractor;
+import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.utils.FileUtils;
 import dk.netarkivet.research.utils.ListUtils;
 import dk.netarkivet.research.utils.UrlUtils;
 
+/**
+ * Find duplicates for URLs in the CDX
+ * 
+ * Uses a CSV-file argument in the format:
+ * "url;earliest date; latest date"
+ * Both the dates may be missing or the empty string, if an earliest or latest date respectively is not wanted.
+ */
 public class NASFindDuplicatesForURLs {
 
-	public static void main( String[] args ) {
+	public static void main(String ... args ) {
 		if(args.length < 2) {
 			System.err.println("Not enough arguments. Requires the following arguments:");
 			System.err.println(" 1. Input file, containing lines where the first element is the URL to search for");
 			System.err.println(" 2. the base URL to the CDX-server.");
 			System.err.println(" 3. (OPTIONAL) output directory, otherwise it is printed.");
-			System.exit(-1);
+			throw new IllegalArgumentException();
 		}
 
 		File inputFile = new File(args[0]);
 		if(!inputFile.isFile()) {
-			System.err.println("The input file '" + inputFile.getAbsolutePath() + "' is not a valid file "
+			throw new IllegalArgumentException("The input file '" + inputFile.getAbsolutePath() + "' is not a valid file "
 					+ "(either does not exists or is a directory)");
-			System.exit(-1);
 		}
 
 		String cdxServerBaseUrl = args[1];
 		try {
 			new URL(cdxServerBaseUrl);
 		} catch (IOException e) {
-			System.err.println("The CSX Server url '" + cdxServerBaseUrl + "' is invalid.");
-			e.printStackTrace(System.err);
-			System.exit(-1);
+			throw new IllegalArgumentException("The CSX Server url '" + cdxServerBaseUrl + "' is invalid.", e);
 		}
 
 		File outDir;
 		if(args.length > 2) {
 			outDir = new File(args[2]);
+			if(outDir.isFile()) {
+				throw new IllegalArgumentException("The location for the output file is not vacent.");
+			} else {
+				outDir.mkdirs();
+			}
 		} else {
 			outDir = new File(".");
 		}
-		if(outDir.isFile()) {
-			System.err.println("The location for the output file is not vacent.");
-			System.exit(-1);
-		} else {
-			outDir.mkdirs();
-		}
-		CDXExtractor extractor = new DabCDXExtractor(cdxServerBaseUrl);
-		DuplicateFinder finder = new DuplicateFinder(extractor);
 
+		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerBaseUrl);
+		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor);
 
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile)))) {
+		NASFindDuplicatesForURLs findDuplicates = new NASFindDuplicatesForURLs(duplicateExtractor, inputFile, outDir);
+		findDuplicates.findDuplicates();
+	}
+	
+	/** The extractor of duplicates.*/
+	private final DuplicateExtractor extractor;
+	/** The CSV input file.*/
+	private final File csvFile;
+	/** The output directory.*/
+	private final File outputDir;
+	
+	/**
+	 * Constructor.
+	 * @param duplicateExtractor The duplicate extractor.
+	 * @param csvFile The input CSV file.
+	 * @param outputDir The output directory.
+	 */
+	protected NASFindDuplicatesForURLs(DuplicateExtractor duplicateExtractor, File csvFile, File outputDir) {
+		this.extractor = duplicateExtractor;
+		this.csvFile = csvFile;
+		this.outputDir = outputDir;
+	}
+	
+	/**
+	 * Goes through every line in the input file, and extracts the duplicates.
+	 */
+	protected void findDuplicates() {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile)))) {
 			String line;
 			while((line = reader.readLine()) != null) {
-				String url = line;
-				if(line.contains(";")) {
-					url = line.split(";")[0];
-				}
-				if(url.contains(" ")) {
-					url = url.split(" ")[0];
-				}
-				makeDuplicateFilesForUrl(finder, url, outDir);
+				makeDuplicateFilesForCSVLine(line);
 			}
 			
 		} catch (IOException e) {
-			System.err.println("Failed to read or write data.");
-			e.printStackTrace();
-			System.exit(-1);
+			throw new IllegalStateException("Failed to read or write data.");
 		}
 	}
 
@@ -86,18 +108,29 @@ public class NASFindDuplicatesForURLs {
 	 * One for the map directly ("url;checksum;date" for all entries)
 	 * The other for specs about each unique checksum ("checksum;amount;earliest;latest")
 	 * 
-	 * @param finder The duplicate finder.
-	 * @param url The URL to retrieve the 
+	 * @param extractor The duplicate finder.
+	 * @param line The CSV line in the format "url;earliest date;latest date" - with both dates as optional. 
 	 * @param outDir The directory where the output files should be placed.
 	 */
-	protected static void makeDuplicateFilesForUrl(DuplicateFinder finder, String url, File outDir) 
+	protected void makeDuplicateFilesForCSVLine(String line) 
 			throws IOException {
-		Map<String, List<Long>> map = finder.makeDuplicateMap(url);
+		String[] split = line.split(";");
+		String url = split[0];
+		Date earliestDate = null;
+		Date latestDate = null;
+		if(split.length > 1) {
+			earliestDate = DateUtils.extractCsvDate(split[1]);
+			if(split.length > 2) {
+				latestDate = DateUtils.extractCsvDate(split[2]);
+			}
+		}
+
+		Map<String, List<Long>> map = extractor.makeDuplicateMap(url, earliestDate, latestDate);
 		String urlFilename = UrlUtils.fileEncodeUrl(url);
 		
-		File mapOutputFile = FileUtils.ensureNewFile(outDir, urlFilename + ".map");
+		File mapOutputFile = FileUtils.ensureNewFile(outputDir, urlFilename + ".map");
 		try(FileOutputStream fos = new FileOutputStream(mapOutputFile)) {
-			fos.write("url;checksum;date".getBytes());
+			fos.write("url;checksum;date\n".getBytes());
 			for(Map.Entry<String, List<Long>> entry : map.entrySet()) {
 				for(Long l : entry.getValue()) {
 					String csvLine = url + ";" + entry.getKey() + ";" + new Date(l).toString() + "\n";
@@ -106,9 +139,9 @@ public class NASFindDuplicatesForURLs {
 			}
 		}
 		
-		File txtOutputFile = FileUtils.ensureNewFile(outDir, urlFilename + ".txt");
+		File txtOutputFile = FileUtils.ensureNewFile(outputDir, urlFilename + ".txt");
 		try(FileOutputStream fos = new FileOutputStream(txtOutputFile)) {
-			fos.write("checksum;amount;earliest date;latest date".getBytes());
+			fos.write("checksum;amount;earliest date;latest date\n".getBytes());
 			for(Map.Entry<String, List<Long>> entry : map.entrySet()) {
 				String csvLine = entry.getKey() + ";" + entry.getValue().size() + ";" 
 						+ new Date(ListUtils.getSmallest(entry.getValue())).toString() 

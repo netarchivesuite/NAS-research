@@ -4,28 +4,34 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileOutputStream;
 
 import org.jaccept.structure.ExtendedTestCase;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import dk.netarkivet.research.testutils.TestFileUtils;
+
 public class FileUtilsTest extends ExtendedTestCase {
 
-
-	File dir = new File("tempDir");
+	private File dir = new File("tempDir");
+	private String testFileContent = "This is a test file";
 	
 	@BeforeClass
 	public void setup() throws Exception {
-		removeFile(dir);
+		TestFileUtils.removeFile(dir);
 		dir.mkdirs();
-		
+	}
+	
+	@AfterClass
+	public void tearDown() throws Exception {
+		TestFileUtils.removeFile(dir);
 	}
 	
 	@Test
 	public void testDeprecateFile() throws Exception {
 		addDescription("Test deprecationOfAFile");
-		File testFile = createTestFile(dir);
+		File testFile = TestFileUtils.createTestFile(dir, testFileContent);
 		
 		assertTrue(testFile.exists());
 		FileUtils.deprecateFile(testFile);
@@ -37,14 +43,14 @@ public class FileUtilsTest extends ExtendedTestCase {
 	public void testDoubleDeprecateFile() throws Exception {
 		addDescription("Test deprecationOfAFile");
 		addStep("Create first file and deprecate it", "No file at original location");
-		File testFile = createTestFile(dir);
+		File testFile = TestFileUtils.createTestFile(dir, testFileContent);
 		FileUtils.deprecateFile(testFile);
 		File depFile = new File(testFile.getAbsolutePath() + ".old");
 		assertFalse(testFile.exists());
 		assertTrue(depFile.isFile());
 
 		addStep("Create another file at original spot, and deprecate it as well", "Should also depreacted previously deprecated file.");
-		testFile = createTestFile(dir);
+		testFile = TestFileUtils.createTestFile(dir, testFileContent);
 		FileUtils.deprecateFile(testFile);
 		assertFalse(testFile.exists());
 		assertTrue(depFile.isFile());
@@ -58,7 +64,7 @@ public class FileUtilsTest extends ExtendedTestCase {
 		assertTrue(subDir.mkdir());
 		assertTrue(subDir.isDirectory());
 		
-		File contentFile = createTestFile(subDir);
+		File contentFile = TestFileUtils.createTestFile(subDir, testFileContent);
 		assertTrue(contentFile.isFile());
 		
 		FileUtils.deprecateFile(subDir);
@@ -88,7 +94,7 @@ public class FileUtilsTest extends ExtendedTestCase {
 	@Test
 	public void testEnsuringNewFileAtExistingFilePosition() throws Exception {
 		addDescription("Testing ensuring a new file at the existing at an existing files position, will deprecate existing file");
-		File f = createTestFile(dir);
+		File f = TestFileUtils.createTestFile(dir, testFileContent);
 		
 		assertTrue(f.isFile());
 		
@@ -106,7 +112,7 @@ public class FileUtilsTest extends ExtendedTestCase {
 		subDir.mkdir();
 		assertTrue(subDir.isDirectory());
 		
-		File fileSubDir = createTestFile(subDir);
+		File fileSubDir = TestFileUtils.createTestFile(subDir, testFileContent);
 		
 		assertTrue(fileSubDir.isFile());
 		
@@ -119,23 +125,4 @@ public class FileUtilsTest extends ExtendedTestCase {
 		assertTrue(new File(subDir.getAbsolutePath() + ".old", fileSubDir.getName()).isFile(), "File in deprecated directory");
 	}
 	
-	public static void removeFile(File f) throws Exception {
-		if(f.isDirectory()) {
-			for(File subFile : f.listFiles())
-			removeFile(subFile);
-		}
-		f.delete();
-		
-		if(f.exists()) {
-			throw new IllegalStateException("The file '" + f.getAbsolutePath() + "' should have been deleted.");
-		}
-	}
-	
-	public File createTestFile(File dir) throws Exception {
-		File testFile = new File(dir, "test");
-		try (FileOutputStream fos = new FileOutputStream(testFile)) {
-			fos.write("This is a test file".getBytes());
-		}
-		return testFile;
-	}
 }
