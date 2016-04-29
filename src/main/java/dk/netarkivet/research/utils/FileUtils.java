@@ -1,6 +1,7 @@
 package dk.netarkivet.research.utils;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Utility class for dealing with files.
@@ -31,10 +32,13 @@ public class FileUtils {
 	 * @param dir The directory where the file should be created. 
 	 * @param name The name of the file.
 	 */
-	public static File ensureNewFile(File dir, String name) {
+	public static File ensureNewFile(File dir, String name) throws IOException {
 		File res = new File(dir, name);
 		if(res.exists()) {
 			deprecateFile(res);
+		}
+		if(!res.createNewFile()) {
+			throw new IllegalStateException("Cannot create a new file at '" + res.getAbsolutePath() + "'");
 		}
 		return res;
 	}

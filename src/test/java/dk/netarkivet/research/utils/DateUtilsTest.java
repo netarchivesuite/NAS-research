@@ -2,15 +2,12 @@ package dk.netarkivet.research.utils;
 
 import static org.testng.Assert.assertNotNull;
 
-import java.io.File;
 import java.util.Date;
 
 import org.jaccept.structure.ExtendedTestCase;
 import org.testng.annotations.Test;
 
 public class DateUtilsTest extends ExtendedTestCase {
-
-	File extractedCsv = new File("src/test/resources/urls.csv");
 	
 	@Test
 	public void testCsvDateFormat() throws Exception {
