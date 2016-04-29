@@ -128,7 +128,22 @@ public class NASFindDuplicatesForURLs {
 		Map<String, List<Long>> map = extractor.makeDuplicateMap(url, earliestDate, latestDate);
 		String urlFilename = UrlUtils.fileEncodeUrl(url);
 		
-		File mapOutputFile = FileUtils.ensureNewFile(outputDir, urlFilename + ".map");
+		createMapResultFile(map, urlFilename, url);
+		
+		createOtherResultFile(map, urlFilename, url);
+	}
+	
+	/**
+	 * Creates the map-results file.
+	 * @param map The map with the duplicate results.
+	 * @param filename The basename of the file.
+	 * @param url The URL of the results.
+	 * @throws IOException If it fails to to write the output file.
+	 */
+	protected void createMapResultFile(Map<String, List<Long>> map, String filename, String url) throws IOException {
+		// TODO make it in the new format ('number;date;??;...'??)
+		
+		File mapOutputFile = FileUtils.ensureNewFile(outputDir, filename + ".map");
 		try(FileOutputStream fos = new FileOutputStream(mapOutputFile)) {
 			fos.write("url;checksum;date\n".getBytes());
 			for(Map.Entry<String, List<Long>> entry : map.entrySet()) {
@@ -138,8 +153,17 @@ public class NASFindDuplicatesForURLs {
 				}
 			}
 		}
-		
-		File txtOutputFile = FileUtils.ensureNewFile(outputDir, urlFilename + ".txt");
+	}
+	
+	/**
+	 * Creates the other results file.
+	 * @param map The map with the duplicate results.
+	 * @param filename The basename of the file.
+	 * @param url The URL of the results.
+	 * @throws IOException If it fails to to write the output file.
+	 */
+	protected void createOtherResultFile(Map<String, List<Long>> map, String filename, String url) throws IOException {
+		File txtOutputFile = FileUtils.ensureNewFile(outputDir, filename + ".txt");
 		try(FileOutputStream fos = new FileOutputStream(txtOutputFile)) {
 			fos.write("checksum;amount;earliest date;latest date\n".getBytes());
 			for(Map.Entry<String, List<Long>> entry : map.entrySet()) {
