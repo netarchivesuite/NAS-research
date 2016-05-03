@@ -9,7 +9,7 @@ import java.util.Date;
  * Consists of a webarchive, an url and a date.
  */
 public class WPID {
-	/** The default */
+	/** The default for Netarkivet.dk. */
 	public static final String NETARCHIVE_DK_WEBARCHIVE = "Netarkivet.dk";
 	/** The webarchive for the WPID.*/
 	protected String webarchive;

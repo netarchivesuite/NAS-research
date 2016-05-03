@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
 import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.cdx.DabCDXExtractor;
 import dk.netarkivet.research.duplicates.DuplicateExtractor;
+import dk.netarkivet.research.duplicates.DuplicateMap;
 import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.utils.FileUtils;
 import dk.netarkivet.research.utils.ListUtils;
@@ -125,7 +127,7 @@ public class NASFindDuplicatesForURLs {
 			}
 		}
 
-		Map<String, List<Long>> map = extractor.makeDuplicateMap(url, earliestDate, latestDate);
+		DuplicateMap map = extractor.makeDuplicateMap(url, earliestDate, latestDate);
 		String urlFilename = UrlUtils.fileEncodeUrl(url);
 		
 		createMapResultFile(map, urlFilename, url);
@@ -140,17 +142,21 @@ public class NASFindDuplicatesForURLs {
 	 * @param url The URL of the results.
 	 * @throws IOException If it fails to to write the output file.
 	 */
-	protected void createMapResultFile(Map<String, List<Long>> map, String filename, String url) throws IOException {
-		// TODO make it in the new format ('number;date;??;...'??)
-		
+	protected void createMapResultFile(DuplicateMap map, String filename, String url) throws IOException {
 		File mapOutputFile = FileUtils.ensureNewFile(outputDir, filename + ".map");
 		try(FileOutputStream fos = new FileOutputStream(mapOutputFile)) {
-			fos.write("url;checksum;date\n".getBytes());
-			for(Map.Entry<String, List<Long>> entry : map.entrySet()) {
-				for(Long l : entry.getValue()) {
-					String csvLine = url + ";" + entry.getKey() + ";" + new Date(l).toString() + "\n";
-					fos.write(csvLine.getBytes());
+			fos.write("number;date;checksum;url\n".getBytes());
+			List<String> checksumIndices = new ArrayList<String>();
+			for(Map.Entry<Long, String> entry : map.getDateToChecksumMap().entrySet()) {
+				
+				int checksumIndex = checksumIndices.indexOf(entry.getValue());
+				if(checksumIndex == -1) {
+					checksumIndex = checksumIndices.size();
+					checksumIndices.add(entry.getValue());
 				}
+				
+				String csvLine = (checksumIndex+1) + ";" + DateUtils.dateToWaybackDate(new Date(entry.getKey())) + ";" + entry.getValue() + ";" + url + "\n";
+				fos.write(csvLine.getBytes());
 			}
 		}
 	}
@@ -162,11 +168,11 @@ public class NASFindDuplicatesForURLs {
 	 * @param url The URL of the results.
 	 * @throws IOException If it fails to to write the output file.
 	 */
-	protected void createOtherResultFile(Map<String, List<Long>> map, String filename, String url) throws IOException {
+	protected void createOtherResultFile(DuplicateMap map, String filename, String url) throws IOException {
 		File txtOutputFile = FileUtils.ensureNewFile(outputDir, filename + ".txt");
 		try(FileOutputStream fos = new FileOutputStream(txtOutputFile)) {
 			fos.write("checksum;amount;earliest date;latest date\n".getBytes());
-			for(Map.Entry<String, List<Long>> entry : map.entrySet()) {
+			for(Map.Entry<String, List<Long>> entry : map.getChecksumToDateListMap().entrySet()) {
 				String csvLine = entry.getKey() + ";" + entry.getValue().size() + ";" 
 						+ new Date(ListUtils.getSmallest(entry.getValue())).toString() 
 						+ ";" + new Date(ListUtils.getLargest(entry.getValue())).toString() + "\n";

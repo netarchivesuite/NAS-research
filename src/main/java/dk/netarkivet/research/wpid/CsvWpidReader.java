@@ -3,6 +3,7 @@ package dk.netarkivet.research.wpid;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -41,6 +42,9 @@ public class CsvWpidReader implements WPidReader {
 	 * @param csvFile The CSV file.
 	 */
 	public CsvWpidReader(File csvFile) {
+		if(csvFile == null || !csvFile.isFile()) {
+			throw new IllegalArgumentException("The csv file '" + csvFile + "' is not a file.");
+		}
 		this.csvFile = csvFile;
 	}
 
@@ -59,7 +63,7 @@ public class CsvWpidReader implements WPidReader {
 					res.add(wpid);
 				}
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			logger.info("Failed extracting PWIDs from file '" + csvFile + "'.", e);
 			return null;
 		}
@@ -69,17 +73,12 @@ public class CsvWpidReader implements WPidReader {
 	/**
 	 * Extracts a WPID from a line in the CSV file.
 	 * The line must have the format 'x;[URL];[DATE];*'.
+	 * We split on both ',' and ';'
 	 * @param line The line.
 	 * @return The WPID, or null if the line does not have the right format.
 	 */
 	protected WPID extractWPID(String line) {
-		String split[];
-		// split on ',' or ';'
-		if(line.contains(";")) {
-			split = line.split(";");
-		} else {
-			split = line.split(",");
-		}
+		String split[] = line.split("[;,]");
 		
 		// Ignore, if it is an empty line
 		if(split.length == 0) {
@@ -95,7 +94,7 @@ public class CsvWpidReader implements WPidReader {
 		}
 		
 		// Ignore, if the line has less that 3 elements
-		if(split.length < 3) {
+		if(split.length < 4) {
 			logger.info("Failed to extract PWID from line '" + line + "', since "
 					+ "it does not have at least 3 elements.");
 			return null;
@@ -103,7 +102,7 @@ public class CsvWpidReader implements WPidReader {
 		
 		String url = split[2];
 		// Ignore, if the url is empty or not valid
-		if(url == null || url.isEmpty()) {
+		if(url.isEmpty()) {
 			logger.info("Failed to extract PWID from line '" + line + "', since "
 					+ "the URL is missing.");
 			return null;
@@ -117,8 +116,8 @@ public class CsvWpidReader implements WPidReader {
 		}
 		
 		String dateString = split[3];
-		// Ignore, if the date is missing or invalid
-		if(dateString == null || dateString.isEmpty()) {
+		// Ignore line, if the date is missing or invalid
+		if(dateString.isEmpty()) {
 			logger.info("Failed to extract PWID from line '" + line + "', since "
 					+ "the date is missing.");
 			return null;

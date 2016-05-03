@@ -17,9 +17,9 @@ public class WPIDTest extends ExtendedTestCase {
 		String archive = "webarchive.net";
 		WPID wpid = new WPID(archive, url, date);
 		
-		assertEquals(wpid.date, date);
-		assertEquals(wpid.url, url);
-		assertEquals(wpid.webarchive, archive);
+		assertEquals(wpid.getDate(), date);
+		assertEquals(wpid.getUrl(), url);
+		assertEquals(wpid.getWebarchive(), archive);
 	}
 	
 	@Test

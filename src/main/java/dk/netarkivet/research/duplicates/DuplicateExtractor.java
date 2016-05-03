@@ -1,11 +1,7 @@
 package dk.netarkivet.research.duplicates;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.cdx.CDXExtractor;
@@ -37,33 +33,17 @@ public class DuplicateExtractor {
 	 * @param latestDate The latest date for the results.
 	 * @return The map of checksums and their dates.
 	 */
-	public Map<String, List<Long>> makeDuplicateMap(String url, Date earliestDate, Date latestDate) {
+	public DuplicateMap makeDuplicateMap(String url, Date earliestDate, Date latestDate) {
 		Collection<CDXEntry> cdxs = extractor.retrieveAllCDX(url);
 
-		Map<String, List<Long>> res = new HashMap<String, List<Long>>();
+		DuplicateMap res = new DuplicateMap();
 		
 		for(CDXEntry entry : cdxs) {
 			if(DateUtils.checkDateInterval(entry, earliestDate, latestDate)) {
-				insertEntryIntoMap(entry, res);
+				res.addElement(entry.getDate(), entry.getDigest());
 			}
 		}
 		
 		return res;
-	}
-	
-	/**
-	 * Inserts the CDX entry date into the map.
-	 * The date for the entry is inserted into a list for the checksum/digest. 
-	 * @param entry The CDX entry.
-	 * @param map The map to insert it into.
-	 */
-	protected void insertEntryIntoMap(CDXEntry entry, Map<String, List<Long>> map) {
-		List<Long> dates = map.get(entry.getDigest());
-		if(dates == null) {
-			dates = new ArrayList<Long>();
-		}
-		
-		dates.add(entry.getDate());
-		map.put(entry.getDigest(), dates);
 	}
 }

@@ -8,7 +8,6 @@ import static org.testng.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.jaccept.structure.ExtendedTestCase;
 import org.testng.annotations.Test;
@@ -36,11 +35,9 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 		when(extractor.retrieveAllCDX(anyString())).thenReturn(testEntries);
 		
 		DuplicateExtractor finder = new DuplicateExtractor(extractor);
-		Map<String, List<Long>> map = finder.makeDuplicateMap(testUrl, null, null);
+		DuplicateMap map = finder.makeDuplicateMap(testUrl, null, null);
 		
-		assertEquals(map.size(), 2);
-		assertEquals(map.get("VJ3CKK3ZH2FR7V2KM5TSI3TENA7ZSWKM").size(), 4);
-		assertEquals(map.get("a9f5f03efdc6d97874959c1e838f1343").size(), 2);
+		assertEquals(map.getDateToChecksumMap().size(), testEntries.size());
 	}
 	
 	@Test
@@ -50,9 +47,9 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 		when(extractor.retrieveAllCDX(anyString())).thenReturn(new ArrayList<CDXEntry>());
 		
 		DuplicateExtractor finder = new DuplicateExtractor(extractor);
-		Map<String, List<Long>> map = finder.makeDuplicateMap(testUrl, null, null);
+		DuplicateMap map = finder.makeDuplicateMap(testUrl, null, null);
 		
-		assertEquals(map.size(), 0);		
+		assertEquals(map.getDateToChecksumMap().size(), 0);		
 	}
 	
 	@Test
@@ -63,10 +60,11 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 		when(extractor.retrieveAllCDX(anyString())).thenReturn(testEntries);
 		
 		DuplicateExtractor finder = new DuplicateExtractor(extractor);
-		Map<String, List<Long>> map = finder.makeDuplicateMap(testUrl, DateUtils.waybackDateToDate("20120101000000"), DateUtils.waybackDateToDate("20140101000000"));
+		DuplicateMap map = finder.makeDuplicateMap(testUrl, DateUtils.waybackDateToDate("20120101000000"), DateUtils.waybackDateToDate("20140101000000"));
 		
-		assertEquals(map.size(), 1);
-		assertEquals(map.get("VJ3CKK3ZH2FR7V2KM5TSI3TENA7ZSWKM").size(), 2);
+		assertEquals(map.getDateToChecksumMap().size(), 2);
+		assertEquals(map.getChecksumToDateListMap().size(), 1);
+		assertEquals(map.getChecksumToDateListMap().get("VJ3CKK3ZH2FR7V2KM5TSI3TENA7ZSWKM").size(), 2);
 	}
 
 	@Test
@@ -77,11 +75,12 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 		when(extractor.retrieveAllCDX(anyString())).thenReturn(testEntries);
 		
 		DuplicateExtractor finder = new DuplicateExtractor(extractor);
-		Map<String, List<Long>> map = finder.makeDuplicateMap(testUrl, DateUtils.waybackDateToDate("20120101000000"), null);
+		DuplicateMap map = finder.makeDuplicateMap(testUrl, DateUtils.waybackDateToDate("20120101000000"), null);
 		
-		assertEquals(map.size(), 2);
-		assertEquals(map.get("VJ3CKK3ZH2FR7V2KM5TSI3TENA7ZSWKM").size(), 3);
-		assertEquals(map.get("a9f5f03efdc6d97874959c1e838f1343").size(), 2);
+		assertEquals(map.getDateToChecksumMap().size(), 5);
+		assertEquals(map.getChecksumToDateListMap().size(), 2);
+		assertEquals(map.getChecksumToDateListMap().get("VJ3CKK3ZH2FR7V2KM5TSI3TENA7ZSWKM").size(), 3);
+		assertEquals(map.getChecksumToDateListMap().get("a9f5f03efdc6d97874959c1e838f1343").size(), 2);
 	}
 	
 	@Test
@@ -92,10 +91,11 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 		when(extractor.retrieveAllCDX(anyString())).thenReturn(testEntries);
 		
 		DuplicateExtractor finder = new DuplicateExtractor(extractor);
-		Map<String, List<Long>> map = finder.makeDuplicateMap(testUrl, null, DateUtils.waybackDateToDate("20140101000000"));
+		DuplicateMap map = finder.makeDuplicateMap(testUrl, null, DateUtils.waybackDateToDate("20140101000000"));
 		
-		assertEquals(map.size(), 1);
-		assertEquals(map.get("VJ3CKK3ZH2FR7V2KM5TSI3TENA7ZSWKM").size(), 3);
+		assertEquals(map.getDateToChecksumMap().size(), 3);
+		assertEquals(map.getChecksumToDateListMap().size(), 1);
+		assertEquals(map.getChecksumToDateListMap().get("VJ3CKK3ZH2FR7V2KM5TSI3TENA7ZSWKM").size(), 3);
 	}
 }
 

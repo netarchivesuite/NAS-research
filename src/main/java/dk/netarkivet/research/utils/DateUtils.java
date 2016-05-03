@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import org.slf4j.Logger;
@@ -55,11 +56,13 @@ public class DateUtils {
 	
 	/**
 	 * Extract the actual date from the date-string. 
+	 * TODO also make it handle the default date format -> new Date().toString() ?
+	 * 
 	 * @param date The date string to parse.
 	 * @return The date, or null if was an empty string or it could not be extracted/had a different format.
 	 */
 	public static Date extractCsvDate(String date) {
-		if(date.trim().isEmpty()) {
+		if(date == null || date.trim().isEmpty()) {
 			return null;
 		}
         try {
@@ -68,11 +71,12 @@ public class DateUtils {
             return d;
         } catch (ParseException e) {
             logger.warn("Could not parse the timeout date, '" + date + "' with dateformat '" + CSV_DATE_FORMAT 
-                    + "' and default locale", e);
+                    + "' ", e);
         }
         // Try parsing the date in the system default dateformat.
         try {
-            return DateFormat.getDateInstance().parse(date);
+            DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.ENGLISH);
+            return formatter.parse(date);
         } catch (ParseException e) {
             logger.debug("Could not parse the timeout date, '" + date + "' with the system default dateformat", e);
         }
