@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.cdx.DabCDXExtractor;
+import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.wpid.WPID;
 
@@ -25,7 +26,7 @@ public class DabCDXExtractorTest extends ExtendedTestCase {
 		String extractDate = "20140127171200";
 
 		WPID wpid = WPID.createNarkWPid(extractURL, DateUtils.waybackDateToDate(extractDate));
-		CDXExtractor extractor = new DabCDXExtractor(serverUrl);
+		CDXExtractor extractor = new DabCDXExtractor(serverUrl, new HttpRetriever());
 		CDXEntry entry = extractor.retrieveCDX(wpid);
 		assertNotNull(entry);
 	}
@@ -38,7 +39,7 @@ public class DabCDXExtractorTest extends ExtendedTestCase {
 
 		WPID wpid = WPID.createNarkWPid(extractURL, DateUtils.waybackDateToDate(extractDate));
 		
-		CDXExtractor extractor = new DabCDXExtractor(serverUrl);
+		CDXExtractor extractor = new DabCDXExtractor(serverUrl, new HttpRetriever());
 		CDXEntry entry = extractor.retrieveCDX(wpid);
 		assertNull(entry);
 	}
@@ -48,7 +49,7 @@ public class DabCDXExtractorTest extends ExtendedTestCase {
 		addDescription("Test extraction of a element.");
 		String extractURL = "http://example.com/";
 
-		CDXExtractor extractor = new DabCDXExtractor(serverUrl);
+		CDXExtractor extractor = new DabCDXExtractor(serverUrl, new HttpRetriever());
 		Collection<CDXEntry> entries = extractor.retrieveAllCDX(extractURL);
 		assertNotNull(entries);
 		assertEquals(entries.size(), 44);

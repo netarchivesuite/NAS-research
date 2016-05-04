@@ -12,11 +12,11 @@ import dk.netarkivet.common.distribute.arcrepository.BitarchiveRecord;
 import dk.netarkivet.common.distribute.arcrepository.ViewerArcRepositoryClient;
 import dk.netarkivet.common.utils.FileUtils;
 import dk.netarkivet.research.cdx.CDXEntry;
-import dk.netarkivet.research.wpid.CsvWpidReader;
+import dk.netarkivet.research.wpid.CsvWidReader;
 
 public class NASArchiveExtractor implements ArchiveExtractor {
     /** Logging mechanism. */
-    private static Logger logger = LoggerFactory.getLogger(CsvWpidReader.class);
+    private static Logger logger = LoggerFactory.getLogger(CsvWidReader.class);
 
     /** The NAS ArcRepositoryClient for retrieving the Arc/Warc record.*/
     ViewerArcRepositoryClient client;

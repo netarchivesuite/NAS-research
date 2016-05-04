@@ -8,15 +8,15 @@ import java.util.Date;
  * 
  * Consists of a webarchive, an url and a date.
  */
-public class WPID {
+public class WPID implements WID {
 	/** The default for Netarkivet.dk. */
 	public static final String NETARCHIVE_DK_WEBARCHIVE = "Netarkivet.dk";
 	/** The webarchive for the WPID.*/
-	protected String webarchive;
+	protected final String webarchive;
 	/** The URL for the webresource.*/
-	protected String url;
+	protected final String url;
 	/** The date when the webresource was harvested/archived.*/
-	protected Date date;
+	protected final Date date;
 
 	/** 
 	 * Constructor.
@@ -40,23 +40,17 @@ public class WPID {
 		return new WPID(NETARCHIVE_DK_WEBARCHIVE, url, date);
 	}
 
-	/**
-	 * @return The webarchive.
-	 */
+	@Override
 	public String getWebarchive() {
 		return webarchive;
 	}
 	
-	/**
-	 * @return The URL.
-	 */
+	@Override
 	public String getUrl() {
 		return url;
 	}
 	
-	/**
-	 * @return The date.
-	 */
+	@Override
 	public Date getDate() {
 		return date;
 	}

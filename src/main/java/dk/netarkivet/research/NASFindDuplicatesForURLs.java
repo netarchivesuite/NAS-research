@@ -16,6 +16,7 @@ import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.cdx.DabCDXExtractor;
 import dk.netarkivet.research.duplicates.DuplicateExtractor;
 import dk.netarkivet.research.duplicates.DuplicateMap;
+import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.utils.FileUtils;
 import dk.netarkivet.research.utils.ListUtils;
@@ -64,7 +65,7 @@ public class NASFindDuplicatesForURLs {
 			outDir = new File(".");
 		}
 
-		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerBaseUrl);
+		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerBaseUrl, new HttpRetriever());
 		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor);
 
 		NASFindDuplicatesForURLs findDuplicates = new NASFindDuplicatesForURLs(duplicateExtractor, inputFile, outDir);

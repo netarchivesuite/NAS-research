@@ -154,9 +154,12 @@ public class CDXEntry {
 	/**
 	 * Instantiation method.
 	 * @param cdxMapping The mapping between CDX element and value.
-	 * @return The CDXEntry 
+	 * @return The CDXEntry, or null if bad argument.
 	 */
 	public static CDXEntry createCDXEntry(Map<Character, String> cdxMapping) {
+		if(cdxMapping == null) {
+			return null;
+		}
 		CDXEntry cdxEntry = new CDXEntry();
 		try {
 			for(Map.Entry<Character, String> cdxElement : cdxMapping.entrySet()) {

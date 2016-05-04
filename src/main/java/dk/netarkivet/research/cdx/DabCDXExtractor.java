@@ -1,22 +1,15 @@
 package dk.netarkivet.research.cdx;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.utils.UrlUtils;
 import dk.netarkivet.research.wpid.WPID;
 
@@ -58,25 +51,34 @@ public class DabCDXExtractor implements CDXExtractor {
 	
 	/** The prefix for the URL argument in the HTTP request.*/
 	private final String cdxUrl;
+	/** The http retriever for handling the HTTP requests to the CDX server.*/
+	private final HttpRetriever httpRetriever;
 	
 	/**
 	 * Constructor.
 	 * @param cdxServerUrl The URL for the CDX server (complete url to query for the right collection).
+	 * @param httpRetriever The http retriever for retrieving from the CDX server.
 	 */
-	public DabCDXExtractor(String cdxServerUrl) {
+	public DabCDXExtractor(String cdxServerUrl, HttpRetriever httpRetriever) {
 		this.cdxUrl = cdxServerUrl;
+		this.httpRetriever = httpRetriever;
 	}
 	
 	@Override
 	public CDXEntry retrieveCDX(WPID wpid) {
 		Collection<CDXEntry> allCDXforUrl = retrieveAllCDX(wpid.getUrl());
 		
+		if(allCDXforUrl == null || allCDXforUrl.isEmpty()) {
+			return null;
+		}
+		
 		long closestDate = Long.MAX_VALUE;
 		CDXEntry res = null;
 		
 		for(CDXEntry entry : allCDXforUrl) {
-			if(Math.abs(entry.getDate() - wpid.getDate().getTime()) < closestDate) {
-				closestDate = Math.abs(entry.getDate() - wpid.getDate().getTime());
+			Long timeDiff = Math.abs(entry.getDate() - wpid.getDate().getTime());
+			if(timeDiff < closestDate) {
+				closestDate = timeDiff;
 				res = entry;
 			}
 		}
@@ -87,29 +89,20 @@ public class DabCDXExtractor implements CDXExtractor {
 	@Override
 	public Collection<CDXEntry> retrieveAllCDX(String url) {
 		String requestUrlString = createRequestUrlForURL(url);
-		try {
-			CloseableHttpClient httpClient = HttpClients.createDefault();
-			HttpGet httpGet = new HttpGet(requestUrlString);
-			
-			HttpResponse response = httpClient.execute(httpGet);
-			if(response.getStatusLine().getStatusCode() != 200) {
-				logger.warn("Failed to retrieve data. Received response code " + response.getStatusLine().getStatusCode());
-				return null;
-			}
-			
-			InputStreamReader isr = new InputStreamReader(response.getEntity().getContent(), Charset.forName("UTF-8"));
-			BufferedReader br = new BufferedReader(isr);
-
-			List<CDXEntry> res = new ArrayList<CDXEntry>();
-			String line;
-			while((line = br.readLine()) != null) {
-				res.add(CDXEntry.createCDXEntry(createCdxMap(line)));
-			}
-			
-			return res;
-		} catch (IOException e) {
-			logger.warn("Failed to retrieve CDX indices for URL '" + url + "'. Returning a null", e);
+		String response = httpRetriever.retrieveFromUrl(requestUrlString);
+		
+		if(response == null || response.isEmpty()) {
+			logger.warn("Failed to retrieve CDX indices for URL '" + url + "'. Returning a null");
 			return null;
+		} else {
+			List<CDXEntry> res = new ArrayList<CDXEntry>();
+			for(String line : response.split("\n")) {
+				CDXEntry entry = CDXEntry.createCDXEntry(createCdxMap(line));
+				if(entry != null) {
+					res.add(entry);
+				}
+			}
+			return res;
 		}
 	}
 	

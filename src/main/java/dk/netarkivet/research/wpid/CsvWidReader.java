@@ -30,9 +30,9 @@ import dk.netarkivet.research.utils.DateUtils;
  * 
  * Also, the file must be in UTF-8 format.
  */
-public class CsvWpidReader implements WPidReader {
+public class CsvWidReader implements WidReader {
     /** Logging mechanism. */
-    private static Logger logger = LoggerFactory.getLogger(CsvWpidReader.class);
+    private static Logger logger = LoggerFactory.getLogger(CsvWidReader.class);
     
 	/** The CSV file with the WPID data.*/
 	protected File csvFile;
@@ -41,7 +41,7 @@ public class CsvWpidReader implements WPidReader {
 	 * Constructor.
 	 * @param csvFile The CSV file.
 	 */
-	public CsvWpidReader(File csvFile) {
+	public CsvWidReader(File csvFile) {
 		if(csvFile == null || !csvFile.isFile()) {
 			throw new IllegalArgumentException("The csv file '" + csvFile + "' is not a file.");
 		}
@@ -49,8 +49,8 @@ public class CsvWpidReader implements WPidReader {
 	}
 
 	@Override
-	public Collection<WPID> extractAllWPIDs() {
-		List<WPID> res = new ArrayList<WPID>();
+	public Collection<WID> extractAllWIDs() {
+		List<WID> res = new ArrayList<WID>();
 		String line;
 		try (
 			InputStream fis = new FileInputStream(csvFile);

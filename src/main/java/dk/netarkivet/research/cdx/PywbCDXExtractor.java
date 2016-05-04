@@ -1,24 +1,16 @@
 package dk.netarkivet.research.cdx;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.wpid.WPID;
 
@@ -45,7 +37,7 @@ public class PywbCDXExtractor implements CDXExtractor {
 	public static final String FL_ARGUMENT_PREFIX = "fl=";
 	
 	/** Map between CDX format element and their cdx-server fl argument (separated by ,). */
-	public static final Map<Character, String> CDX_ARGUMENTS = new HashMap<Character, String>();
+	public static final Map<Character, String> CDX_ARGUMENTS = new LinkedHashMap<Character, String>();
 	static {
 		CDX_ARGUMENTS.put(CDXConstants.CDX_CHAR_ORIGINAL_URL, "url");
 		CDX_ARGUMENTS.put(CDXConstants.CDX_CHAR_DATE, "timestamp");
@@ -60,61 +52,48 @@ public class PywbCDXExtractor implements CDXExtractor {
 	/** The prefix for the URL argument in the HTTP request.*/
 	private final String cdxUrl;
 	
+	protected final HttpRetriever httpRetriever;
+	
 	/**
 	 * Constructor.
 	 * @param cdxServerUrl The URL for the CDX server (complete url to query for the right collection).
+	 * @param httpRetriever The http retriever.
 	 */
-	public PywbCDXExtractor(String cdxServerUrl) {
+	public PywbCDXExtractor(String cdxServerUrl, HttpRetriever httpRetriever) {
 		this.cdxUrl = cdxServerUrl;
+		this.httpRetriever = httpRetriever;
 	}
 	
 	@Override
 	public CDXEntry retrieveCDX(WPID wpid) {
 		String requestUrlString = createRequestUrlForWPID(wpid);
-		try {
-			CloseableHttpClient httpClient = HttpClients.createDefault();
-			HttpGet httpGet = new HttpGet(requestUrlString);
-			
-			HttpResponse response = httpClient.execute(httpGet);
-			if(response.getStatusLine().getStatusCode() != 200) {
-				logger.warn("Failed to retrieve data. Received response code " + response.getStatusLine().getStatusCode());
-				return null;
-			}
-			
-			String cdxLine = EntityUtils.toString(response.getEntity());
-			return CDXEntry.createCDXEntry(createCdxMap(cdxLine));
-		} catch (IOException e) {
-			logger.warn("Failed to retrieve wpid '" + wpid.toString() + "'. Returning a null", e);
+		String response = httpRetriever.retrieveFromUrl(requestUrlString);
+		
+		if(response == null) {
+			logger.warn("Failed to retrieve wpid '" + wpid.toString() + "'. Returning a null");
 			return null;
+		} else {
+			return CDXEntry.createCDXEntry(createCdxMap(response));
 		}
 	}
 
 	@Override
 	public Collection<CDXEntry> retrieveAllCDX(String url) {
 		String requestUrlString = createRequestUrlForWID(url);
-		try {
-			CloseableHttpClient httpClient = HttpClients.createDefault();
-			HttpGet httpGet = new HttpGet(requestUrlString);
-			
-			HttpResponse response = httpClient.execute(httpGet);
-			if(response.getStatusLine().getStatusCode() != 200) {
-				logger.warn("Failed to retrieve data. Received response code " + response.getStatusLine().getStatusCode());
-				return null;
-			}
-			
-			InputStreamReader isr = new InputStreamReader(response.getEntity().getContent(), Charset.forName("UTF-8"));
-			BufferedReader br = new BufferedReader(isr);
-
-			List<CDXEntry> res = new ArrayList<CDXEntry>();
-			String line;
-			while((line = br.readLine()) != null) {
-				res.add(CDXEntry.createCDXEntry(createCdxMap(line)));
-			}
-			
-			return res;
-		} catch (IOException e) {
-			logger.warn("Failed to retrieve CDX indices for URL '" + url + "'. Returning a null", e);
+		String response = httpRetriever.retrieveFromUrl(requestUrlString);
+		
+		if(response == null || response.isEmpty()) {
+			logger.warn("Failed to retrieve CDX indices for URL '" + url + "'. Returning a null");
 			return null;
+		} else {
+			List<CDXEntry> res = new ArrayList<CDXEntry>();
+			for(String line : response.split("\n")) {
+				CDXEntry entry = CDXEntry.createCDXEntry(createCdxMap(line));
+				if(entry != null) {
+					res.add(entry);
+				}
+			}
+			return res;
 		}
 	}
 
@@ -180,9 +159,14 @@ public class PywbCDXExtractor implements CDXExtractor {
 		Map<Character, String> res = new HashMap<Character, String>();
 		String[] cdxLineSplit = cdxLine.split(" ");
 		Character[] format = CDX_ARGUMENTS.keySet().toArray(new Character[CDX_ARGUMENTS.size()]);
+		
+		if(cdxLineSplit.length < format.length) {
+			logger.warn("Not enough cdx elements. Expected " + format.length + " but only got " + cdxLine.length());
+			return null;
+		}
 
 		for(int i = 0; i < format.length; i++) {
-			res.put(format[i], cdxLineSplit[i]);
+				res.put(format[i], cdxLineSplit[i]);
 		}
 		return res;
 	}

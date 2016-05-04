@@ -1,0 +1,15 @@
+Code X=from search T=free text A=other archive W=from wayback;No.             Help line no. for search;URL                                                                                             Set cursor in column A in the first row that is empty (first time A2) and paste in search results. Then click on the Format lines command button;Date/time                                      UTC format - as for searches;Archive domain for web archive;Archive file name    (from way-back);Res-source type;Part / Harvest P=part H=harvest;Extract (mark with X if it should be extracted for further analysis);Inte-resting (mark with X);Comments;References;;;;;;;;
+A;6;http://www.historisktidsskrift.dk/main/mainlinks.htm;2012-11-15T09:06:10Z;archive.org;;;;;;;;;;;;;;;
+T;1;Results from 1. search ;;;;;;;;;;;;;;;;;
+T;4;;;;;;;;;;;;;;;;;;
+T;5;Additional results from Internet arkive;;;;;;;;;;;;;;;;;
+T;7;;;;;;;;;;;;;;;;;;
+T;8;Additional results from Netarkivet wayback;;;;;;;;;;;;;;;;;
+W;9;http://netarkivet.dk/;2006-01-02T15:56:58Z;2890-25-20060102155648-00032-sb-prod-har-001.statsbiblioteket.dk.arc/1989229;;;;;;;;;;;;;;;
+W;10;http://netarkivet.dk/;2014-01-07 9:01;;;;;;;;;;;;;;;;
+W;11;http://netarkivet.dk/links/index-da.php ;2009-10-26 16:24:23;;;;;;;;;;;;;;;;
+X;2;http://netarkivet.dk/publikationer/webarkivering-webarchiving.pdf;2007-08-21T23:46:36Z;netarkivet.dk;;pdf;;;;;;;;;;;;;
+X;3;http://www.bibliotekslederforeningen.dk/uploads/BLFinternettidsskrift/nr3_2005/Birte_Christensen-Dalsgaard.htm;2007-07-24T01:59:28Z;netarkivet.dk;;html;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;
+

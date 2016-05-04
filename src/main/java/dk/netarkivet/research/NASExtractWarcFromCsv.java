@@ -11,13 +11,15 @@ import dk.netarkivet.common.distribute.arcrepository.ArcRepositoryClientFactory;
 import dk.netarkivet.common.distribute.arcrepository.ViewerArcRepositoryClient;
 import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.cdx.CDXExtractor;
-import dk.netarkivet.research.cdx.PywbCDXExtractor;
+import dk.netarkivet.research.cdx.DabCDXExtractor;
+import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.warc.ArchiveExtractor;
 import dk.netarkivet.research.warc.NASArchiveExtractor;
 import dk.netarkivet.research.warc.WarcPacker;
-import dk.netarkivet.research.wpid.CsvWpidReader;
+import dk.netarkivet.research.wpid.CsvWidReader;
+import dk.netarkivet.research.wpid.WID;
 import dk.netarkivet.research.wpid.WPID;
-import dk.netarkivet.research.wpid.WPidReader;
+import dk.netarkivet.research.wpid.WidReader;
 
 /**
  * Use CDX files to extract WARC files from a NAS archive.
@@ -64,13 +66,17 @@ public class NASExtractWarcFromCsv {
     		System.exit(-1);
     	}
     	
-    	WPidReader reader = new CsvWpidReader(csvFile);
-    	Collection<WPID> wpids = reader.extractAllWPIDs();
+    	WidReader reader = new CsvWidReader(csvFile);
+    	Collection<WID> wpids = reader.extractAllWIDs();
 
-    	CDXExtractor cdxExtractor = new PywbCDXExtractor(cdxServerBaseUrl);
+    	CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerBaseUrl, new HttpRetriever());
     	List<CDXEntry> cdxEntries = new ArrayList<CDXEntry>(wpids.size());
-    	for(WPID wpid : wpids) {
-    		cdxEntries.add(cdxExtractor.retrieveCDX(wpid));
+    	for(WID wid : wpids) {
+    		if(wid instanceof WPID) {
+    			cdxEntries.add(cdxExtractor.retrieveCDX((WPID) wid));
+    		} else {
+    			// TODO print out error.
+    		}
     	}
     	
         ViewerArcRepositoryClient arcRepositoryClient = ArcRepositoryClientFactory.getViewerInstance();

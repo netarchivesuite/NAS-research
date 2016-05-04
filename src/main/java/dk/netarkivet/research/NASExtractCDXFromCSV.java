@@ -11,10 +11,13 @@ import java.util.List;
 
 import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.cdx.CDXExtractor;
+import dk.netarkivet.research.cdx.DabCDXExtractor;
 import dk.netarkivet.research.cdx.PywbCDXExtractor;
-import dk.netarkivet.research.wpid.CsvWpidReader;
+import dk.netarkivet.research.http.HttpRetriever;
+import dk.netarkivet.research.wpid.CsvWidReader;
+import dk.netarkivet.research.wpid.WID;
 import dk.netarkivet.research.wpid.WPID;
-import dk.netarkivet.research.wpid.WPidReader;
+import dk.netarkivet.research.wpid.WidReader;
 
 /**
  * Does the full extraction from CSV file to WARC files.
@@ -61,13 +64,17 @@ public class NASExtractCDXFromCSV {
     		System.exit(-1);
     	}
     	
-    	WPidReader reader = new CsvWpidReader(csvFile);
-    	Collection<WPID> wpids = reader.extractAllWPIDs();
+    	WidReader reader = new CsvWidReader(csvFile);
+    	Collection<WID> wpids = reader.extractAllWIDs();
 
-    	CDXExtractor cdxExtractor = new PywbCDXExtractor(cdxServerBaseUrl);
+    	CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerBaseUrl, new HttpRetriever());
     	List<CDXEntry> cdxEntries = new ArrayList<CDXEntry>(wpids.size());
-    	for(WPID wpid : wpids) {
-    		cdxEntries.add(cdxExtractor.retrieveCDX(wpid));
+    	for(WID wpid : wpids) {
+    		if(wpid instanceof WPID) {
+    			cdxEntries.add(cdxExtractor.retrieveCDX((WPID) wpid));
+    		} else {
+    			// ??
+    		}
     	}
     	
     	try {
