@@ -1,4 +1,4 @@
-package dk.netarkivet.research.wpid;
+package dk.netarkivet.research.wid;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -58,7 +59,7 @@ public class CsvWidReader implements WidReader {
 			BufferedReader br = new BufferedReader(isr);
 		) {
 			while ((line = br.readLine()) != null) {
-				WPID wpid = extractWPID(line);
+				WID wpid = extractWID(line);
 				if(wpid != null) {
 					res.add(wpid);
 				}
@@ -77,7 +78,7 @@ public class CsvWidReader implements WidReader {
 	 * @param line The line.
 	 * @return The WPID, or null if the line does not have the right format.
 	 */
-	protected WPID extractWPID(String line) {
+	protected WID extractWID(String line) {
 		String split[] = line.split("[;,]");
 		
 		// Ignore, if it is an empty line
@@ -86,45 +87,51 @@ public class CsvWidReader implements WidReader {
 			return null;
 		}
 		
-		// Ignore, if first column is not X
-		if(!split[0].equalsIgnoreCase("x")) {
-			logger.trace("Failed to extract PWID from line '" + line + "', since "
-					+ "it does not start with 'X'.");
-			return null;			
+		if(split[0].equalsIgnoreCase("x")) {
+			return extractFulltextWPID(split);
+		} else if(split[0].equalsIgnoreCase("w")) {
+			// TODO
 		}
 		
+		logger.trace("Failed to extract WID from line '" + line + "', since "
+				+ "it does not start with 'X' or 'W'.");
+		return null;			
+		
+	}
+	
+	protected WID extractFulltextWPID(String[] splitLine) {
 		// Ignore, if the line has less that 3 elements
-		if(split.length < 4) {
-			logger.info("Failed to extract PWID from line '" + line + "', since "
+		if(splitLine.length < 4) {
+			logger.info("Failed to extract WPID from line elements '" + Arrays.asList(splitLine) + "', since "
 					+ "it does not have at least 3 elements.");
 			return null;
 		}
 		
-		String url = split[2];
+		String url = splitLine[2];
 		// Ignore, if the url is empty or not valid
 		if(url.isEmpty()) {
-			logger.info("Failed to extract PWID from line '" + line + "', since "
+			logger.info("Failed to extract PWID from line elements '" + Arrays.asList(splitLine) + "', since "
 					+ "the URL is missing.");
 			return null;
 		}
 		try {
 			new URL(url);
 		} catch (MalformedURLException e) {
-			logger.info("Failed to extract PWID from line '" + line + "', since "
+			logger.info("Failed to extract PWID from line elements '" + Arrays.asList(splitLine) + "', since "
 					+ "the URL is invalid.", e);
 			return null;
 		}
 		
-		String dateString = split[3];
+		String dateString = splitLine[3];
 		// Ignore line, if the date is missing or invalid
 		if(dateString.isEmpty()) {
-			logger.info("Failed to extract PWID from line '" + line + "', since "
+			logger.info("Failed to extract PWID from line elements '" + Arrays.asList(splitLine) + "', since "
 					+ "the date is missing.");
 			return null;
 		}
 		Date date = DateUtils.extractCsvDate(dateString);
 		if(date == null) {
-			logger.info("Failed to extract PWID from line '" + line + "', since "
+			logger.info("Failed to extract PWID from line elements '" + Arrays.asList(splitLine) + "', since "
 					+ "the date cannot be extracted.");
 			return null;
 		}

@@ -14,10 +14,10 @@ import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.cdx.DabCDXExtractor;
 import dk.netarkivet.research.cdx.PywbCDXExtractor;
 import dk.netarkivet.research.http.HttpRetriever;
-import dk.netarkivet.research.wpid.CsvWidReader;
-import dk.netarkivet.research.wpid.WID;
-import dk.netarkivet.research.wpid.WPID;
-import dk.netarkivet.research.wpid.WidReader;
+import dk.netarkivet.research.wid.CsvWidReader;
+import dk.netarkivet.research.wid.WID;
+import dk.netarkivet.research.wid.WPID;
+import dk.netarkivet.research.wid.WidReader;
 
 /**
  * Does the full extraction from CSV file to WARC files.

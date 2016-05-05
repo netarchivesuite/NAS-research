@@ -1,4 +1,4 @@
-package dk.netarkivet.research.wpid;
+package dk.netarkivet.research.wid;
 
 import static org.testng.Assert.*;
 
@@ -6,6 +6,9 @@ import java.util.Date;
 
 import org.jaccept.structure.ExtendedTestCase;
 import org.testng.annotations.Test;
+
+import dk.netarkivet.research.wid.WIDConstants;
+import dk.netarkivet.research.wid.WPID;
 
 public class WPIDTest extends ExtendedTestCase {
 
@@ -15,7 +18,7 @@ public class WPIDTest extends ExtendedTestCase {
 		Date date = new Date();
 		String url = "http://www.netarkivet.dk";
 		String archive = "webarchive.net";
-		WPID wpid = new WPID(archive, url, date);
+		WPID wpid = WPID.createWPid(archive, url, date);
 		
 		assertEquals(wpid.getDate(), date);
 		assertEquals(wpid.getUrl(), url);
@@ -31,6 +34,6 @@ public class WPIDTest extends ExtendedTestCase {
 		
 		assertEquals(wpid.date, date);
 		assertEquals(wpid.url, url);
-		assertEquals(wpid.webarchive, WPID.NETARCHIVE_DK_WEBARCHIVE);
+		assertEquals(wpid.webarchive, WIDConstants.NETARCHIVE_DK_WEBARCHIVE);
 	}
 }

@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.utils.DateUtils;
-import dk.netarkivet.research.wpid.WPID;
+import dk.netarkivet.research.wid.WPID;
 
 /**
  * Extractor for the CDX-server of the PYWB.

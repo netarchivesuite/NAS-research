@@ -14,7 +14,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dk.netarkivet.research.wpid.CsvWidReader;
+import dk.netarkivet.research.wid.CsvWidReader;
 
 /**
  * CDX file reader.

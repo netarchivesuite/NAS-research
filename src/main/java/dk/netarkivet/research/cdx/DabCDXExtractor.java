@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.utils.UrlUtils;
-import dk.netarkivet.research.wpid.WPID;
+import dk.netarkivet.research.wid.WPID;
 
 /**
  * Extractor for the CDX-server of DAB extractor for Netarkivet.

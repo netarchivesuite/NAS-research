@@ -12,7 +12,7 @@ import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.cdx.DabCDXExtractor;
 import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.utils.DateUtils;
-import dk.netarkivet.research.wpid.WPID;
+import dk.netarkivet.research.wid.WPID;
 
 public class DabCDXExtractorTest extends ExtendedTestCase {
 

@@ -1,4 +1,4 @@
-package dk.netarkivet.research.wpid;
+package dk.netarkivet.research.wid;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -19,6 +19,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import dk.netarkivet.research.testutils.TestFileUtils;
+import dk.netarkivet.research.wid.CsvWidReader;
+import dk.netarkivet.research.wid.WID;
 
 public class CsvWpidReaderTest extends ExtendedTestCase {
 
@@ -45,11 +47,11 @@ public class CsvWpidReaderTest extends ExtendedTestCase {
 		assertTrue(goodCsv.isFile());
 		
 		CsvWidReader reader = new CsvWidReader(goodCsv);
-    	Collection<WID> wpids = reader.extractAllWIDs();
+    	Collection<WID> wids = reader.extractAllWIDs();
 
-    	assertFalse(wpids.isEmpty());
-    	assertEquals(wpids.size(), 3);
-    	assertEquals(wpids.size()+1, countNumberOfLines(goodCsv), "Should have 1 line more than file");
+    	assertFalse(wids.isEmpty());
+    	assertEquals(wids.size(), 3);
+    	assertEquals(wids.size()+1, countNumberOfLines(goodCsv), "Should have 1 line more than file");
 	}
 
 	@Test
@@ -59,10 +61,10 @@ public class CsvWpidReaderTest extends ExtendedTestCase {
 		assertTrue(completeCsv.isFile());
 		
 		CsvWidReader reader = new CsvWidReader(completeCsv);
-    	Collection<WID> wpids = reader.extractAllWIDs();
+    	Collection<WID> wids = reader.extractAllWIDs();
 
-    	assertFalse(wpids.isEmpty());
-    	assertEquals(wpids.size(), 70);
+    	assertFalse(wids.isEmpty());
+    	assertEquals(wids.size(), 70);
     	assertEquals(countNumberOfLines(completeCsv), 1199);
 	}
 	
@@ -87,8 +89,8 @@ public class CsvWpidReaderTest extends ExtendedTestCase {
 		
 		assertTrue(f.delete());
 		
-		Collection<WID> wpids = reader.extractAllWIDs();
-		assertNull(wpids);
+		Collection<WID> wids = reader.extractAllWIDs();
+		assertNull(wids);
 	}
 	
 	@Test
@@ -96,8 +98,8 @@ public class CsvWpidReaderTest extends ExtendedTestCase {
 		addDescription("Test that a good line in the CSV file starting with X will give a proper WPID.");
 		CsvWidReader reader = new CsvWidReader(goodCsv);
 		
-		WPID wpid = reader.extractWPID("X;;http://kb.dk/;2004-08-17T10:41:08Z");
-		assertNotNull(wpid);
+		WID wid = reader.extractWID("X;;http://kb.dk/;2004-08-17T10:41:08Z");
+		assertNotNull(wid);
 	}
 	
 	@Test
@@ -105,62 +107,62 @@ public class CsvWpidReaderTest extends ExtendedTestCase {
 		addDescription("Test that an empty line in the CSV file will give a null");
 		CsvWidReader reader = new CsvWidReader(goodCsv);
 		
-		WPID wpid = reader.extractWPID("");
-		assertNull(wpid);
+		WID wid = reader.extractWID("");
+		assertNull(wid);
 	}
 	
 	@Test
-	public void testWPIDExtractionFromTextLine() throws Exception {
+	public void testwidExtractionFromTextLine() throws Exception {
 		addDescription("Test that a line in the CSV file starting with 'T' will give a null");
 		CsvWidReader reader = new CsvWidReader(goodCsv);
 		
-		WPID wpid = reader.extractWPID("T;asdf;asdf;asdf;asdf;asdf;Asdf");
-		assertNull(wpid);
+		WID wid = reader.extractWID("T;asdf;asdf;asdf;asdf;asdf;Asdf");
+		assertNull(wid);
 	}
 
 	@Test
-	public void testWPIDExtractionFromLineWithNotEnoughElements() throws Exception {
+	public void testwidExtractionFromLineWithNotEnoughElements() throws Exception {
 		addDescription("Test that an empty line in the CSV file will give a null");
 		CsvWidReader reader = new CsvWidReader(goodCsv);
 		
-		WPID wpid = reader.extractWPID("x;asdf,fdas");
-		assertNull(wpid);
+		WID wid = reader.extractWID("x;asdf,fdas");
+		assertNull(wid);
 	}
 
 	@Test
-	public void testWPIDExtractionFromLineWithEmptyUrl() throws Exception {
+	public void testwidExtractionFromLineWithEmptyUrl() throws Exception {
 		addDescription("Test that an empty line in the CSV file will give a null");
 		CsvWidReader reader = new CsvWidReader(goodCsv);
 		
-		WPID wpid = reader.extractWPID("X;;;2004-08-17T10:41:08Z");
-		assertNull(wpid);
+		WID wid = reader.extractWID("X;;;2004-08-17T10:41:08Z");
+		assertNull(wid);
 	}	
 
 	@Test
-	public void testWPIDExtractionFromLineWithBadUrl() throws Exception {
+	public void testwidExtractionFromLineWithBadUrl() throws Exception {
 		addDescription("Test that an empty line in the CSV file will give a null");
 		CsvWidReader reader = new CsvWidReader(goodCsv);
 		
-		WPID wpid = reader.extractWPID("X;;asdfasdfasdf;2004-08-17T10:41:08Z");
-		assertNull(wpid);
+		WID wid = reader.extractWID("X;;asdfasdfasdf;2004-08-17T10:41:08Z");
+		assertNull(wid);
 	}
 
 	@Test
-	public void testWPIDExtractionFromLineWithEmptyDate() throws Exception {
+	public void testwidExtractionFromLineWithEmptyDate() throws Exception {
 		addDescription("Test that an empty line in the CSV file will give a null");
 		CsvWidReader reader = new CsvWidReader(goodCsv);
 		
-		WPID wpid = reader.extractWPID("X;;http://kb.dk/;;;;;;XX");
-		assertNull(wpid);
+		WID wid = reader.extractWID("X;;http://kb.dk/;;;;;;XX");
+		assertNull(wid);
 	}
 
 	@Test
-	public void testWPIDExtractionFromLineWithBadDateFormat() throws Exception {
+	public void testwidExtractionFromLineWithBadDateFormat() throws Exception {
 		addDescription("Test that an empty line in the CSV file will give a null");
 		CsvWidReader reader = new CsvWidReader(goodCsv);
 		
-		WPID wpid = reader.extractWPID("X;;http://kb.dk/;Today T10:41:08Z");
-		assertNull(wpid);
+		WID wid = reader.extractWID("X;;http://kb.dk/;Today T10:41:08Z");
+		assertNull(wid);
 	}
 	
 	private int countNumberOfLines(File f) {

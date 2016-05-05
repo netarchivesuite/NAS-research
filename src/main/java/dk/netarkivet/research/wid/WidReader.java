@@ -1,4 +1,4 @@
-package dk.netarkivet.research.wpid;
+package dk.netarkivet.research.wid;
 
 import java.util.Collection;
 

@@ -2,7 +2,7 @@ package dk.netarkivet.research.cdx;
 
 import java.util.Collection;
 
-import dk.netarkivet.research.wpid.WPID;
+import dk.netarkivet.research.wid.WPID;
 
 /**
  * Extractor for CDX entries.

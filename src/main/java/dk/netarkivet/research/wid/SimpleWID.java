@@ -1,4 +1,4 @@
-package dk.netarkivet.research.wpid;
+package dk.netarkivet.research.wid;
 
 import java.util.Date;
 
@@ -25,17 +25,16 @@ public class SimpleWID implements WID {
 	
 	@Override
 	public String getWebarchive() {
-		return null;
+		return webarchive;
 	}
 
 	@Override
 	public String getUrl() {
-		return null;
+		return url;
 	}
 
 	@Override
 	public Date getDate() {
-		return null;
+		return date;
 	}
-
 }

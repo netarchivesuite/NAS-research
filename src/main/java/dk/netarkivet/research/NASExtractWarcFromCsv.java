@@ -16,10 +16,10 @@ import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.warc.ArchiveExtractor;
 import dk.netarkivet.research.warc.NASArchiveExtractor;
 import dk.netarkivet.research.warc.WarcPacker;
-import dk.netarkivet.research.wpid.CsvWidReader;
-import dk.netarkivet.research.wpid.WID;
-import dk.netarkivet.research.wpid.WPID;
-import dk.netarkivet.research.wpid.WidReader;
+import dk.netarkivet.research.wid.CsvWidReader;
+import dk.netarkivet.research.wid.WID;
+import dk.netarkivet.research.wid.WPID;
+import dk.netarkivet.research.wid.WidReader;
 
 /**
  * Use CDX files to extract WARC files from a NAS archive.
