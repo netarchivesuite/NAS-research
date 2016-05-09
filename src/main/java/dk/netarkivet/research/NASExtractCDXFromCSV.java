@@ -17,6 +17,7 @@ import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.wid.CsvWidReader;
 import dk.netarkivet.research.wid.WID;
 import dk.netarkivet.research.wid.WPID;
+import dk.netarkivet.research.wid.WaybackWID;
 import dk.netarkivet.research.wid.WidReader;
 
 /**
@@ -65,14 +66,15 @@ public class NASExtractCDXFromCSV {
     	}
     	
     	WidReader reader = new CsvWidReader(csvFile);
-    	Collection<WID> wpids = reader.extractAllWIDs();
+    	Collection<WID> wids = reader.extractAllWIDs();
 
     	CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerBaseUrl, new HttpRetriever());
-    	List<CDXEntry> cdxEntries = new ArrayList<CDXEntry>(wpids.size());
-    	for(WID wpid : wpids) {
-    		if(wpid instanceof WPID) {
-    			cdxEntries.add(cdxExtractor.retrieveCDX((WPID) wpid));
-    		} else {
+    	List<CDXEntry> cdxEntries = new ArrayList<CDXEntry>(wids.size());
+    	for(WID wid : wids) {
+    		if(wid instanceof WPID) {
+    			cdxEntries.add(cdxExtractor.retrieveCDX((WPID) wid));
+    		} else if (wid instanceof WaybackWID){
+    			
     			// ??
     		}
     	}

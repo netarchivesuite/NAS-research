@@ -3,6 +3,7 @@ package dk.netarkivet.research.cdx;
 import java.util.Collection;
 
 import dk.netarkivet.research.wid.WPID;
+import dk.netarkivet.research.wid.WaybackWID;
 
 /**
  * Extractor for CDX entries.
@@ -14,6 +15,13 @@ public interface CDXExtractor {
 	 * @return The XDCEntry for the WPID, or null if not CDXEntry matched the WPID.
 	 */
 	CDXEntry retrieveCDX(WPID wpid);
+	
+	/**
+	 * 
+	 * @param wid
+	 * @return
+	 */
+	CDXEntry retrieveCDX(WaybackWID wid);
 	
 	/**
 	 * Retrieves all the CDX indices for the a given URL

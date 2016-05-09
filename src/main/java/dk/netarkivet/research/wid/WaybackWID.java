@@ -11,6 +11,7 @@ public class WaybackWID extends SimpleWID {
 	
 	/** 
 	 * Constructor.
+	 * @param filename The name of the file in the webarchive containing the webresource.
 	 * @param webarchive The webarchive with the resource.
 	 * @param url The URL for the webresource.
 	 * @param date The date for the harvest of the webresource.
@@ -20,14 +21,35 @@ public class WaybackWID extends SimpleWID {
 		this.filename = filename;
 	}
 	
+	/**
+	 * Instantiator.
+	 * @param filename The name of the file in the webarchive containing the webresource.
+	 * @param webarchive The webarchive with the resource. May not be null.
+	 * @param url The URL for the webresource. May not be null.
+	 * @param date The date for the harvest of the webresource.
+	 * @return
+	 */
 	public static WaybackWID createWaybackWID(String filename, String webarchive, String url, Date date) {
-		ArgumentCheck.checkNotNull(filename, "String filename");
 		ArgumentCheck.checkNotNull(webarchive, "String webarchive");
 		ArgumentCheck.checkNotNull(url, "String url");
 		return new WaybackWID(filename, webarchive, url, date);
 	}
 	
+	/**
+	 * Instantiator for a resource in Netarkivet.dk.
+	 * @param filename The name of the file in the webarchive containing the webresource.
+	 * @param url The URL for the webresource. May not be null.
+	 * @param date The date for the harvest of the webresource.
+	 * @return
+	 */
 	public static WaybackWID createNarkWaybackWID(String filename, String url, Date date) {
 		return createWaybackWID(filename, WIDConstants.NETARCHIVE_DK_WEBARCHIVE, url, date);
+	}
+	
+	/**
+	 * @return The name of the file for the webresource. This may be null.
+	 */
+	public String getFilename() {
+		return filename;
 	}
 }

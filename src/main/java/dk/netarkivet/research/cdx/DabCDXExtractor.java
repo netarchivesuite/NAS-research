@@ -21,9 +21,9 @@ import dk.netarkivet.research.wid.WPID;
  * Example of extraction url:
  * http://localhost:8080/dab/query/?q=netarkivet.dk/%20
  */
-public class DabCDXExtractor implements CDXExtractor {
+public class DabCDXExtractor extends AbstractCDXExtractor {
 	/** The log.*/
-	private static Logger logger = LoggerFactory.getLogger(CDXEntry.class);
+	private static Logger logger = LoggerFactory.getLogger(DabCDXExtractor.class);
 
 	/** The prefix for the URL argument in the HTTP request.*/
 	protected static final String QUERY_PREFIX = "?q=";
@@ -67,25 +67,9 @@ public class DabCDXExtractor implements CDXExtractor {
 	@Override
 	public CDXEntry retrieveCDX(WPID wpid) {
 		Collection<CDXEntry> allCDXforUrl = retrieveAllCDX(wpid.getUrl());
-		
-		if(allCDXforUrl == null || allCDXforUrl.isEmpty()) {
-			return null;
-		}
-		
-		long closestDate = Long.MAX_VALUE;
-		CDXEntry res = null;
-		
-		for(CDXEntry entry : allCDXforUrl) {
-			Long timeDiff = Math.abs(entry.getDate() - wpid.getDate().getTime());
-			if(timeDiff < closestDate) {
-				closestDate = timeDiff;
-				res = entry;
-			}
-		}
-		
-		return res;
+		return retrieveCDXclosestToDate(allCDXforUrl, wpid.getDate());
 	}
-
+	
 	@Override
 	public Collection<CDXEntry> retrieveAllCDX(String url) {
 		String requestUrlString = createRequestUrlForURL(url);
@@ -128,7 +112,7 @@ public class DabCDXExtractor implements CDXExtractor {
 		}
 		return res.toString();
 	}
-	
+
 	/**
 	 * Creates the CDX map between CDX format element and the string retrieved from the CDX server.
 	 * @param cdxLine The cdx line from the server.

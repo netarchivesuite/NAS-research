@@ -19,7 +19,7 @@ import dk.netarkivet.research.wid.WPID;
  * Example of extraction url:
  * http://localhost:8080/pywb-cdx/coll-cdx?url=example.com&closest=20140127171200&limit=1&fl=url,timestamp,filename,offset,length,mime,status,digest
  */
-public class PywbCDXExtractor implements CDXExtractor {
+public class PywbCDXExtractor extends AbstractCDXExtractor {
 	/** The log.*/
 	private static Logger logger = LoggerFactory.getLogger(CDXEntry.class);
 

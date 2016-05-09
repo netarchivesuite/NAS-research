@@ -90,7 +90,7 @@ public class CsvWidReader implements WidReader {
 		if(split[0].equalsIgnoreCase("x")) {
 			return extractFulltextWPID(split);
 		} else if(split[0].equalsIgnoreCase("w")) {
-			// TODO
+			return extractWaybackWID(split);
 		}
 		
 		logger.trace("Failed to extract WID from line '" + line + "', since "
@@ -99,6 +99,11 @@ public class CsvWidReader implements WidReader {
 		
 	}
 	
+	/**
+	 * Extracts the WPID from a fulltext line.
+	 * @param splitLine The elements of the line.
+ 	 * @return The WPID, or null if the arguments are not valid.
+	 */
 	protected WID extractFulltextWPID(String[] splitLine) {
 		// Ignore, if the line has less that 3 elements
 		if(splitLine.length < 4) {
@@ -138,5 +143,53 @@ public class CsvWidReader implements WidReader {
 		
 		return WPID.createNarkWPid(url, date);
 	}
-
+	
+	/**
+	 * Creates a WaybackWID from the line from wayback.
+	 * @param splitLine The line
+	 * @return the WaybackWID or null if something went wrong.
+	 */
+	protected WID extractWaybackWID(String[] splitLine) {
+		// Ignore, if the line has less that 3 elements
+		if(splitLine.length < 4) {
+			logger.info("Failed to extract WPID from line elements '" + Arrays.asList(splitLine) + "', since "
+					+ "it does not have at least 3 elements.");
+			return null;
+		}
+		
+		String url = splitLine[2];
+		// Ignore, if the url is empty or not valid
+		if(url.isEmpty()) {
+			logger.info("Failed to extract PWID from line elements '" + Arrays.asList(splitLine) + "', since "
+					+ "the URL is missing.");
+			return null;
+		}
+		try {
+			new URL(url);
+		} catch (MalformedURLException e) {
+			logger.info("Failed to extract PWID from line elements '" + Arrays.asList(splitLine) + "', since "
+					+ "the URL is invalid.", e);
+			return null;
+		}
+		
+		String dateString = splitLine[3];
+		// Ignore line, if the date is missing or invalid
+		if(dateString.isEmpty()) {
+			logger.info("Failed to extract PWID from line elements '" + Arrays.asList(splitLine) + "', since "
+					+ "the date is missing.");
+			return null;
+		}
+		Date date = DateUtils.extractCsvDate(dateString);
+		if(date == null) {
+			logger.info("Failed to extract PWID from line elements '" + Arrays.asList(splitLine) + "', since "
+					+ "the date cannot be extracted.");
+			return null;
+		}
+		String filename = null;
+		if(splitLine.length > 5) {
+			filename = splitLine[4];
+		}
+		
+		return WaybackWID.createNarkWaybackWID(filename, url, date);
+	}
 }
