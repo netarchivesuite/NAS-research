@@ -18,16 +18,24 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dk.netarkivet.research.exception.ArgumentCheck;
 import dk.netarkivet.research.utils.DateUtils;
 
 /**
  * Readers a CSV file with WPIDs from research projects in Netarkivet.dk.
  * 
- * Only uses the lines with an X in the first column.
- * It must have the URL and the date in the two following columns.
- * The other columns are ignored.
+ * Only uses the lines with an X or W in the first column.
  * 
- * All rows which does not have an X in the first column is ignored.
+ * The lines with X in the first column must have the format:
+ * "X;ignore;URL;DATE;ignore..."
+ * Where the 'ignore' columns are ignored. Neither URL nor DATE may be null.
+ * 
+ * The lines with W in the first column must have the following format:
+ * "W;ignore;URL;DATE;FILENAME;ignore..."
+ * Where the 'ignore' columns are ignored. The URL may not be null, and either
+ * DATE or FILENAME must be present, though one of them is allowed to be null.
+ * 
+ * All rows which does not have X or W in the first column is ignored.
  * 
  * Also, the file must be in UTF-8 format.
  */
@@ -43,9 +51,7 @@ public class CsvWidReader implements WidReader {
 	 * @param csvFile The CSV file.
 	 */
 	public CsvWidReader(File csvFile) {
-		if(csvFile == null || !csvFile.isFile()) {
-			throw new IllegalArgumentException("The csv file '" + csvFile + "' is not a file.");
-		}
+		ArgumentCheck.checkIsFile(csvFile, "File csvFile");
 		this.csvFile = csvFile;
 	}
 
@@ -59,9 +65,9 @@ public class CsvWidReader implements WidReader {
 			BufferedReader br = new BufferedReader(isr);
 		) {
 			while ((line = br.readLine()) != null) {
-				WID wpid = extractWID(line);
-				if(wpid != null) {
-					res.add(wpid);
+				WID wid = extractWID(line);
+				if(wid != null) {
+					res.add(wid);
 				}
 			}
 		} catch (IOException e) {
@@ -101,7 +107,7 @@ public class CsvWidReader implements WidReader {
 	
 	/**
 	 * Extracts the WPID from a fulltext line.
-	 * @param splitLine The elements of the line.
+	 * @param splitLine The array of line segments.
  	 * @return The WPID, or null if the arguments are not valid.
 	 */
 	protected WID extractFulltextWPID(String[] splitLine) {
@@ -146,7 +152,7 @@ public class CsvWidReader implements WidReader {
 	
 	/**
 	 * Creates a WaybackWID from the line from wayback.
-	 * @param splitLine The line
+	 * @param splitLine The array of line segments.
 	 * @return the WaybackWID or null if something went wrong.
 	 */
 	protected WID extractWaybackWID(String[] splitLine) {
@@ -173,21 +179,16 @@ public class CsvWidReader implements WidReader {
 		}
 		
 		String dateString = splitLine[3];
-		// Ignore line, if the date is missing or invalid
-		if(dateString.isEmpty()) {
-			logger.info("Failed to extract PWID from line elements '" + Arrays.asList(splitLine) + "', since "
-					+ "the date is missing.");
-			return null;
-		}
 		Date date = DateUtils.extractCsvDate(dateString);
-		if(date == null) {
-			logger.info("Failed to extract PWID from line elements '" + Arrays.asList(splitLine) + "', since "
-					+ "the date cannot be extracted.");
-			return null;
-		}
+		
 		String filename = null;
-		if(splitLine.length > 5) {
+		if(splitLine.length >= 5) {
 			filename = splitLine[4];
+		}
+		
+		if(date == null && filename == null) {
+			logger.info("Requires either date or filename for the wayback.");
+			return null;
 		}
 		
 		return WaybackWID.createNarkWaybackWID(filename, url, date);

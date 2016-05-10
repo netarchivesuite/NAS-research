@@ -23,15 +23,17 @@ public class WaybackWID extends SimpleWID {
 	
 	/**
 	 * Instantiator.
+	 * May have either filename or date as null.
 	 * @param filename The name of the file in the webarchive containing the webresource.
 	 * @param webarchive The webarchive with the resource. May not be null.
 	 * @param url The URL for the webresource. May not be null.
 	 * @param date The date for the harvest of the webresource.
-	 * @return
+	 * @return The WID for the wayback entry.
 	 */
 	public static WaybackWID createWaybackWID(String filename, String webarchive, String url, Date date) {
 		ArgumentCheck.checkNotNull(webarchive, "String webarchive");
 		ArgumentCheck.checkNotNull(url, "String url");
+		ArgumentCheck.checkNotAllNull(filename, date);
 		return new WaybackWID(filename, webarchive, url, date);
 	}
 	

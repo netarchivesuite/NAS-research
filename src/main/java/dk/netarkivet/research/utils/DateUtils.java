@@ -23,6 +23,9 @@ public class DateUtils {
 
 	/** CDX date format string as specified in the CDX documentation. */
 	public static final String CDX_DATE_FORMAT = "yyyyMMddHHmmss";
+	
+	/** The date format for the */
+	public static final String[] WAYBACK_DATE_FORMATS = {"YYYY-MM-DD hh:mm:ss", "YYYY-MM-DD hh:mm"};
 
 	/** Basic <code>DateFormat</code> is not thread safe. */
 	protected static final ThreadLocal<DateFormat> CDX_DATE_PARSER_THREAD = new ThreadLocal<DateFormat>() {
@@ -65,6 +68,7 @@ public class DateUtils {
 		if(date == null || date.trim().isEmpty()) {
 			return null;
 		}
+		
         try {
             DateFormat formatter = new SimpleDateFormat(CSV_DATE_FORMAT);
             Date d = formatter.parse(date);
@@ -73,9 +77,21 @@ public class DateUtils {
             logger.warn("Could not parse the timeout date, '" + date + "' with dateformat '" + CSV_DATE_FORMAT 
                     + "' ", e);
         }
+        
+        for(String format : WAYBACK_DATE_FORMATS) {
+    		try {
+                DateFormat formatter = new SimpleDateFormat(format);
+                Date d = formatter.parse(date);
+                return d;
+            } catch (ParseException e) {
+                logger.debug("Could not parse the timeout date, '" + date + "' with dateformat '" + format + "' ", e);
+            }
+        	
+        }
         // Try parsing the date in the system default dateformat.
         try {
-            DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.ENGLISH);
+            DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, 
+            		DateFormat.DEFAULT, Locale.ENGLISH);
             return formatter.parse(date);
         } catch (ParseException e) {
             logger.debug("Could not parse the timeout date, '" + date + "' with the system default dateformat", e);
