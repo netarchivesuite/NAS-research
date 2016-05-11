@@ -1,7 +1,11 @@
 package dk.netarkivet.research.testutils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class TestFileUtils {
 
@@ -23,5 +27,21 @@ public class TestFileUtils {
 			fos.write(content.getBytes());
 		}
 		return testFile;
+	}
+	
+	public static int countNumberOfLines(File f) {
+		int i = 0;
+		try (
+			InputStream fis = new FileInputStream(f);
+			InputStreamReader isr = new InputStreamReader(fis);
+			BufferedReader br = new BufferedReader(isr);
+		) {
+			while (br.readLine() != null) {
+				i++;
+			}
+		} catch (Exception e) {
+			return -1;
+		}
+		return i;
 	}
 }

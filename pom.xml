@@ -33,11 +33,6 @@
 			<version>${netarchivesuite.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.netpreserve.openwayback</groupId>
-			<artifactId>openwayback-core</artifactId>
-			<version>2.3.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.5.1</version>
@@ -110,27 +105,27 @@
 					</archive>
 				</configuration>
 			</plugin>
-<!-- 			<plugin> -->
-<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
-<!-- 				<artifactId>maven-assembly-plugin</artifactId> -->
-<!-- 				<version>2.5.3</version> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<id>distro-assembly</id> -->
-<!-- 						<phase>package</phase> -->
-<!-- 						<goals> -->
-<!-- 							<goal>single</goal> -->
-<!-- 						</goals> -->
-<!-- 						<configuration> -->
-<!-- 							<descriptors> -->
-<!-- 								<descriptor>src/main/assembly/release.xml</descriptor> -->
-<!-- 							</descriptors> -->
-<!-- 							<appendAssemblyId>false</appendAssemblyId> -->
-<!-- 							<tarLongFileMode>gnu</tarLongFileMode> -->
-<!-- 						</configuration> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.5.3</version>
+				<executions>
+					<execution>
+						<id>distro-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>src/main/assembly/release.xml</descriptor>
+							</descriptors>
+							<appendAssemblyId>false</appendAssemblyId>
+							<tarLongFileMode>gnu</tarLongFileMode>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>

@@ -1,6 +1,7 @@
 package dk.netarkivet.research.cdx;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +78,7 @@ public class DabCDXExtractor extends AbstractCDXExtractor {
 		
 		if(response == null || response.isEmpty()) {
 			logger.warn("Failed to retrieve CDX indices for URL '" + url + "'. Returning a null");
-			return null;
+			return Arrays.asList();
 		} else {
 			List<CDXEntry> res = new ArrayList<CDXEntry>();
 			for(String line : response.split("\n")) {

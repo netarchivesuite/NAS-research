@@ -6,11 +6,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Collection;
 
 import org.jaccept.structure.ExtendedTestCase;
@@ -20,8 +16,6 @@ import org.testng.annotations.Test;
 
 import dk.netarkivet.research.exception.ArgumentCheck;
 import dk.netarkivet.research.testutils.TestFileUtils;
-import dk.netarkivet.research.wid.CsvWidReader;
-import dk.netarkivet.research.wid.WID;
 
 public class CsvWpidReaderTest extends ExtendedTestCase {
 
@@ -65,7 +59,7 @@ public class CsvWpidReaderTest extends ExtendedTestCase {
 
     	assertFalse(wids.isEmpty());
     	assertEquals(wids.size(), 3);
-    	assertEquals(wids.size()+1, countNumberOfLines(goodFulltextCsv), "Should have 1 line more than file");
+    	assertEquals(wids.size()+1, TestFileUtils.countNumberOfLines(goodFulltextCsv), "Should have 1 line more than file");
 	}
 
 	@Test
@@ -79,7 +73,7 @@ public class CsvWpidReaderTest extends ExtendedTestCase {
 
     	assertFalse(wids.isEmpty());
     	assertEquals(wids.size(), 70);
-    	assertEquals(countNumberOfLines(completeFulltextCsv), 1199);
+    	assertEquals(TestFileUtils.countNumberOfLines(completeFulltextCsv), 1199);
 	}
 	
 	@Test
@@ -93,7 +87,7 @@ public class CsvWpidReaderTest extends ExtendedTestCase {
 
     	assertFalse(wids.isEmpty());
     	assertEquals(wids.size(), 5);
-    	assertEquals(countNumberOfLines(mixedCsv), 15);
+    	assertEquals(TestFileUtils.countNumberOfLines(mixedCsv), 15);
 	}
 	
 	@Test
@@ -266,21 +260,5 @@ public class CsvWpidReaderTest extends ExtendedTestCase {
 		
 		WID wid = reader.extractWID("W;;" + url + ";Today T15:56:58Z;;;;;;;;;;;;;;;;");
 		assertNull(wid);
-	}
-	
-	private int countNumberOfLines(File f) {
-		int i = 0;
-		try (
-			InputStream fis = new FileInputStream(f);
-			InputStreamReader isr = new InputStreamReader(fis);
-			BufferedReader br = new BufferedReader(isr);
-		) {
-			while (br.readLine() != null) {
-				i++;
-			}
-		} catch (Exception e) {
-			return -1;
-		}
-		return i;
 	}
 }

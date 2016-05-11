@@ -40,7 +40,7 @@ public class DuplicateExtractor {
 		
 		for(CDXEntry entry : cdxs) {
 			if(DateUtils.checkDateInterval(entry, earliestDate, latestDate)) {
-				res.addElement(entry.getDate(), entry.getDigest());
+				res.addElement(entry.getDate(), entry);
 			}
 		}
 		

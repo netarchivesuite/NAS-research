@@ -12,6 +12,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.cdx.DabCDXExtractor;
 import dk.netarkivet.research.duplicates.DuplicateExtractor;
@@ -30,6 +34,8 @@ import dk.netarkivet.research.utils.UrlUtils;
  * Both the dates may be missing or the empty string, if an earliest or latest date respectively is not wanted.
  */
 public class NASFindDuplicatesForURLs {
+    /** Logging mechanism. */
+    private static Logger logger = LoggerFactory.getLogger(NASFindDuplicatesForURLs.class);
 
 	public static void main(String ... args ) {
 		if(args.length < 2) {
@@ -98,9 +104,13 @@ public class NASFindDuplicatesForURLs {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile)))) {
 			String line;
 			while((line = reader.readLine()) != null) {
-				makeDuplicateFilesForCSVLine(line);
+				String[] split = line.split("[;,]");
+				if(split != null && split.length > 0 && ("x".equalsIgnoreCase(split[0]) || "w".equalsIgnoreCase(split[0]))) {
+					makeDuplicateFilesForCSVLine(split);
+				} else {
+					logger.debug("Ignoring line: " + line);
+				}
 			}
-			
 		} catch (IOException e) {
 			throw new IllegalStateException("Failed to read or write data.");
 		}
@@ -112,19 +122,18 @@ public class NASFindDuplicatesForURLs {
 	 * The other for specs about each unique checksum ("checksum;amount;earliest;latest")
 	 * 
 	 * @param extractor The duplicate finder.
-	 * @param line The CSV line in the format "url;earliest date;latest date" - with both dates as optional. 
+	 * @param split The CSV line in the format "x;url;earliest date;latest date" - with both dates as optional. 
 	 * @param outDir The directory where the output files should be placed.
 	 */
-	protected void makeDuplicateFilesForCSVLine(String line) 
+	protected void makeDuplicateFilesForCSVLine(String[] split) 
 			throws IOException {
-		String[] split = line.split(";");
-		String url = split[0];
+		String url = split[1];
 		Date earliestDate = null;
 		Date latestDate = null;
-		if(split.length > 1) {
-			earliestDate = DateUtils.extractCsvDate(split[1]);
-			if(split.length > 2) {
-				latestDate = DateUtils.extractCsvDate(split[2]);
+		if(split.length > 2) {
+			earliestDate = DateUtils.extractCsvDate(split[2]);
+			if(split.length > 3) {
+				latestDate = DateUtils.extractCsvDate(split[3]);
 			}
 		}
 
@@ -146,18 +155,21 @@ public class NASFindDuplicatesForURLs {
 	protected void createMapResultFile(DuplicateMap map, String filename, String url) throws IOException {
 		File mapOutputFile = FileUtils.ensureNewFile(outputDir, filename + ".map");
 		try(FileOutputStream fos = new FileOutputStream(mapOutputFile)) {
-			fos.write("number;date;checksum;url\n".getBytes());
+			fos.write("duplicate number;date;checksum;status;url\n".getBytes());
 			List<String> checksumIndices = new ArrayList<String>();
-			for(Map.Entry<Long, String> entry : map.getDateToChecksumMap().entrySet()) {
-				
-				int checksumIndex = checksumIndices.indexOf(entry.getValue());
-				if(checksumIndex == -1) {
-					checksumIndex = checksumIndices.size();
-					checksumIndices.add(entry.getValue());
+			for(Map.Entry<Long, CDXEntry> entry : map.getDateToChecksumMap().entrySet()) {
+				String csvIndex = "-1";
+				if(entry.getValue().getStatusCode() == 200) {
+					int checksumIndex = checksumIndices.indexOf(entry.getValue().getDigest());
+					if(checksumIndex == -1) {
+						checksumIndex = checksumIndices.size();
+						checksumIndices.add(entry.getValue().getDigest());
+					}
+					csvIndex = "" + (checksumIndex+1);
 				}
-				
-				String csvLine = (checksumIndex+1) + ";" + DateUtils.dateToWaybackDate(new Date(entry.getKey())) + ";" + entry.getValue() + ";" + url + "\n";
-				fos.write(csvLine.getBytes());
+				fos.write((csvIndex + ";" + DateUtils.dateToWaybackDate(new Date(entry.getKey())) + ";" 
+						+ entry.getValue().getDigest() + ";" + entry.getValue().getStatusCode() + ";" + url 
+						+ "\n").getBytes());
 			}
 		}
 	}

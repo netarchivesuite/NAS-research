@@ -6,18 +6,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import dk.netarkivet.research.cdx.CDXEntry;
+
 /**
  * The result map for duplicate result.
  */
 public class DuplicateMap {
 	/** The map between the date and their checksum.*/
-	protected final Map<Long, String> map;
+	protected final Map<Long, CDXEntry> map;
 	
 	/**
 	 * Constructor.
 	 */
 	public DuplicateMap() {
-		map = new ConcurrentSkipListMap<Long, String>();
+		map = new ConcurrentSkipListMap<Long, CDXEntry>();
 	}
 	
 	/**
@@ -25,15 +27,15 @@ public class DuplicateMap {
 	 * @param date The date in millis from epoc.
 	 * @param checksum The checksum string.
 	 */
-	public void addElement(Long date, String checksum) {
-		map.put(date, checksum);
+	public void addElement(Long date, CDXEntry entry) {
+		map.put(date, entry);
 	}
 	
 	/**
 	 * Extract the map as a date-to-checksum map.
 	 * @return The date-to-checksum map.
 	 */
-	public Map<Long, String> getDateToChecksumMap() {
+	public Map<Long, CDXEntry> getDateToChecksumMap() {
 		return map;
 	}
 	
@@ -43,8 +45,8 @@ public class DuplicateMap {
 	 */
 	public Map<String, List<Long>> getChecksumToDateListMap() {
 		Map<String, List<Long>> res = new HashMap<String, List<Long>>();
-		for(Map.Entry<Long, String> entry : map.entrySet()) {
-			insertEntryIntoMap(entry.getKey(), entry.getValue(), res);
+		for(Map.Entry<Long, CDXEntry> entry : map.entrySet()) {
+			insertEntryIntoMap(entry.getKey(), entry.getValue().getDigest(), res);
 		}
 		
 		return res;
