@@ -1,6 +1,7 @@
 package dk.netarkivet.research;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
@@ -8,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 
 import java.io.File;
+import java.util.Arrays;
 
 import org.jaccept.structure.ExtendedTestCase;
 import org.testng.annotations.AfterClass;
@@ -21,6 +23,7 @@ import dk.netarkivet.research.cdx.DabCDXExtractor;
 import dk.netarkivet.research.duplicates.DuplicateExtractor;
 import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.testutils.TestFileUtils;
+import dk.netarkivet.research.utils.UrlUtils;
 
 public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 
@@ -96,8 +99,11 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor);
 		NASFindDuplicatesForURLs nasDupFinder = new NASFindDuplicatesForURLs(duplicateExtractor, urlFile, outdir);
 		nasDupFinder.findDuplicates();
-		
 		assertEquals(outdir.listFiles().length, 2);
+		
+		addStep("Validate the output format", "");
+		File f = new File(outdir, UrlUtils.fileEncodeUrl(testUrl) + ".map");
+		assertTrue(f.isFile()); 
 	}
 	
 	@Test(expectedExceptions = IllegalArgumentException.class)
