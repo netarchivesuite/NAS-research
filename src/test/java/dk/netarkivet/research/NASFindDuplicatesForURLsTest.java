@@ -1,15 +1,14 @@
 package dk.netarkivet.research;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
 
 import java.io.File;
-import java.util.Arrays;
 
 import org.jaccept.structure.ExtendedTestCase;
 import org.testng.annotations.AfterClass;
@@ -21,6 +20,7 @@ import org.testng.annotations.Test;
 import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.cdx.DabCDXExtractor;
 import dk.netarkivet.research.duplicates.DuplicateExtractor;
+import dk.netarkivet.research.harvestdb.HarvestJobExtractor;
 import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.testutils.TestFileUtils;
 import dk.netarkivet.research.utils.UrlUtils;
@@ -77,9 +77,10 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 		
 		HttpRetriever httpRetriever = mock(HttpRetriever.class);
 		when(httpRetriever.retrieveFromUrl(anyString())).thenReturn("");
+		HarvestJobExtractor jobExtractor = mock(HarvestJobExtractor.class);
 		
 		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerUrl, httpRetriever);
-		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor);
+		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor, jobExtractor);
 		NASFindDuplicatesForURLs nasDupFinder = new NASFindDuplicatesForURLs(duplicateExtractor, urlFile, outdir);
 		nasDupFinder.findDuplicates();
 		
@@ -94,9 +95,10 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 		
 		HttpRetriever httpRetriever = mock(HttpRetriever.class);
 		when(httpRetriever.retrieveFromUrl(anyString())).thenReturn(cdxReply2);
-		
+		HarvestJobExtractor jobExtractor = mock(HarvestJobExtractor.class);
+
 		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerUrl, httpRetriever);
-		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor);
+		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor, jobExtractor);
 		NASFindDuplicatesForURLs nasDupFinder = new NASFindDuplicatesForURLs(duplicateExtractor, urlFile, outdir);
 		nasDupFinder.findDuplicates();
 		assertEquals(outdir.listFiles().length, 2);
@@ -143,9 +145,10 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 		
 		HttpRetriever httpRetriever = mock(HttpRetriever.class);
 		when(httpRetriever.retrieveFromUrl(anyString())).thenReturn("");
-		
+		HarvestJobExtractor jobExtractor = mock(HarvestJobExtractor.class);
+
 		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerUrl, httpRetriever);
-		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor);
+		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor, jobExtractor);
 		NASFindDuplicatesForURLs nasDupFinder = new NASFindDuplicatesForURLs(duplicateExtractor, csvFile, outdir);
 		nasDupFinder.findDuplicates();
 		

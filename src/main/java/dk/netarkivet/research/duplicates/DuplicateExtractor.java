@@ -3,8 +3,12 @@ package dk.netarkivet.research.duplicates;
 import java.util.Collection;
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.cdx.CDXExtractor;
+import dk.netarkivet.research.harvestdb.HarvestJobExtractor;
 import dk.netarkivet.research.utils.DateUtils;
 
 /**
@@ -13,16 +17,22 @@ import dk.netarkivet.research.utils.DateUtils;
  * Creates a map between the checksum and a list of dates for the checksums (dates in millis from epoch).
  */
 public class DuplicateExtractor {
+    /** Logging mechanism. */
+    private static Logger logger = LoggerFactory.getLogger(DuplicateExtractor.class);
 
 	/** The CDX extractor.*/
-	protected final CDXExtractor extractor;
+	protected final CDXExtractor cdxExtractor;
+	/** The Harvest Job extractor.*/
+	protected final HarvestJobExtractor jobExtractor;
 	
 	/**
 	 * Constructor.
-	 * @param extractor The CDX extractor.
+	 * @param cdxExtractor The CDX extractor.
+	 * @param jobExtractor The Harvest Job extractor.
 	 */
-	public DuplicateExtractor(CDXExtractor extractor) {
-		this.extractor = extractor;
+	public DuplicateExtractor(CDXExtractor cdxExtractor, HarvestJobExtractor jobExtractor) {
+		this.cdxExtractor = cdxExtractor;
+		this.jobExtractor = jobExtractor;
 	}
 	
 	/**
@@ -34,16 +44,33 @@ public class DuplicateExtractor {
 	 * @return The map of checksums and their dates.
 	 */
 	public DuplicateMap makeDuplicateMap(String url, Date earliestDate, Date latestDate) {
-		Collection<CDXEntry> cdxs = extractor.retrieveAllCDX(url);
+		Collection<CDXEntry> cdxs = cdxExtractor.retrieveAllCDX(url);
 
 		DuplicateMap res = new DuplicateMap();
 		
 		for(CDXEntry entry : cdxs) {
 			if(DateUtils.checkDateInterval(entry, earliestDate, latestDate)) {
-				res.addElement(entry.getDate(), entry);
+				res.addElement(entry, jobExtractor.extractJob(getJobID(entry)));
 			}
 		}
 		
 		return res;
+	}
+	
+	/**
+	 * Extracts a job from 
+	 * @param entry
+	 * @return
+	 */
+	private Long getJobID(CDXEntry entry) {
+		String filename = entry.getFilename();
+		if(filename == null || filename.isEmpty()) {
+			return null;
+		}
+		if(!filename.contains("[-]")) {
+			logger.warn("CDXEntry with odd filename: " + filename);
+		}
+		String res = filename.split("[-]")[0];
+		return Long.parseLong(res);
 	}
 }

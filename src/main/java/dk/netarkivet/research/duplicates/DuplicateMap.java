@@ -7,19 +7,20 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import dk.netarkivet.research.cdx.CDXEntry;
+import dk.netarkivet.research.harvestdb.HarvestJobInfo;
 
 /**
  * The result map for duplicate result.
  */
 public class DuplicateMap {
-	/** The map between the date and their checksum.*/
-	protected final Map<Long, CDXEntry> map;
+	/** The map between the CDX entry and the info about the job for the cdx entry.*/
+	protected final Map<CDXEntry, HarvestJobInfo> map;
 	
 	/**
 	 * Constructor.
 	 */
 	public DuplicateMap() {
-		map = new ConcurrentSkipListMap<Long, CDXEntry>();
+		map = new HashMap<CDXEntry, HarvestJobInfo>();
 	}
 	
 	/**
@@ -27,8 +28,8 @@ public class DuplicateMap {
 	 * @param date The date in millis from epoc.
 	 * @param checksum The checksum string.
 	 */
-	public void addElement(Long date, CDXEntry entry) {
-		map.put(date, entry);
+	public void addElement(CDXEntry entry, HarvestJobInfo jobInfo) {
+		map.put(entry, jobInfo);
 	}
 	
 	/**
@@ -36,7 +37,11 @@ public class DuplicateMap {
 	 * @return The date-to-checksum map.
 	 */
 	public Map<Long, CDXEntry> getDateToChecksumMap() {
-		return map;
+		Map<Long, CDXEntry> res = new ConcurrentSkipListMap<Long, CDXEntry>();
+		for(CDXEntry entry : map.keySet()) {
+			res.put(entry.getDate(), entry);
+		}
+		return res;
 	}
 	
 	/**
@@ -45,14 +50,21 @@ public class DuplicateMap {
 	 */
 	public Map<String, List<Long>> getChecksumToDateListMap() {
 		Map<String, List<Long>> res = new HashMap<String, List<Long>>();
-		for(Map.Entry<Long, CDXEntry> entry : map.entrySet()) {
-			insertEntryIntoMap(entry.getKey(), entry.getValue().getDigest(), res);
+		for(CDXEntry entry : map.keySet()) {
+			insertEntryIntoMap(entry.getDate(), entry.getDigest(), res);
 		}
 		
 		return res;
 	}
 	
-
+	/**
+	 * Retrieves the map between cdx entries and harvest job info.
+	 * @return The map.
+	 */
+	public Map<CDXEntry, HarvestJobInfo> getMap() {
+		return new HashMap<CDXEntry, HarvestJobInfo>(map);
+	}
+	
 	/**
 	 * Inserts the CDX entry date into the map.
 	 * The date for the entry is inserted into a list for the checksum/digest. 

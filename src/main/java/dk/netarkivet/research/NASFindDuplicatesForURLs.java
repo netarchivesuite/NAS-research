@@ -20,6 +20,8 @@ import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.cdx.DabCDXExtractor;
 import dk.netarkivet.research.duplicates.DuplicateExtractor;
 import dk.netarkivet.research.duplicates.DuplicateMap;
+import dk.netarkivet.research.harvestdb.HarvestJobExtractor;
+import dk.netarkivet.research.harvestdb.NasHarvestJobExtractor;
 import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.utils.FileUtils;
@@ -72,7 +74,8 @@ public class NASFindDuplicatesForURLs {
 		}
 
 		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerBaseUrl, new HttpRetriever());
-		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor);
+		HarvestJobExtractor jobExtractor = new NasHarvestJobExtractor();
+		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor, jobExtractor);
 
 		NASFindDuplicatesForURLs findDuplicates = new NASFindDuplicatesForURLs(duplicateExtractor, inputFile, outDir);
 		findDuplicates.findDuplicates();
@@ -121,7 +124,7 @@ public class NASFindDuplicatesForURLs {
 	 * One for the map directly ("url;checksum;date" for all entries)
 	 * The other for specs about each unique checksum ("checksum;amount;earliest;latest")
 	 * 
-	 * @param extractor The duplicate finder.
+	 * @param cdxExtractor The duplicate finder.
 	 * @param split The CSV line in the format "x;url;earliest date;latest date" - with both dates as optional. 
 	 * @param outDir The directory where the output files should be placed.
 	 */

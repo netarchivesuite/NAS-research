@@ -1,5 +1,6 @@
 package dk.netarkivet.research.harvestdb;
 
+import dk.netarkivet.harvester.datamodel.HarvestDefinition;
 import dk.netarkivet.harvester.datamodel.Job;
 
 /**
@@ -33,11 +34,12 @@ public class HarvestJobInfo {
 	 * Constructor.
 	 * @param nasJob A NAS job from the harvest database.
 	 */
-	public HarvestJobInfo(Job nasJob) {
+	public HarvestJobInfo(Job nasJob, HarvestDefinition nasHd) {
 		this.id = nasJob.getJobID();
 		this.type = nasJob.isSnapshot() ? "snapshot" : "selective/event";
 		this.status = nasJob.getStatus().name();
-		this.name = nasJob.getOrderXMLName();
+		this.name = nasHd.getName();
+//		nasJob.get
 	}
 	
 	/**
