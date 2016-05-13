@@ -84,9 +84,8 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 		NASFindDuplicatesForURLs nasDupFinder = new NASFindDuplicatesForURLs(duplicateExtractor, urlFile, outdir);
 		nasDupFinder.findDuplicates();
 		
-		assertEquals(outdir.listFiles().length, 2);
+		assertEquals(outdir.listFiles().length, 1);
 		assertEquals(TestFileUtils.countNumberOfLines(outdir.listFiles()[0]), 1);
-		assertEquals(TestFileUtils.countNumberOfLines(outdir.listFiles()[1]), 1);
 	}
 
 	@Test
@@ -101,10 +100,10 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor, jobExtractor);
 		NASFindDuplicatesForURLs nasDupFinder = new NASFindDuplicatesForURLs(duplicateExtractor, urlFile, outdir);
 		nasDupFinder.findDuplicates();
-		assertEquals(outdir.listFiles().length, 2);
+		assertEquals(outdir.listFiles().length, 1);
 		
 		addStep("Validate the output format", "");
-		File f = new File(outdir, UrlUtils.fileEncodeUrl(testUrl) + ".map");
+		File f = new File(outdir, UrlUtils.fileEncodeUrl(testUrl) + ".txt");
 		assertTrue(f.isFile()); 
 	}
 	
@@ -152,7 +151,7 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 		NASFindDuplicatesForURLs nasDupFinder = new NASFindDuplicatesForURLs(duplicateExtractor, csvFile, outdir);
 		nasDupFinder.findDuplicates();
 		
-		assertEquals(outdir.listFiles().length, 8);
+		assertEquals(outdir.listFiles().length, 4);
 		for(int i = 0; i < outdir.listFiles().length; i++) {
 			assertEquals(TestFileUtils.countNumberOfLines(outdir.listFiles()[i]), 1);
 		}

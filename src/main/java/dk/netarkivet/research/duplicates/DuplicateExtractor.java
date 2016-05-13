@@ -58,17 +58,18 @@ public class DuplicateExtractor {
 	}
 	
 	/**
-	 * Extracts a job from 
-	 * @param entry
-	 * @return
+	 * Extracts the harvest job id from the filename in the CDX entry.
+	 * @param entry The CDX entry.
+	 * @return The harvest job id. Or null if the filename does not contain
 	 */
-	private Long getJobID(CDXEntry entry) {
+	protected Long getJobID(CDXEntry entry) {
 		String filename = entry.getFilename();
 		if(filename == null || filename.isEmpty()) {
 			return null;
 		}
-		if(!filename.contains("[-]")) {
+		if(!filename.contains("-")) {
 			logger.warn("CDXEntry with odd filename: " + filename);
+			return null;
 		}
 		String res = filename.split("[-]")[0];
 		return Long.parseLong(res);

@@ -21,6 +21,7 @@ import dk.netarkivet.research.cdx.DabCDXExtractor;
 import dk.netarkivet.research.duplicates.DuplicateExtractor;
 import dk.netarkivet.research.duplicates.DuplicateMap;
 import dk.netarkivet.research.harvestdb.HarvestJobExtractor;
+import dk.netarkivet.research.harvestdb.HarvestJobInfo;
 import dk.netarkivet.research.harvestdb.NasHarvestJobExtractor;
 import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.utils.DateUtils;
@@ -144,8 +145,6 @@ public class NASFindDuplicatesForURLs {
 		String urlFilename = UrlUtils.fileEncodeUrl(url);
 		
 		createMapResultFile(map, urlFilename, url);
-		
-		createOtherResultFile(map, urlFilename, url);
 	}
 	
 	/**
@@ -156,9 +155,9 @@ public class NASFindDuplicatesForURLs {
 	 * @throws IOException If it fails to to write the output file.
 	 */
 	protected void createMapResultFile(DuplicateMap map, String filename, String url) throws IOException {
-		File mapOutputFile = FileUtils.ensureNewFile(outputDir, filename + ".map");
+		File mapOutputFile = FileUtils.ensureNewFile(outputDir, filename + ".txt");
 		try(FileOutputStream fos = new FileOutputStream(mapOutputFile)) {
-			fos.write("duplicate number;date;checksum;status;url\n".getBytes());
+			fos.write("duplicate number;date;checksum;status;url;harvestjob;harvest name;harvest type\n".getBytes());
 			List<String> checksumIndices = new ArrayList<String>();
 			for(Map.Entry<Long, CDXEntry> entry : map.getDateToChecksumMap().entrySet()) {
 				String csvIndex = "-1";
@@ -170,29 +169,15 @@ public class NASFindDuplicatesForURLs {
 					}
 					csvIndex = "" + (checksumIndex+1);
 				}
-				fos.write((csvIndex + ";" + DateUtils.dateToWaybackDate(new Date(entry.getKey())) + ";" 
-						+ entry.getValue().getDigest() + ";" + entry.getValue().getStatusCode() + ";" + url 
-						+ "\n").getBytes());
-			}
-		}
-	}
-	
-	/**
-	 * Creates the other results file.
-	 * @param map The map with the duplicate results.
-	 * @param filename The basename of the file.
-	 * @param url The URL of the results.
-	 * @throws IOException If it fails to to write the output file.
-	 */
-	protected void createOtherResultFile(DuplicateMap map, String filename, String url) throws IOException {
-		File txtOutputFile = FileUtils.ensureNewFile(outputDir, filename + ".txt");
-		try(FileOutputStream fos = new FileOutputStream(txtOutputFile)) {
-			fos.write("checksum;amount;earliest date;latest date\n".getBytes());
-			for(Map.Entry<String, List<Long>> entry : map.getChecksumToDateListMap().entrySet()) {
-				String csvLine = entry.getKey() + ";" + entry.getValue().size() + ";" 
-						+ new Date(ListUtils.getSmallest(entry.getValue())).toString() 
-						+ ";" + new Date(ListUtils.getLargest(entry.getValue())).toString() + "\n";
-				fos.write(csvLine.getBytes());
+				String output = csvIndex + ";" + DateUtils.dateToWaybackDate(new Date(entry.getKey())) + ";" 
+						+ entry.getValue().getDigest() + ";" + entry.getValue().getStatusCode() + ";" + url;
+				HarvestJobInfo jobInfo = map.getHarvestJobInfo(entry.getValue());
+				if(jobInfo != null) {
+					output += ";" + jobInfo.getId() + ";" + jobInfo.getName() + ";" + jobInfo.getType();
+				} else {
+					output += ";N/A;N/A;N/A";
+				}
+				fos.write((output + "\n").getBytes());
 			}
 		}
 	}

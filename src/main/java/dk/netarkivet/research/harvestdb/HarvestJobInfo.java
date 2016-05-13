@@ -62,4 +62,11 @@ public class HarvestJobInfo {
 	public String getStatus() {
 		return status;
 	}
+	
+	/**
+	 * @return The name.
+	 */
+	public String getName() {
+		return name;
+	}
 }

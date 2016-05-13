@@ -14,13 +14,16 @@ import dk.netarkivet.research.harvestdb.HarvestJobInfo;
  */
 public class DuplicateMap {
 	/** The map between the CDX entry and the info about the job for the cdx entry.*/
-	protected final Map<CDXEntry, HarvestJobInfo> map;
+	protected final Map<CDXEntry, HarvestJobInfo> jobMap;
+	/** The sorted map between the dates and the CDX entry*/
+	protected final Map<Long, CDXEntry> dateMap;
 	
 	/**
 	 * Constructor.
 	 */
 	public DuplicateMap() {
-		map = new HashMap<CDXEntry, HarvestJobInfo>();
+		jobMap = new HashMap<CDXEntry, HarvestJobInfo>();
+		dateMap = new ConcurrentSkipListMap<Long, CDXEntry>();
 	}
 	
 	/**
@@ -29,7 +32,8 @@ public class DuplicateMap {
 	 * @param checksum The checksum string.
 	 */
 	public void addElement(CDXEntry entry, HarvestJobInfo jobInfo) {
-		map.put(entry, jobInfo);
+		dateMap.put(entry.getDate(), entry);
+		jobMap.put(entry, jobInfo);
 	}
 	
 	/**
@@ -37,11 +41,7 @@ public class DuplicateMap {
 	 * @return The date-to-checksum map.
 	 */
 	public Map<Long, CDXEntry> getDateToChecksumMap() {
-		Map<Long, CDXEntry> res = new ConcurrentSkipListMap<Long, CDXEntry>();
-		for(CDXEntry entry : map.keySet()) {
-			res.put(entry.getDate(), entry);
-		}
-		return res;
+		return new ConcurrentSkipListMap<Long, CDXEntry>(dateMap);
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public class DuplicateMap {
 	 */
 	public Map<String, List<Long>> getChecksumToDateListMap() {
 		Map<String, List<Long>> res = new HashMap<String, List<Long>>();
-		for(CDXEntry entry : map.keySet()) {
+		for(CDXEntry entry : jobMap.keySet()) {
 			insertEntryIntoMap(entry.getDate(), entry.getDigest(), res);
 		}
 		
@@ -62,7 +62,16 @@ public class DuplicateMap {
 	 * @return The map.
 	 */
 	public Map<CDXEntry, HarvestJobInfo> getMap() {
-		return new HashMap<CDXEntry, HarvestJobInfo>(map);
+		return new HashMap<CDXEntry, HarvestJobInfo>(jobMap);
+	}
+	
+	/**
+	 * Retrieves the Harvest Job Info for a given CDX entry.
+	 * @param entry The entry to extract the harvest job info for.
+	 * @return The harvest job info, or null - if no harvest job info were found.
+	 */
+	public HarvestJobInfo getHarvestJobInfo(CDXEntry entry) {
+		return jobMap.get(entry);
 	}
 	
 	/**

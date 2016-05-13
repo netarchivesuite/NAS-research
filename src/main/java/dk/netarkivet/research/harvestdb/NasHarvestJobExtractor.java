@@ -31,6 +31,9 @@ public class NasHarvestJobExtractor implements HarvestJobExtractor {
 	
 	@Override
 	public HarvestJobInfo extractJob(Long jobID) {
+		if(jobID == null || jobID < 1) {
+			return null;
+		}
 		try {
 			Job job = jobDb.read(jobID);
 			HarvestDefinition hd = harvestDb.read(job.getOrigHarvestDefinitionID());
