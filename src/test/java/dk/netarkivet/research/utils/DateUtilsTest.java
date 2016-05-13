@@ -14,6 +14,12 @@ import org.testng.annotations.Test;
 public class DateUtilsTest extends ExtendedTestCase {
 	
 	@Test
+	public void testInstantiation() {
+		addDescription("Test the instantaion of the date utility class");
+		new DateUtils();
+	}
+	
+	@Test
 	public void testCsvDateFormat() throws Exception {
 		addDescription("Test extracting the expected CSV format");
 		Date d = DateUtils.extractCsvDate("2005-06-22T20:37:27Z");

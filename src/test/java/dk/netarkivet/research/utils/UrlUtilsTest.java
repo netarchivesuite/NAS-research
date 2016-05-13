@@ -12,6 +12,12 @@ public class UrlUtilsTest extends ExtendedTestCase {
 	private final String endUrl = "netarkivet.dk";
 	
 	@Test
+	public void testInstantiation() {
+		addDescription("Test the instantaion of the url utility class");
+		new UrlUtils();
+	}
+	
+	@Test
 	public void testStrippingNoProtocol() throws Exception {
 		addDescription("Test stripping the http protocol");
 		String url = endUrl;

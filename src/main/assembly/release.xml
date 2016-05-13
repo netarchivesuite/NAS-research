@@ -29,17 +29,16 @@
 			<fileMode>0755</fileMode>
 			<filtered>true</filtered>
 		</fileSet> -->
-<!--		<fileSet>
+		<fileSet>
 			<directory>${project.basedir}/src/main/scripts</directory>
 			<excludes>
 				<exclude>*.sh</exclude>
-				<exclude>*.cmd</exclude>
 			</excludes>
 			<lineEnding>lf</lineEnding>
-			<outputDirectory>/bin/</outputDirectory>
+			<outputDirectory>/conf/</outputDirectory>
 			<fileMode>0755</fileMode>
 			<filtered>true</filtered>
-		</fileSet> -->
+		</fileSet>
 		<!-- Move licenses into assembly -->
 <!--
 		<fileSet>

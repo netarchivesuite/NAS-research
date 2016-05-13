@@ -29,6 +29,12 @@ public class FileUtilsTest extends ExtendedTestCase {
 	}
 	
 	@Test
+	public void testInstantiation() {
+		addDescription("Test the instantaion of the file utility class");
+		new FileUtils();
+	}
+	
+	@Test
 	public void testDeprecateFile() throws Exception {
 		addDescription("Test deprecationOfAFile");
 		File testFile = TestFileUtils.createTestFile(dir, testFileContent);

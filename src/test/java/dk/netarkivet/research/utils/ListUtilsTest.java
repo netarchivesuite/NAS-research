@@ -15,6 +15,12 @@ public class ListUtilsTest extends ExtendedTestCase {
 	List<Long> list = Arrays.asList(smallestValue, 0L, 1L, largestValue);
 	
 	@Test
+	public void testInstantiation() {
+		addDescription("Test the instantaion of the list utility class");
+		new ListUtils();
+	}
+	
+	@Test
 	public void testLargestLongValue() throws Exception {
 		addDescription("Finds the largest long value in a list of longs.");
 		assertEquals(ListUtils.getLargest(list), largestValue);
