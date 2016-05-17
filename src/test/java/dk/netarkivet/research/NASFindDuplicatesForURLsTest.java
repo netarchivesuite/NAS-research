@@ -1,14 +1,17 @@
 package dk.netarkivet.research;
 
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.jaccept.structure.ExtendedTestCase;
 import org.testng.annotations.AfterClass;
@@ -21,6 +24,7 @@ import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.cdx.DabCDXExtractor;
 import dk.netarkivet.research.duplicates.DuplicateExtractor;
 import dk.netarkivet.research.harvestdb.HarvestJobExtractor;
+import dk.netarkivet.research.harvestdb.HarvestJobInfo;
 import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.testutils.TestFileUtils;
 import dk.netarkivet.research.utils.UrlUtils;
@@ -92,9 +96,13 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 	public void testDuplicateFinderWithMock() throws Exception {
 		addDescription("Test the actual duplicate finder.");
 		
+		HarvestJobInfo jobInfoTest = new HarvestJobInfo(3250L, "This is a test type", "DONE", "UnitTestJob");
+		
 		HttpRetriever httpRetriever = mock(HttpRetriever.class);
 		when(httpRetriever.retrieveFromUrl(anyString())).thenReturn(cdxReply2);
 		HarvestJobExtractor jobExtractor = mock(HarvestJobExtractor.class);
+		
+		when(jobExtractor.extractJob(eq(3250L))).thenReturn(jobInfoTest);
 
 		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerUrl, httpRetriever);
 		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor, jobExtractor);
@@ -105,6 +113,20 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 		addStep("Validate the output format", "");
 		File f = new File(outdir, UrlUtils.fileEncodeUrl(testUrl) + ".txt");
 		assertTrue(f.isFile()); 
+
+		Collection<String> lines = TestFileUtils.readFile(f);
+		assertEquals(lines.size(), 10);
+		
+		for(String line : lines) {
+			if(line.contains(jobInfoTest.getId().toString())) {
+				System.err.println(line);
+				assertTrue(line.contains(jobInfoTest.getName()));
+				assertTrue(line.contains(jobInfoTest.getType()));
+			} else {
+				assertFalse(line.contains(jobInfoTest.getName()));
+				assertFalse(line.contains(jobInfoTest.getType()));
+			}
+		}
 	}
 	
 	@Test(expectedExceptions = IllegalArgumentException.class)

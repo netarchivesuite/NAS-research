@@ -91,6 +91,7 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 		Long l = finder.getJobID(entry);
 		assertNull(l);
 	}
+	
 	@Test
 	public void testNoEntries() throws Exception {
 		CDXExtractor extractor = mock(CDXExtractor.class);

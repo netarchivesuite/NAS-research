@@ -26,7 +26,6 @@ import dk.netarkivet.research.harvestdb.NasHarvestJobExtractor;
 import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.utils.FileUtils;
-import dk.netarkivet.research.utils.ListUtils;
 import dk.netarkivet.research.utils.UrlUtils;
 
 /**
