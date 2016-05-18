@@ -1,0 +1,429 @@
+WARC/1.0
+WARC-Type: warcinfo
+WARC-Date: 2016-03-09T11:16:55Z
+WARC-Filename: 1-2-20160309111655919-00000-ciblee_2015_localhost.warc
+WARC-Record-ID: <urn:uuid:563b67fe-9d63-4937-a67e-91ba7d043fe2>
+Content-Type: application/warc-fields
+Content-Length: 1130
+
+software: Heritrix/3.3.0-LBS-2014-03 http://crawler.archive.org
+ip: 127.0.0.1
+hostname: localhost
+format: WARC File Format 1.0
+conformsTo: http://bibnum.bnf.fr/WARC/WARC_ISO_28500_version1_latestdraft.pdf
+operator: Admin
+publisher: YOUR_ORGANIZATION
+isPartOf: default_orderxml
+description: Default Profile 
+robots: ignore
+http-header-user-agent: Mozilla/5.0 (compatible; heritrix/3.3.0 +http://netarkivet.dk/webcrawler/)
+http-header-from: info@netarkivet.dk
+
+#added by NetarchiveSuite Version: 5.1 (<a href="https://github.com/netarchivesuite/netarchivesuite/commit/cde61d78299cabccae6195908b81ef77c84a76b9">cde61d7829</a>)
+harvestInfo.version: 0.5
+harvestInfo.jobId: 1
+harvestInfo.channel: FOCUSED
+harvestInfo.harvestNum: 0
+harvestInfo.origHarvestDefinitionID: 2
+harvestInfo.maxBytesPerDomain: 1000000000
+harvestInfo.maxObjectsPerDomain: -1
+harvestInfo.orderXMLName: default_orderxml
+harvestInfo.origHarvestDefinitionName: An non-arbitrary name
+harvestInfo.scheduleName: Once a day
+harvestInfo.harvestFilenamePrefix: 1-2
+harvestInfo.jobSubmitDate: Wed Mar 09 12:16:45 CET 2016
+harvestInfo.performer: 
+
+
+
+WARC/1.0
+WARC-Type: response
+WARC-Target-URI: dns:www.netarkivet.dk
+WARC-Date: 2016-03-09T11:16:55Z
+WARC-IP-Address: 192.168.30.2
+WARC-Record-ID: <urn:uuid:f9bc0b4c-01d0-4d4b-838c-8efae5fcb9bc>
+Content-Type: text/dns
+Content-Length: 55
+
+20160309111655
+www.netarkivet.dk.	5	IN	A	178.79.164.53
+
+
+WARC/1.0
+WARC-Type: response
+WARC-Target-URI: http://www.netarkivet.dk/robots.txt
+WARC-Date: 2016-03-09T11:16:56Z
+WARC-Payload-Digest: sha1:Y5EVC5LN6X5V723MP3KPCBKEXU2NIV4J
+WARC-IP-Address: 178.79.164.53
+WARC-Record-ID: <urn:uuid:26d9b663-2c34-4c34-bbd3-f71b17ff72bb>
+Content-Type: application/http; msgtype=response
+Content-Length: 283
+
+HTTP/1.0 200 OK
+X-Powered-By: PHP/5.5.32
+X-Pingback: http://netarkivet.dk/xmlrpc.php
+Content-Type: text/plain; charset=utf-8
+Content-Length: 35
+Date: Wed, 09 Mar 2016 11:16:56 GMT
+Accept-Ranges: bytes
+Server: LiteSpeed
+Connection: close
+
+User-agent: *
+Disallow: /wp-admin/
+
+
+WARC/1.0
+WARC-Type: response
+WARC-Target-URI: http://www.netarkivet.dk/
+WARC-Date: 2016-03-09T11:16:57Z
+WARC-Payload-Digest: sha1:3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ
+WARC-IP-Address: 178.79.164.53
+WARC-Record-ID: <urn:uuid:686286de-a9bb-466d-9ed7-609ca5eaa91b>
+Content-Type: application/http; msgtype=response
+Content-Length: 294
+
+HTTP/1.0 301 Moved Permanently
+X-Powered-By: PHP/5.5.32
+X-Pingback: http://netarkivet.dk/xmlrpc.php
+Content-Type: text/html; charset=UTF-8
+Location: http://netarkivet.dk/
+Content-Length: 0
+Date: Wed, 09 Mar 2016 11:16:58 GMT
+Accept-Ranges: bytes
+Server: LiteSpeed
+Connection: close
+
+
+
+WARC/1.0
+WARC-Type: response
+WARC-Target-URI: dns:netarkivet.dk
+WARC-Date: 2016-03-09T11:16:59Z
+WARC-IP-Address: 192.168.30.2
+WARC-Record-ID: <urn:uuid:f16fcd6b-c824-4931-8da3-89f31cc10f4c>
+Content-Type: text/dns
+Content-Length: 52
+
+20160309111659
+netarkivet.dk.		5	IN	A	178.79.164.53
+
+
+WARC/1.0
+WARC-Type: response
+WARC-Target-URI: http://netarkivet.dk/robots.txt
+WARC-Date: 2016-03-09T11:17:00Z
+WARC-Payload-Digest: sha1:Y5EVC5LN6X5V723MP3KPCBKEXU2NIV4J
+WARC-IP-Address: 178.79.164.53
+WARC-Record-ID: <urn:uuid:317ba124-d57d-45d6-bd58-d560ca986b59>
+Content-Type: application/http; msgtype=response
+Content-Length: 283
+
+HTTP/1.0 200 OK
+X-Powered-By: PHP/5.5.32
+X-Pingback: http://netarkivet.dk/xmlrpc.php
+Content-Type: text/plain; charset=utf-8
+Content-Length: 35
+Date: Wed, 09 Mar 2016 11:17:00 GMT
+Accept-Ranges: bytes
+Server: LiteSpeed
+Connection: close
+
+User-agent: *
+Disallow: /wp-admin/
+
+
+WARC/1.0
+WARC-Type: response
+WARC-Target-URI: http://netarkivet.dk/
+WARC-Date: 2016-03-09T11:17:01Z
+WARC-Payload-Digest: sha1:3R7VE637FPECMLF74ZNBNSCTMEARYNJ3
+WARC-IP-Address: 178.79.164.53
+WARC-Record-ID: <urn:uuid:f69e1246-c285-4869-9f8f-6161d8dc67dd>
+Content-Type: application/http; msgtype=response
+Content-Length: 20767
+
+HTTP/1.0 200 OK
+X-Powered-By: PHP/5.5.32
+X-Pingback: http://netarkivet.dk/xmlrpc.php
+Content-Type: text/html; charset=UTF-8
+Link: <http://netarkivet.dk/>; rel=shortlink
+Date: Wed, 09 Mar 2016 11:17:01 GMT
+Accept-Ranges: bytes
+Server: LiteSpeed
+Connection: close
+
+
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8" />
+<title>Netarkivet</title>
+<link rel="profile" href="http://gmpg.org/xfn/11" />
+<link rel="stylesheet" href="http://netarkivet.dk/wp-content/themes/netarkivet/style.css" />
+<meta http-equiv="imagetoolbar" content="false">
+<link rel="shortcut icon" href="favicon.ico" />
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!--[if lt IE 9]>
+	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+<![endif]-->
+<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]--><link rel="alternate" type="application/rss+xml" title="Netarkivet.dk &raquo; Feed" href="http://netarkivet.dk/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Netarkivet.dk &raquo; Kommentarfeed" href="http://netarkivet.dk/comments/feed/" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/netarkivet.dk\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.3.3"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel='stylesheet' id='contact-form-7-css'  href='http://netarkivet.dk/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=4.2.2' type='text/css' media='all' />
+<link rel='stylesheet' id='gallery-to-slideshow-css'  href='http://netarkivet.dk/wp-content/plugins/gallery-to-slideshow//css/gallery-to-slideshow.css?ver=1.4' type='text/css' media='all' />
+<link rel='stylesheet' id='jquery.lightbox.min.css-css'  href='http://netarkivet.dk/wp-content/plugins/wp-jquery-lightbox/styles/lightbox.min.css?ver=1.4.6' type='text/css' media='all' />
+<script type='text/javascript' src='http://netarkivet.dk/wp-includes/js/jquery/jquery.js?ver=1.11.3'></script>
+<script type='text/javascript' src='http://netarkivet.dk/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.2.1'></script>
+<script type='text/javascript' src='http://netarkivet.dk/wp-content/plugins/stk-cookie-advarsel/js/stk-cookie-advarsel.js?ver=4.3.3'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://netarkivet.dk/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://netarkivet.dk/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 4.3.3" />
+<link rel='canonical' href='http://netarkivet.dk/' />
+<link rel='shortlink' href='http://netarkivet.dk/' />
+
+		<style type="text/css" media="screen">
+			#stk-cookie-bar {
+				direction: ltr;
+				color: #dddddd;
+				min-height: 30px;
+				position: fixed;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+				z-index: 99999;
+				padding:6px 20px 4px;
+				background-color: #464646;
+				text-align:left;
+			}
+			#stk-cookie-bar a {
+				color: #dddddd;
+			}
+			button#stkCookie {
+				margin:0 20px;
+				line-height:20px;
+				background:#f04e23;
+				border:none;
+				color: #dddddd;
+				padding:4px 12px;
+				border-radius: 3px;
+				cursor: pointer;
+				font-size: 13px;
+				font-weight: bold;
+			}
+		</style>    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            if (stkReadCookie("stkAccCookies")) {//If the cookie has been set
+                jQuery("#stk-cookie-bar").hide();
+                jQuery("html").css("margin-top", "0");
+            }
+        });
+    </script>
+</head>
+
+<body class="home page page-id-227 page-template page-template-home page-template-home-php">
+<div id="wrapper">
+
+<nav id="access" role="navigation">
+<a id="skip" href="#content" title="Direkte til indholdet">Direkte til indholdet</a>
+<div class="mainnav"><ul id="menu-topmenu" class="menu"><li id="menu-item-1017" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-1017"><a href="http://netarkivet.dk">Forsiden</a></li>
+<li id="menu-item-38" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-38"><a href="http://netarkivet.dk/til-webstedejere/">Til webstedsejere</a></li>
+<li id="menu-item-29" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-29"><a href="http://netarkivet.dk/adgang/">Adgang</a></li>
+<li id="menu-item-30" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30"><a href="http://netarkivet.dk/om-netarkivet/">Om netarkivet</a></li>
+<li id="menu-item-159" class="contact menu-item menu-item-type-post_type menu-item-object-page menu-item-159"><a href="http://netarkivet.dk/kontakt/">Kontakt</a></li>
+<li id="menu-item-463" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-463"><a href="http://netarkivet.dk/in-english/">English</a></li>
+</ul></div><form role="search" method="get" id="searchform" class="searchform" action="http://netarkivet.dk/">
+				<div>
+					<label class="screen-reader-text" for="s">Søg efter:</label>
+					<input type="text" value="" name="s" id="s" />
+					<input type="submit" id="searchsubmit" value="Søg" />
+				</div>
+			</form></nav><!-- #access -->
+
+<div id="inner">
+
+<div id="header" role="banner">
+
+<a href="http://netarkivet.dk/" title="netarkivet.dk" rel="home"><img src="http://netarkivet.dk/wp-content/themes/netarkivet/images/01.png"></a>
+<h2><a href="http://netarkivet.dk/" title="Netarkivet.dk" rel="home">Netarkivet.dk</a></h2>	
+<p>indsamler og bevarer den danske del af internettet</p>
+</div><section id="front" role="main">
+
+<article id="frontpage" class="post-227 page type-page status-publish hentry">
+      <h1 class="entry-title">Netarkivet er det danske internetarkiv</h1>
+    <div class="entry-content">
+      <p>Netarkivet er en fælles opgave for Det Kongelige Bibliotek og Statsbiblioteket, som i henhold til <a href="http://pligtaflevering.dk" target="_blank">pligtafleveringsloven</a> indsamler og bevarer den danske del af internettet.<br />
+<a title="Om netarkivet.dk" href="http://netarkivet.dk/om-netarkivet/">Sådan indsamler vi i praksis</a><br />
+<a title="Til webstedejere" href="http://netarkivet.dk/?page_id=26">Vejledning til webstedejere</a><br />
+<a title="Adgang for forskere" href="http://netarkivet.dk/?page_id=24">Hvordan får man adgang?</a><br />
+<a href="https://sbforge.org/display/NAS" target="_blank">Er du udvikler? Gå til Netarchivesuite</a></p>
+                </div><!-- .entry-content -->
+  
+  	
+      <div id="post-126" class="post-126 page type-page status-publish hentry">
+      <h2 class="entry-title">Tjek om et domæne bevares</h2>
+      <div class="entry-content">
+        <input type="hidden" id="send_email" name="send_email" value="9814511636" /><input type="hidden" name="_wp_http_referer" value="/" /><div class="doreform">Domæner vi ikke kender, kan du indberette her. Når du tjekker, skal du kun skrive domænenavnet, altså fx netarkivet.com og <em>ikke</em> http(s)://www.netarkivet.com eller nyheder.netarkivet.com.<form id="dform" action="http://netarkivet.dk/tilmeld-domaener-uden-for-dk/" method="post" onsubmit="return validateOnSubmitDname()"><label for="dname">Dom&aelig;ne: </label><input type="text" name="dname" id="dname" value = "" onChange="validateDomainName(this, 'inf_dname', true);"/><input type="submit" name="Submit" value="Tjek dom&aelig;ne" /><input type="hidden" name="dore_stage" value="step1" /></form></div><div id="inf_dname"></div>
+              </div>
+    </div><!-- #post-## -->
+    <div class="clearfix"></div>
+</article>
+
+
+<div id="featured">
+  	
+      <h2 class="entry-content">Glimt fra arkivet</h2>
+    <!-- <h2 class="entry-title"><a href="http://netarkivet.dk/arkiv/glimt/" rel="category tag">Glimt fra arkivet</a></h2> -->
+    
+	<div class="gallery-to-slideshow-wrapper">
+		<div class="gallery-to-slideshow-header">
+			<div class="gallery-to-slideshow-title">Picture Gallery</div>
+			<div class="gallery-to-slideshow-caption">Glimt fra arkivet</div>
+		</div>
+		<div class="gallery-to-slideshow">
+			<ul class="slides">
+				<li><img width="560" height="462" src="http://netarkivet.dk/wp-content/uploads/RLJ8TYU-560x462.png" class="attachment-large" alt="netarkivet.dk, august 2005" /><p class="flex-caption"><span>netarkivet.dk, august 2005</span></p></li>
+				<li><img width="560" height="394" src="http://netarkivet.dk/wp-content/uploads/bt-dk_L_juli2005-560x394.jpg" class="attachment-large" alt="bt.dk, juli 2005" /><p class="flex-caption"><span>bt.dk, juli 2005</span></p></li>
+				<li><img width="560" height="396" src="http://netarkivet.dk/wp-content/uploads/aarhus-dk_L_juli2005-560x396.jpg" class="attachment-large" alt="aarhus.dk, juli 2005" /><p class="flex-caption"><span>aarhus.dk, juli 2005</span></p></li>
+				<li><img width="560" height="389" src="http://netarkivet.dk/wp-content/uploads/arla-dk_L_juni2005-560x389.jpg" class="attachment-large" alt="arla.dk, juli 2005" /><p class="flex-caption"><span>arla.dk, juli 2005</span></p></li>
+				<li><img width="560" height="394" src="http://netarkivet.dk/wp-content/uploads/dbu-dk_L_juli2005-560x394.jpg" class="attachment-large" alt="dbu.dk, juli 2005" /><p class="flex-caption"><span>dbu.dk, juli 2005</span></p></li>
+				<li><img width="560" height="392" src="http://netarkivet.dk/wp-content/uploads/dcf-dk_L_juli2005-560x392.jpg" class="attachment-large" alt="dcf.dk, sept. 2005" /><p class="flex-caption"><span>dcf.dk, sept. 2005</span></p></li>
+				<li><img width="560" height="387" src="http://netarkivet.dk/wp-content/uploads/dcf-aarhus-dk_L_juli2005-560x387.jpg" class="attachment-large" alt="dcf.dk/aarhus, september 2005" /><p class="flex-caption"><span>dcf.dk/aarhus, september 2005</span></p></li>
+				<li><img width="560" height="391" src="http://netarkivet.dk/wp-content/uploads/dmi-dk_L_juli2005-560x391.jpg" class="attachment-large" alt="dmi.dk, juli 2005" /><p class="flex-caption"><span>dmi.dk, juli 2005</span></p></li>
+				<li><img width="560" height="389" src="http://netarkivet.dk/wp-content/uploads/drk-dk_L_juli2005-560x389.jpg" class="attachment-large" alt="drk.dk, juli 2005" /><p class="flex-caption"><span>drk.dk, juli 2005</span></p></li>
+				<li><img width="560" height="412" src="http://netarkivet.dk/wp-content/uploads/dst-dk_L_juli2005-560x412.jpg" class="attachment-large" alt="dst.dk, juli 2005" /><p class="flex-caption"><span>dst.dk, juli 2005</span></p></li>
+				<li><img width="560" height="394" src="http://netarkivet.dk/wp-content/uploads/gentofte-dk_L_november2005-560x394.jpg" class="attachment-large" alt="gentofte.dk, november 2005" /><p class="flex-caption"><span>gentofte.dk, november 2005</span></p></li>
+				<li><img width="560" height="392" src="http://netarkivet.dk/wp-content/uploads/grundfos-dk_L_juli2005-560x392.jpg" class="attachment-large" alt="grundfos.dk, juli 2005" /><p class="flex-caption"><span>grundfos.dk, juli 2005</span></p></li>
+				<li><img width="560" height="396" src="http://netarkivet.dk/wp-content/uploads/information-dk_L_juli2005-560x396.jpg" class="attachment-large" alt="information.dk, juli 2005" /><p class="flex-caption"><span>information.dk, juli 2005</span></p></li>
+				<li><img width="560" height="388" src="http://netarkivet.dk/wp-content/uploads/kulturarv-dk_L_juli2005-560x388.jpg" class="attachment-large" alt="kulturarv.dk, juli 2005" /><p class="flex-caption"><span>kulturarv.dk, juli 2005</span></p></li>
+				<li><img width="560" height="395" src="http://netarkivet.dk/wp-content/uploads/kum-dk_L_juli2005-560x395.jpg" class="attachment-large" alt="kum.dk, juli 2005" /><p class="flex-caption"><span>kum.dk, juli 2005</span></p></li>
+				<li><img width="560" height="397" src="http://netarkivet.dk/wp-content/uploads/politiken-dk_L_juli2005-560x397.jpg" class="attachment-large" alt="politiken.dk, juli 2005" /><p class="flex-caption"><span>politiken.dk, juli 2005</span></p></li>
+				<li><img width="560" height="381" src="http://netarkivet.dk/wp-content/uploads/sa-dk_L_juli2005-560x381.jpg" class="attachment-large" alt="sa.dk, juli 2005" /><p class="flex-caption"><span>sa.dk, juli 2005</span></p></li>
+				<li><img width="560" height="397" src="http://netarkivet.dk/wp-content/uploads/silkeborg-d_L_juli2005-560x397.jpg" class="attachment-large" alt="silkeborg.dk, juli 2005" /><p class="flex-caption"><span>silkeborg.dk, juli 2005</span></p></li>
+				<li><img width="560" height="394" src="http://netarkivet.dk/wp-content/uploads/socialdemokraterne-dk_L_juli2005-560x394.jpg" class="attachment-large" alt="socialdemokraterne.dk, juli 2005" /><p class="flex-caption"><span>socialdemokraterne.dk, juli 2005</span></p></li>
+				<li><img width="560" height="386" src="http://netarkivet.dk/wp-content/uploads/venstre-dk_L_juli2005-560x386.jpg" class="attachment-large" alt="venstre.dk, juli 2005" /><p class="flex-caption"><span>venstre.dk, juli 2005</span></p></li>
+				<li><img width="500" height="490" src="http://netarkivet.dk/wp-content/uploads/2015/12/StatsbiblioteketElektroniskjulekort2015.jpg" class="attachment-large" alt="StatsbiblioteketElektroniskjulekort2015" /></li>
+				<li><img width="560" height="395" src="http://netarkivet.dk/wp-content/uploads/2012/01/sb-jul2015-560x395.png" class="attachment-large" alt="sb-jul2015" /></li>
+				
+			</ul>
+		</div>
+	</div><!-- .gallery-to-slideshow -->
+        </div><!-- #featured -->
+
+
+
+
+
+
+</section><!-- #main -->
+
+<aside id="sidebar_frontpage">
+
+  <ul class="sidebar">
+              <li class="driftstatus">
+        <h3>Status januar 2016</h3>
+	1. februar 2016        <ul>
+<li><strong>Netarkivets fritekst-indeks har rundet 10.000.000.000 dokumenter. </strong></li>
+<li><strong>Begivenhedshøstning omkring flygtningekrisen fortsætter</strong></li>
+<li><strong>Arbejde med ISO-statistik</strong></li>
+<li><strong>Årets 1. tværsnitshøstning er i gang. </strong></li>
+<li><strong>Billedsøgnings-eksperimenter med ”eksakt digitalt match”.</strong></li>
+</ul>
+<p><a href="http://netarkivet.dk/status/">Læs mere om netarkivets aktiviteter</a></p>
+<p><a href="http://netarkivet.dk/driftsstatus-for-arkivet/">Driftsstatus</a></p>
+<p>&nbsp;</p>
+              </li>
+          
+    	
+          <li>
+        <h3>Hvem bruger Netarkivet</h3>
+	<img width="400" height="194" src="http://netarkivet.dk/wp-content/uploads/2015/10/HvemBruger-400x194.png" class="attachment- wp-post-image" alt="HvemBruger" />	27. oktober 2015        <p>Hvor kommer Netarkivets brugere fra? Vi har kigget i vores brugerliste og lavet en lille optælling. Langt de fleste med ekstern adgang til Netarkivet , forskere med dokumenteret forskningsformål kan få adgang, er tilknyttet de danske universiteter. Her ses en &hellip; <a href="http://netarkivet.dk/hvem-bruger-netarkivet/">Læs resten af indlægget</a></p>
+              </li>
+          <li>
+        <h3>Begivenhedshøstning om flygtningekrisen</h3>
+	<img width="400" height="267" src="http://netarkivet.dk/wp-content/uploads/2015/09/flygtninge-400x267.jpg" class="attachment- wp-post-image" alt="flygtninge" />	11. september 2015        <p>Flygtningestrømmen til Europa – og i de seneste dage også til Danmark &#8211; er dokumenteret i Netarkivet. Vi høster nyhedsmediernes hurtigt opdaterede indhold op til flere gange dagligt, således dækker vi nyhedsstoffet om flygtningene. Men flygtningekrisen skaber øget aktivitet på &hellip; <a href="http://netarkivet.dk/begivenhedshoestning-om-flygtningekrisen/">Læs resten af indlægget</a></p>
+              </li>
+          <li>
+        <h3>10 år med webarkivering I Danmark</h3>
+	<img width="400" height="183" src="http://netarkivet.dk/wp-content/uploads/2015/06/Netarkivet_10_år_gruppefoto_a_web_thumb-400x183.jpg" class="attachment- wp-post-image" alt="Netarkivet_10_år_gruppefoto_a_web_thumb" />	26. juni 2015        <p>Netarkivet har fejret 10 års fødselsdag Den 1. juli 2005 trådte en ny pligtafleveringslov i kraft: Materiale, “offentliggjort i elektroniske kommunikationsnet”, dvs. hele den danske del af internettet, var nu også omfattet af pligtafleveringen. Netarkivet blev oprettet i et samarbejde &hellip; <a href="http://netarkivet.dk/10-aar-med-webarkivering-i-danmark/">Læs resten af indlægget</a></p>
+              </li>
+      </ul>
+  
+  <div class="news">
+    <a href="http://netarkivet.dk/arkiv/nyhed/" rel="category tag">Nyhedsarkiv</a>  </div>
+  
+    </aside>
+
+</div><!-- #inner -->
+
+<footer role="contentinfo" id="footer">
+<section class="footer-widget-container">
+
+<ul>
+	
+<li>
+<h3>Kontakt Netarkivet</h3>
+<div class="edit"><a title="kontakt, mailadresse" href="mailto:info@netarkivet.dk">info@netarkivet.dk</a></div>
+<p>Tlf. 9132 4720</p>
+</li>
+</ul>
+
+</section>
+
+</footer>
+
+<!--<a href="http://netarkivet.dk/" title="Netarkivet.dk" rel="home">Netarkivet.dk</a>-->
+
+</div><!-- #wrapper -->
+<script type='text/javascript' src='http://netarkivet.dk/wp-content/plugins/contact-form-7/includes/js/jquery.form.min.js?ver=3.51.0-2014.06.20'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var _wpcf7 = {"loaderUrl":"http:\/\/netarkivet.dk\/wp-content\/plugins\/contact-form-7\/images\/ajax-loader.gif","sending":"Sender ..."};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://netarkivet.dk/wp-content/plugins/contact-form-7/includes/js/scripts.js?ver=4.2.2'></script>
+<script type='text/javascript' src='http://netarkivet.dk/wp-content/plugins/gallery-to-slideshow//js/libs/flexslider/jquery.flexslider-min.js?ver=1.8'></script>
+<script type='text/javascript' src='http://netarkivet.dk/wp-content/plugins/gallery-to-slideshow//js/gallery.to.slideshow.min.js?ver=1.4'></script>
+<script type='text/javascript' src='http://netarkivet.dk/wp-content/plugins/wp-jquery-lightbox/jquery.touchwipe.min.js?ver=1.4.6'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var JQLBSettings = {"showTitle":"1","showCaption":"1","showNumbers":"1","fitToScreen":"0","resizeSpeed":"400","showDownload":"0","navbarOnTop":"0","marginSize":"","slideshowSpeed":"4000","prevLinkTitle":"forrige billede","nextLinkTitle":"n\u00e6ste billede","closeTitle":"Luk slideshow","image":"Billede ","of":" af ","download":"download","pause":"(pause slideshow)","play":"(play slideshow)"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://netarkivet.dk/wp-content/plugins/wp-jquery-lightbox/jquery.lightbox.min.js?ver=1.4.6'></script>
+<script type='text/javascript' src='http://netarkivet.dk/wp-content/plugins/domain-reporting/js/validate.js?ver=4.3.3'></script>
+<div id="stk-cookie-bar">Netarkivet.dk bruger cookies til at lave statistik over trafikken på siden.<button id="stkCookie" tabindex=1 onclick="stkAcceptCookies();">OK</button><a tabindex=1 href="http://netarkivet.dk/cookiepolitik">Flere oplysninger</a></div><script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-16233002-5']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+
+</script>
+</body>
+</html>
+

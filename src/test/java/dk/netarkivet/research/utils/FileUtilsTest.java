@@ -4,6 +4,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.jaccept.structure.ExtendedTestCase;
 import org.testng.annotations.AfterClass;
@@ -131,4 +132,21 @@ public class FileUtilsTest extends ExtendedTestCase {
 		assertTrue(new File(subDir.getAbsolutePath() + ".old", fileSubDir.getName()).isFile(), "File in deprecated directory");
 	}
 	
+	@Test(expectedExceptions = IOException.class)
+	public void testCreateInReadOnlyDirectory() throws Exception {
+		addDescription("Tests the creation of a new file in a read-only directory.");
+		File subDir = new File(dir, "readonlyDirectory");
+		subDir.mkdir();
+		assertTrue(subDir.isDirectory());
+		
+		try {
+			assertTrue(subDir.setReadOnly());
+			assertFalse(subDir.canWrite());
+			
+			FileUtils.ensureNewFile(subDir, "TestFile");
+		} finally {
+			subDir.setWritable(true);
+			subDir.setExecutable(true);
+		}
+	}
 }

@@ -130,7 +130,7 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 	}
 	
 	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testBadFileArgument() throws Exception {
+	public void testMainBadFileArgument() throws Exception {
 		addDescription("Test missing file as argument");
 		File badTestFile = new File(dir, "ThisIsNotAFile" + Math.random());
 		
@@ -138,7 +138,7 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 	}
 	
 	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testCdxServerUrlArgument() throws Exception {
+	public void testMainCdxServerUrlArgument() throws Exception {
 		addDescription("Test cdx-server-url argument, which is not an url");
 		String badUrl = "ThisIsNotAnUrl";
 		
@@ -146,14 +146,14 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 	}
 	
 	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testFileAsOutputDirecotryArgument() throws Exception {
+	public void testMainFileAsOutputDirecotryArgument() throws Exception {
 		addDescription("Test that it fails, when using an file as output directory");
 		
 		NASFindDuplicatesForURLs.main(urlFile.getAbsolutePath(), cdxServerUrl, urlFile.getAbsolutePath());
 	}
 		
 	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testNotEnoughArguments() throws Exception {
+	public void testMainNotEnoughArguments() throws Exception {
 		addDescription("Test that it fails, when not given enough arguments.");
 		
 		NASFindDuplicatesForURLs.main(urlFile.getAbsolutePath());

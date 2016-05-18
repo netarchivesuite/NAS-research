@@ -37,9 +37,8 @@ public class FileUtils {
 		if(res.exists()) {
 			deprecateFile(res);
 		}
-		if(!res.createNewFile()) {
-			throw new IllegalStateException("Cannot create a new file at '" + res.getAbsolutePath() + "'");
-		}
+		res.createNewFile();
+		
 		return res;
 	}
 }

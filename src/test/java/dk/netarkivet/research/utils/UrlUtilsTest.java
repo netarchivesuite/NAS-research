@@ -2,10 +2,15 @@ package dk.netarkivet.research.utils;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+
+import java.net.URL;
+
 import static org.testng.Assert.assertFalse;
 
 import org.jaccept.structure.ExtendedTestCase;
 import org.testng.annotations.Test;
+
+import dk.netarkivet.research.exception.ArgumentCheck;
 
 public class UrlUtilsTest extends ExtendedTestCase {
 
@@ -58,5 +63,44 @@ public class UrlUtilsTest extends ExtendedTestCase {
 			assertTrue(url.contains(c), c);
 			assertFalse(filename.contains(c), "'" + c + "' in '" + filename + "'");
 		}
+	}
+	
+	@Test
+	public void testBaseUrlForDomain() throws Exception {
+		addDescription("Test extraction of the base URL from a domain url.");
+		String url = "http://netarkivet.dk";
+		String baseUrl = UrlUtils.getBaseUrl(new URL(url));
+		assertEquals(baseUrl, url);
+	}
+	
+	@Test
+	public void testBaseUrlForDomainWithSlash() throws Exception {
+		addDescription("Test extraction of the base URL from a domain url ending with an slash.");
+		String url = "http://netarkivet.dk/";
+		String baseUrl = UrlUtils.getBaseUrl(new URL(url));
+		assertEquals(baseUrl, url);
+	}
+	
+	@Test
+	public void testBaseUrlForPathWithSlash() throws Exception {
+		addDescription("Test extraction of the base URL from an url with a path and ending on a slash.");
+		String url = "http://netarkivet.dk/test/";
+		String baseUrl = UrlUtils.getBaseUrl(new URL(url));
+		assertEquals(baseUrl, url);
+	}
+	
+	@Test
+	public void testBaseUrlForPathNoSlashEnd() throws Exception {
+		addDescription("Test extraction of the base URL from an url with a path, but not ending on a slash.");
+		String expectedBaseUrl = "http://netarkivet.dk/test/";
+		String url = expectedBaseUrl + "test.html";
+		String baseUrl = UrlUtils.getBaseUrl(new URL(url));
+		assertEquals(baseUrl, expectedBaseUrl);
+	}
+	
+	@Test(expectedExceptions = ArgumentCheck.class)
+	public void testBaseUrlWithNullArgument() throws Exception {
+		addDescription("Test extraction of the base URL from a null. Should throw exception");
+		UrlUtils.getBaseUrl(null);
 	}
 }

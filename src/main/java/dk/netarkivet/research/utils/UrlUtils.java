@@ -1,5 +1,9 @@
 package dk.netarkivet.research.utils;
 
+import java.net.URL;
+
+import dk.netarkivet.research.exception.ArgumentCheck;
+
 /**
  * Utility methods for dealing with URLs.
  */
@@ -55,4 +59,31 @@ public class UrlUtils {
 		return res;
 	}
 	
+	/**
+	 * Extracts the base-url from an url.
+	 * The base URL, is the reference point in an HTML page, and used for relative links.
+	 * 
+	 * 
+	 * E.g. the following url  | base reference:
+	 *  http://WebReference.com/	http://WebReference.com/
+	 *  http://WebReference.com/html/	http://WebReference.com/html/
+	 *  http://WebReference.com/html/about.html	http://WebReference.com/html/
+	 *  http://WebReference.com/foo/bar.html?baz	http://WebReference.com/foo/
+	 *  
+	 * @param contentUrl The content URL whose base URL should be extracted.
+	 * @return The base URL.
+	 */
+	public static String getBaseUrl(URL contentUrl) {
+		ArgumentCheck.checkNotNull(contentUrl, "URL contentUrl");
+		
+		String url = contentUrl.toExternalForm();
+		if(url.endsWith("/")) {
+			return url;
+		}
+		if(!url.replace("http://", "").contains("/")) {
+			return url;
+		}
+		int lastSlash = url.lastIndexOf("/");
+		return url.substring(0, lastSlash+1);
+	}
 }

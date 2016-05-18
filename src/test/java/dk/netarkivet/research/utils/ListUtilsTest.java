@@ -2,6 +2,7 @@ package dk.netarkivet.research.utils;
 
 import static org.testng.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class ListUtilsTest extends ExtendedTestCase {
 
 	private Long smallestValue = -100L;
 	private Long largestValue = 100L;
-	List<Long> list = Arrays.asList(smallestValue, 0L, 1L, largestValue);
+	List<Long> list = Arrays.asList(smallestValue, 0L, largestValue, 1L);
 	
 	@Test
 	public void testInstantiation() {
@@ -30,5 +31,17 @@ public class ListUtilsTest extends ExtendedTestCase {
 	public void testSmallestLongValue() throws Exception {
 		addDescription("Finds the smallest long value in a list of longs.");
 		assertEquals(ListUtils.getSmallest(list), smallestValue);
+	}
+	
+	@Test
+	public void testSmallestLongValueWithEmptyList() {
+		addDescription("Tests the finding of the lowest value in an empty list");
+		assertEquals(ListUtils.getSmallest(new ArrayList<Long>()).longValue(), 0L);
+	}
+	
+	@Test
+	public void testLargestLongValueWithEmptyList() {
+		addDescription("Tests the finding of the largest value in an empty list");
+		assertEquals(ListUtils.getLargest(new ArrayList<Long>()).longValue(), 0L);
 	}
 }

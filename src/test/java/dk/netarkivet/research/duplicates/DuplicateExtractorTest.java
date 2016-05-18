@@ -66,7 +66,7 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 
 	@Test
 	public void testJobIDExtractorNoFilenameFailure() {
-		addDescription("Testing the extraction of a JOB id from a CDX");
+		addDescription("Testing the extraction of a JOB id from a CDX, when the filename is missing");
 		CDXEntry entry = CDXEntry.createCDXEntry(new String[] {"https://netarkivet.dk", "20160606060606", "a9f5f03efdc6d97874959c1e838f1343"}, 
 				new Character[] {'A', 'b', 'k'});
 
@@ -80,8 +80,22 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 
 	@Test
 	public void testJobIDExtractorBadFilenameFormatFailure() {
-		addDescription("Testing the extraction of a JOB id from a CDX");
+		addDescription("Testing the extraction of a JOB id from a CDX, when the filename does not have a default format");
 		CDXEntry entry = CDXEntry.createCDXEntry(new String[] {"https://netarkivet.dk", "20160606060606", "a9f5f03efdc6d97874959c1e838f1343", "ThisIsASillyFilename.arc"}, 
+				new Character[] {'A', 'b', 'k', CDXConstants.CDX_CHAR_FILE_NAME});
+
+		CDXExtractor extractor = mock(CDXExtractor.class);
+		HarvestJobExtractor jobExtractor = mock(HarvestJobExtractor.class);
+
+		DuplicateExtractor finder = new DuplicateExtractor(extractor, jobExtractor);
+		Long l = finder.getJobID(entry);
+		assertNull(l);
+	}
+
+	@Test
+	public void testJobIDExtractorEmptyFilenameFormatFailure() {
+		addDescription("Testing the extraction of a JOB id from a CDX, when the filename is empty");
+		CDXEntry entry = CDXEntry.createCDXEntry(new String[] {"https://netarkivet.dk", "20160606060606", "a9f5f03efdc6d97874959c1e838f1343", ""}, 
 				new Character[] {'A', 'b', 'k', CDXConstants.CDX_CHAR_FILE_NAME});
 
 		CDXExtractor extractor = mock(CDXExtractor.class);

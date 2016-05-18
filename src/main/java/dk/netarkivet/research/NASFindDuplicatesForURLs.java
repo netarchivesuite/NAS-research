@@ -115,7 +115,7 @@ public class NASFindDuplicatesForURLs {
 				}
 			}
 		} catch (IOException e) {
-			throw new IllegalStateException("Failed to read or write data.");
+			throw new IllegalStateException("Failed to read or write data.", e);
 		}
 	}
 

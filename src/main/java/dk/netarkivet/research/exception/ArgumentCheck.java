@@ -33,6 +33,18 @@ public class ArgumentCheck extends RuntimeException {
 	}
 	
 	/**
+	 * Throws an exception if the string is null or empty.
+	 * @param object The object to check whether it is null or empty.
+	 * @param message The message if it is null or empty.
+	 */
+	public static void checkNotNullOrEmpty(String object, String message) {
+		checkNotNull(object, message);
+		if(object.isEmpty()) {
+			throw new ArgumentCheck("String may not be empty: " + message);
+		}
+	}
+	
+	/**
 	 * Throws an exception if the array only contains nulls.
 	 * The array may contain nulls, but it should contain non-null objects.
 	 * @param objects The array of objects. 
@@ -67,6 +79,17 @@ public class ArgumentCheck extends RuntimeException {
 		checkNotNull(file, message);
 		if(!file.isFile()) {
 			throw new ArgumentCheck("File '" + file + "' is not a file: " + message);
+		}
+	}
+	
+	/**
+	 * Check whether a boolean is true.
+	 * @param b The boolean to check.
+	 * @param message The message for the exception.
+	 */
+	public static void checkIsTrue(boolean b, String message) {
+		if(!b) {
+			throw new ArgumentCheck("Expected true, but was false: " + message);
 		}
 	}
 }
