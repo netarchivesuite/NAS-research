@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -98,16 +99,16 @@ public class NASExtractCDXFromCSV {
     	
     	try (OutputStream outStream = new FileOutputStream(outFile);) {
     		// Write first line
-    		outStream.write(" CDX ".getBytes());
+    		outStream.write(" CDX ".getBytes(Charset.defaultCharset()));
     		for(Character c : cdxChars) {
-    			outStream.write(new String(c + " ").getBytes());
+    			outStream.write((c + " ").getBytes(Charset.defaultCharset()));
     		}
-    		outStream.write("\n".getBytes());
+    		outStream.write("\n".getBytes(Charset.defaultCharset()));
 
     		// Write all the cdx lines
     		for(CDXEntry cdxEntry : cdxEntries) {
-        		outStream.write(cdxEntry.extractCDXAsLine(cdxChars).getBytes());
-        		outStream.write("\n".getBytes());
+        		outStream.write(cdxEntry.extractCDXAsLine(cdxChars).getBytes(Charset.defaultCharset()));
+        		outStream.write("\n".getBytes(Charset.defaultCharset()));
     		}
     		outStream.flush();
     	}

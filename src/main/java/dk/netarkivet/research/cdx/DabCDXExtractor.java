@@ -3,6 +3,7 @@ package dk.netarkivet.research.cdx;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,29 +33,28 @@ public class DabCDXExtractor extends AbstractCDXExtractor {
 	protected static final String QUERY_SLASH = "/";
 	/** The suffix for the URL argument (a space) in the HTTP request.*/
 	protected static final String QUERY_SUFFIX = "%20";
-	
+
 	/**
 	 * The CDX format chars.
 	 * It must be: A b a m s k r V g
 	 */
-	public static final List<Character> CDX_FORMAT_CHARS = new ArrayList<Character>();
-	static {
-		CDX_FORMAT_CHARS.add(CDXConstants.CDX_CHAR_CANONIZED_URL);
-		CDX_FORMAT_CHARS.add(CDXConstants.CDX_CHAR_DATE);
-		CDX_FORMAT_CHARS.add(CDXConstants.CDX_CHAR_ORIGINAL_URL);
-		CDX_FORMAT_CHARS.add(CDXConstants.CDX_CHAR_MIME_TYPE);
-		CDX_FORMAT_CHARS.add(CDXConstants.CDX_CHAR_RESPONSE_CODE);
-		CDX_FORMAT_CHARS.add(CDXConstants.CDX_CHAR_NEW_STYLE_CHECKSUM);
-		CDX_FORMAT_CHARS.add(CDXConstants.CDX_CHAR_REDIRECT);
-		CDX_FORMAT_CHARS.add(CDXConstants.CDX_CHAR_COMPRESSED_ARC_FILE_OFFSET);
-		CDX_FORMAT_CHARS.add(CDXConstants.CDX_CHAR_FILE_NAME);
-	}
-	
+	protected static final List<Character> CDX_FORMAT_CHARS = 
+			Collections.unmodifiableList(Arrays.asList(
+					CDXConstants.CDX_CHAR_CANONIZED_URL,
+					CDXConstants.CDX_CHAR_DATE,
+					CDXConstants.CDX_CHAR_ORIGINAL_URL,
+					CDXConstants.CDX_CHAR_MIME_TYPE,
+					CDXConstants.CDX_CHAR_RESPONSE_CODE,
+					CDXConstants.CDX_CHAR_NEW_STYLE_CHECKSUM,
+					CDXConstants.CDX_CHAR_REDIRECT,
+					CDXConstants.CDX_CHAR_COMPRESSED_ARC_FILE_OFFSET,
+					CDXConstants.CDX_CHAR_FILE_NAME));
+
 	/** The prefix for the URL argument in the HTTP request.*/
 	private final String cdxUrl;
 	/** The http retriever for handling the HTTP requests to the CDX server.*/
 	private final HttpRetriever httpRetriever;
-	
+
 	/**
 	 * Constructor.
 	 * @param cdxServerUrl The URL for the CDX server (complete url to query for the right collection).
@@ -64,18 +64,18 @@ public class DabCDXExtractor extends AbstractCDXExtractor {
 		this.cdxUrl = cdxServerUrl;
 		this.httpRetriever = httpRetriever;
 	}
-	
+
 	@Override
 	public CDXEntry retrieveCDX(WPID wpid) {
 		Collection<CDXEntry> allCDXforUrl = retrieveAllCDX(wpid.getUrl());
 		return retrieveCDXclosestToDate(allCDXforUrl, wpid.getDate());
 	}
-	
+
 	@Override
 	public Collection<CDXEntry> retrieveAllCDX(String url) {
 		String requestUrlString = createRequestUrlForURL(url);
 		String response = httpRetriever.retrieveFromUrl(requestUrlString);
-		
+
 		if(response == null || response.isEmpty()) {
 			logger.warn("Failed to retrieve CDX indices for URL '" + url + "'. Returning a null");
 			return Arrays.asList();
@@ -90,7 +90,7 @@ public class DabCDXExtractor extends AbstractCDXExtractor {
 			return res;
 		}
 	}
-	
+
 	/**
 	 * Creates the request URL for retrieving the CDX entry for a given. 
 	 * @param url The URL for the web-resource.

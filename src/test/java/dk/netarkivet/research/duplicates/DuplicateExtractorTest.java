@@ -47,7 +47,7 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 		assertEquals(map.getDateToChecksumMap().size(), testEntries.size());
 		
 		verify(extractor).retrieveAllCDX(eq(testUrl));
-		verify(jobExtractor, times(6)).extractJob(eq(null));
+		verify(jobExtractor, times(6)).extractJob((Long) eq(null));
 	}
 	
 	@Test

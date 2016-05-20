@@ -1,6 +1,5 @@
 package dk.netarkivet.research.links;
 
-import java.net.URL;
 import java.util.Collection;
 
 /**
@@ -11,5 +10,5 @@ public interface LinkExtractor {
 	 * Extracts the links.
 	 * @return The list of URLs extracted from the link extractor.
 	 */
-	Collection<URL> extractLinks();
+	Collection<String> extractLinks();
 }

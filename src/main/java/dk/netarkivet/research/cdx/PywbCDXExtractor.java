@@ -2,6 +2,7 @@ package dk.netarkivet.research.cdx;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,16 +38,18 @@ public class PywbCDXExtractor extends AbstractCDXExtractor {
 	public static final String FL_ARGUMENT_PREFIX = "fl=";
 	
 	/** Map between CDX format element and their cdx-server fl argument (separated by ,). */
-	public static final Map<Character, String> CDX_ARGUMENTS = new LinkedHashMap<Character, String>();
+	public static final Map<Character, String> CDX_ARGUMENTS;
 	static {
-		CDX_ARGUMENTS.put(CDXConstants.CDX_CHAR_ORIGINAL_URL, "url");
-		CDX_ARGUMENTS.put(CDXConstants.CDX_CHAR_DATE, "timestamp");
-		CDX_ARGUMENTS.put(CDXConstants.CDX_CHAR_FILE_NAME, "filename");
-		CDX_ARGUMENTS.put(CDXConstants.CDX_CHAR_COMPRESSED_ARC_FILE_OFFSET, "offset");
-//		CDX_ARGUMENTS.put(CDXEntry.CDX_CHAR_ARC_DOCUMENT_LENGTH, "length");
-		CDX_ARGUMENTS.put(CDXConstants.CDX_CHAR_MIME_TYPE, "mime");
-		CDX_ARGUMENTS.put(CDXConstants.CDX_CHAR_RESPONSE_CODE, "status");
-		CDX_ARGUMENTS.put(CDXConstants.CDX_CHAR_NEW_STYLE_CHECKSUM, "digest");
+		Map<Character, String> m = new LinkedHashMap<Character, String>();
+		m.put(CDXConstants.CDX_CHAR_ORIGINAL_URL, "url");
+		m.put(CDXConstants.CDX_CHAR_DATE, "timestamp");
+		m.put(CDXConstants.CDX_CHAR_FILE_NAME, "filename");
+		m.put(CDXConstants.CDX_CHAR_COMPRESSED_ARC_FILE_OFFSET, "offset");
+//		m.put(CDXEntry.CDX_CHAR_ARC_DOCUMENT_LENGTH, "length");
+		m.put(CDXConstants.CDX_CHAR_MIME_TYPE, "mime");
+		m.put(CDXConstants.CDX_CHAR_RESPONSE_CODE, "status");
+		m.put(CDXConstants.CDX_CHAR_NEW_STYLE_CHECKSUM, "digest");
+		CDX_ARGUMENTS = Collections.unmodifiableMap(m);
 	}
 	
 	/** The prefix for the URL argument in the HTTP request.*/

@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,16 +63,7 @@ public class NASFindDuplicatesForURLs {
 		}
 
 		File outDir;
-		if(args.length > 2) {
-			outDir = new File(args[2]);
-			if(outDir.isFile()) {
-				throw new IllegalArgumentException("The location for the output file is not vacent.");
-			} else {
-				outDir.mkdirs();
-			}
-		} else {
-			outDir = new File(".");
-		}
+		outDir = FileUtils.createDir( args.length > 2 ? args[2] : ".");
 
 		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerBaseUrl, new HttpRetriever());
 		HarvestJobExtractor jobExtractor = new NasHarvestJobExtractor();
@@ -104,7 +96,8 @@ public class NASFindDuplicatesForURLs {
 	 * Goes through every line in the input file, and extracts the duplicates.
 	 */
 	protected void findDuplicates() {
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile)))) {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), 
+				Charset.defaultCharset()))) {
 			String line;
 			while((line = reader.readLine()) != null) {
 				String[] split = line.split("[;,]");
@@ -156,7 +149,8 @@ public class NASFindDuplicatesForURLs {
 	protected void createMapResultFile(DuplicateMap map, String filename, String url) throws IOException {
 		File mapOutputFile = FileUtils.ensureNewFile(outputDir, filename + ".txt");
 		try(FileOutputStream fos = new FileOutputStream(mapOutputFile)) {
-			fos.write("duplicate number;date;checksum;status;url;harvestjob;harvest name;harvest type\n".getBytes());
+			String firstLine = "duplicate number;date;checksum;status;url;harvestjob;harvest name;harvest type\n";
+			fos.write(firstLine.getBytes(Charset.defaultCharset()));
 			List<String> checksumIndices = new ArrayList<String>();
 			for(Map.Entry<Long, CDXEntry> entry : map.getDateToChecksumMap().entrySet()) {
 				String csvIndex = "-1";
@@ -176,7 +170,7 @@ public class NASFindDuplicatesForURLs {
 				} else {
 					output += ";N/A;N/A;N/A";
 				}
-				fos.write((output + "\n").getBytes());
+				fos.write((output + "\n").getBytes(Charset.defaultCharset()));
 			}
 		}
 	}

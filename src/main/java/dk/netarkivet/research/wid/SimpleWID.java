@@ -2,6 +2,8 @@ package dk.netarkivet.research.wid;
 
 import java.util.Date;
 
+import dk.netarkivet.research.utils.DateUtils;
+
 public class SimpleWID implements WID {
 
 	/** The webarchive for the WPID.*/
@@ -20,7 +22,7 @@ public class SimpleWID implements WID {
 	public SimpleWID(String webarchive, String url, Date date) {
 		this.webarchive = webarchive;
 		this.url = url;
-		this.date = date;
+		this.date = DateUtils.copyDate(date);
 	}
 	
 	@Override
@@ -35,6 +37,6 @@ public class SimpleWID implements WID {
 
 	@Override
 	public Date getDate() {
-		return date;
+		return DateUtils.copyDate(date);
 	}
 }

@@ -75,66 +75,6 @@ Disallow: /wp-admin/
 
 WARC/1.0
 WARC-Type: response
-WARC-Target-URI: http://www.netarkivet.dk/
-WARC-Date: 2016-03-09T11:16:57Z
-WARC-Payload-Digest: sha1:3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ
-WARC-IP-Address: 178.79.164.53
-WARC-Record-ID: <urn:uuid:686286de-a9bb-466d-9ed7-609ca5eaa91b>
-Content-Type: application/http; msgtype=response
-Content-Length: 294
-
-HTTP/1.0 301 Moved Permanently
-X-Powered-By: PHP/5.5.32
-X-Pingback: http://netarkivet.dk/xmlrpc.php
-Content-Type: text/html; charset=UTF-8
-Location: http://netarkivet.dk/
-Content-Length: 0
-Date: Wed, 09 Mar 2016 11:16:58 GMT
-Accept-Ranges: bytes
-Server: LiteSpeed
-Connection: close
-
-
-
-WARC/1.0
-WARC-Type: response
-WARC-Target-URI: dns:netarkivet.dk
-WARC-Date: 2016-03-09T11:16:59Z
-WARC-IP-Address: 192.168.30.2
-WARC-Record-ID: <urn:uuid:f16fcd6b-c824-4931-8da3-89f31cc10f4c>
-Content-Type: text/dns
-Content-Length: 52
-
-20160309111659
-netarkivet.dk.		5	IN	A	178.79.164.53
-
-
-WARC/1.0
-WARC-Type: response
-WARC-Target-URI: http://netarkivet.dk/robots.txt
-WARC-Date: 2016-03-09T11:17:00Z
-WARC-Payload-Digest: sha1:Y5EVC5LN6X5V723MP3KPCBKEXU2NIV4J
-WARC-IP-Address: 178.79.164.53
-WARC-Record-ID: <urn:uuid:317ba124-d57d-45d6-bd58-d560ca986b59>
-Content-Type: application/http; msgtype=response
-Content-Length: 283
-
-HTTP/1.0 200 OK
-X-Powered-By: PHP/5.5.32
-X-Pingback: http://netarkivet.dk/xmlrpc.php
-Content-Type: text/plain; charset=utf-8
-Content-Length: 35
-Date: Wed, 09 Mar 2016 11:17:00 GMT
-Accept-Ranges: bytes
-Server: LiteSpeed
-Connection: close
-
-User-agent: *
-Disallow: /wp-admin/
-
-
-WARC/1.0
-WARC-Type: response
 WARC-Target-URI: http://netarkivet.dk/
 WARC-Date: 2016-03-09T11:17:01Z
 WARC-Payload-Digest: sha1:3R7VE637FPECMLF74ZNBNSCTMEARYNJ3

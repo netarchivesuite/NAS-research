@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 /**
  * Utility class for handling input/output streams.
@@ -18,7 +19,7 @@ public class StreamUtils {
 	 */
 	public static String extractInputStreamAsText(InputStream is) throws IOException {
 		StringBuilder res = new StringBuilder();
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(is, Charset.defaultCharset()))) {
 			String line;
 			while((line = br.readLine()) != null) {
 				res.append(line);

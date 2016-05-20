@@ -2,9 +2,9 @@ package dk.netarkivet.research.links;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
@@ -55,10 +55,10 @@ public class HtmlLinkExtractor implements LinkExtractor {
 	}
 	
 	@Override
-	public Collection<URL> extractLinks() {
+	public Collection<String> extractLinks() {
         NodeFilter filter;
         NodeList list;
-        Set<URL> links = new HashSet<URL>();
+        List<String> links = new ArrayList<String>();
         Parser p = new Parser();
         filter = new NodeClassFilter(LinkTag.class);
         
@@ -69,7 +69,7 @@ public class HtmlLinkExtractor implements LinkExtractor {
                 LinkTag n = (LinkTag) list.elementAt(i);
                 URL url = extractUrlForLink(n);
                 if(url != null) {
-                	links.add(url);
+                	links.add(url.toExternalForm());
                 }
             }
         } catch (Exception e) {
@@ -95,6 +95,10 @@ public class HtmlLinkExtractor implements LinkExtractor {
 		try {
 			if(url.contains("://")) {
 				return new URL(url);
+			}
+			if(url.startsWith("#")) {
+				logger.debug("Ignoring # reference, since it is on same page: " + url);
+				return null;
 			}
 			return new URL(baseUrl, url);
 		} catch (MalformedURLException e) {

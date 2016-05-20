@@ -3,7 +3,10 @@ package dk.netarkivet.research.utils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -22,10 +25,11 @@ public class DateUtils {
     private static final String CSV_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
 	/** CDX date format string as specified in the CDX documentation. */
-	public static final String CDX_DATE_FORMAT = "yyyyMMddHHmmss";
+	protected static final String CDX_DATE_FORMAT = "yyyyMMddHHmmss";
 	
 	/** The date format for the */
-	public static final String[] WAYBACK_DATE_FORMATS = {"YYYY-MM-DD hh:mm:ss", "YYYY-MM-DD hh:mm"};
+	protected static final List<String> WAYBACK_DATE_FORMATS = Collections.unmodifiableList(Arrays.asList(
+			"YYYY-MM-DD hh:mm:ss", "YYYY-MM-DD hh:mm"));
 
 	/** Basic <code>DateFormat</code> is not thread safe. */
 	protected static final ThreadLocal<DateFormat> CDX_DATE_PARSER_THREAD = new ThreadLocal<DateFormat>() {
@@ -114,5 +118,18 @@ public class DateUtils {
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * Makes a copy of a date, or returnes a null if the date is null.
+	 * @param d The date.
+	 * @return A copy of the date.
+	 */
+	public static Date copyDate(Date d) {
+		if(d == null) {
+			return null;
+		} else {
+			return new Date(d.getTime());
+		}
 	}
 }

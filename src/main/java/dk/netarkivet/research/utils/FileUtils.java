@@ -19,12 +19,12 @@ public class FileUtils {
 			deprecateFile(newDest);
 		}
 		boolean success = file.renameTo(newDest);
-		
+
 		if(!success) {
 			throw new IllegalStateException("Could not deprecate file '" + file.getAbsolutePath() + "'.");
 		}
 	}
-	
+
 	/**
 	 * Ensures, that a new file is created for the given location.
 	 * If a file or directory already exists, then it is deprecated.
@@ -37,8 +37,30 @@ public class FileUtils {
 		if(res.exists()) {
 			deprecateFile(res);
 		}
-		res.createNewFile();
-		
+		if(!res.createNewFile()) {
+			throw new IllegalStateException("Cannot create the new file '" + name + "' in directory '"
+					+ dir.getAbsolutePath() + "'.");
+		}
+
 		return res;
+	}
+
+	/**
+	 * Creates a directory.
+	 * Or makes an appropriate failure.
+	 * @param dirPath The path to the directory.
+	 * @return The directory.
+	 */
+	public static File createDir(String dirPath) {
+		File outDir = new File(dirPath);
+		if(outDir.isFile()) {
+			throw new IllegalArgumentException("The location for the output file is not vacent.");
+		} else {
+			boolean dirSuccess= outDir.mkdirs();
+			if(!dirSuccess) {
+				throw new IllegalArgumentException("Cannot create the directory '" + dirPath + "'.");
+			}
+		}
+		return outDir;
 	}
 }
