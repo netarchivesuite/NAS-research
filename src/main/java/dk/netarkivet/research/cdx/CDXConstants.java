@@ -1,5 +1,8 @@
 package dk.netarkivet.research.cdx;
 
+/**
+ * Container of constants for the CDX indices.
+ */
 public class CDXConstants {
 	/** A canonized url */
 	public static final char CDX_CHAR_CANONIZED_URL = 'A';
@@ -57,7 +60,7 @@ public class CDXConstants {
 	public static final char CDX_CHAR_TITLE = 't';
 	/** v uncompressed arc file offset */
 	public static final char CDX_CHAR_UNCOMPRESSED_ARC_FILE_OFFSET = 'v';
-	
+
 	/** The default order of CDX char arguments for a NAS CDX file.*/
 	public static final char[] DEFAULT_CDX_CHAR_FORMAT = new char[]{
 			CDXConstants.CDX_CHAR_ORIGINAL_URL,
@@ -67,6 +70,6 @@ public class CDXConstants {
 			CDXConstants.CDX_CHAR_MIME_TYPE,
 			CDXConstants.CDX_CHAR_RESPONSE_CODE,
 			CDXConstants.CDX_CHAR_NEW_STYLE_CHECKSUM
-			};
+	};
 
 }

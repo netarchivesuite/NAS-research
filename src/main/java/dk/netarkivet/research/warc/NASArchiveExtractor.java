@@ -12,17 +12,20 @@ import dk.netarkivet.common.distribute.arcrepository.BitarchiveRecord;
 import dk.netarkivet.common.distribute.arcrepository.ViewerArcRepositoryClient;
 import dk.netarkivet.common.utils.FileUtils;
 import dk.netarkivet.research.cdx.CDXEntry;
-import dk.netarkivet.research.wid.CsvWidReader;
 
+/**
+ * Data extractor from a NetarchiveSuite archive.
+ */
 public class NASArchiveExtractor implements ArchiveExtractor {
     /** Logging mechanism. */
-    private static Logger logger = LoggerFactory.getLogger(CsvWidReader.class);
+    private static Logger logger = LoggerFactory.getLogger(NASArchiveExtractor.class);
 
     /** The NAS ArcRepositoryClient for retrieving the Arc/Warc record.*/
     ViewerArcRepositoryClient client;
 
     /**
      * Constructor.
+     * @param client The arcrepository client to the NetarchiveSuite archive.
      */
     public NASArchiveExtractor(ViewerArcRepositoryClient client) {
         this.client = client;

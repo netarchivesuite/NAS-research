@@ -8,6 +8,10 @@ import org.slf4j.LoggerFactory;
 
 import dk.netarkivet.research.wid.WaybackWID;
 
+/**
+ * Common abstract interface for CDX extractors.
+ * Contains common methods for the different CDX extractors.
+ */
 public abstract class AbstractCDXExtractor implements CDXExtractor {
 	/** The log.*/
 	private static Logger logger = LoggerFactory.getLogger(AbstractCDXExtractor.class);

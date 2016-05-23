@@ -14,14 +14,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dk.netarkivet.research.wid.CsvWidReader;
-
 /**
  * CDX file reader.
  */
 public class CDXFileReader {
     /** Logging mechanism. */
-    private static Logger logger = LoggerFactory.getLogger(CsvWidReader.class);
+    private static Logger logger = LoggerFactory.getLogger(CDXFileReader.class);
 
 	/**
 	 * Constructor.

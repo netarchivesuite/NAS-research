@@ -31,6 +31,8 @@ public class FileUtils {
 	 * 
 	 * @param dir The directory where the file should be created. 
 	 * @param name The name of the file.
+	 * @return The new file.
+	 * @throws IOException if it fails to create a new file.
 	 */
 	public static File ensureNewFile(File dir, String name) throws IOException {
 		File res = new File(dir, name);

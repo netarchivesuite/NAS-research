@@ -3,6 +3,10 @@ package dk.netarkivet.research.exception;
 import java.io.File;
 import java.util.Arrays;
 
+/**
+ * Exception for invalid arguments. 
+ * Contains validating methods which throws this exception, if they fail.
+ */
 public class ArgumentCheck extends RuntimeException {
 	
 	/**
@@ -66,7 +70,8 @@ public class ArgumentCheck extends RuntimeException {
 	public static void checkNotAnyNull(Object ...objects) {
 		for(Object o : objects) {
 			if(o == null) {
-				throw new ArgumentCheck("Argument array must not contain any nulls: '" + Arrays.asList(objects).toString() + "'");
+				throw new ArgumentCheck("Argument array must not contain any nulls: '" 
+						+ Arrays.asList(objects).toString() + "'");
 			}
 		}
 	}

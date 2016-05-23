@@ -2,6 +2,9 @@ package dk.netarkivet.research.utils;
 
 import java.util.List;
 
+/**
+ * Utility method for handling lists.
+ */
 public class ListUtils {
 
 	/**

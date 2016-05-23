@@ -17,17 +17,17 @@ public interface CDXExtractor {
 	CDXEntry retrieveCDX(WPID wpid);
 	
 	/**
-	 * 
-	 * @param wid
-	 * @return
+	 * Receives the CDX for a Wayback WID.
+	 * @param wid The Wayback web identifier.
+	 * @return The CDX entry for Wayback WID.
 	 */
 	CDXEntry retrieveCDX(WaybackWID wid);
 	
 	/**
 	 * Retrieves all the CDX indices for the a given URL
 	 * 
-	 * @param URL The url to retrieve all the CDX indices for.
+	 * @param url The url to retrieve all the CDX indices for.
 	 * @return The collection of CDX indices for the URL.
 	 */
-	Collection<CDXEntry> retrieveAllCDX(String URL);
+	Collection<CDXEntry> retrieveAllCDX(String url);
 }

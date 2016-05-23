@@ -10,5 +10,5 @@ public interface WidReader {
 	 * Reads its source and extracts all the WIDs.
 	 * @return The WIDs.
 	 */
-	public Collection<WID> extractAllWIDs();
+	Collection<WID> extractAllWIDs();
 }

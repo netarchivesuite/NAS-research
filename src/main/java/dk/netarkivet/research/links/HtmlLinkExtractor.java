@@ -64,8 +64,8 @@ public class HtmlLinkExtractor implements LinkExtractor {
         
         try {
             p.setInputHTML(htmlContent);
-            list = p.extractAllNodesThatMatch (filter);
-            for (int i = 0; i < list.size (); i++) {
+            list = p.extractAllNodesThatMatch(filter);
+            for(int i = 0; i < list.size(); i++) {
                 LinkTag n = (LinkTag) list.elementAt(i);
                 URL url = extractUrlForLink(n);
                 if(url != null) {

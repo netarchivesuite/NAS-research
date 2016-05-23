@@ -4,6 +4,10 @@ import java.util.Date;
 
 import dk.netarkivet.research.utils.DateUtils;
 
+/**
+ * Simple Webresource IDentifier.
+ * May contain any or all the elements; webarchive, url and date.
+ */
 public class SimpleWID implements WID {
 
 	/** The webarchive for the WPID.*/

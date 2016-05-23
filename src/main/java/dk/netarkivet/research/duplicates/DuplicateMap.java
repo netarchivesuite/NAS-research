@@ -28,8 +28,8 @@ public class DuplicateMap {
 	
 	/**
 	 * Adds an element to the map.
-	 * @param date The date in millis from epoc.
-	 * @param checksum The checksum string.
+	 * @param entry The CDX entry.
+	 * @param jobInfo The Harvest Job Info for the CDX entry.
 	 */
 	public void addElement(CDXEntry entry, HarvestJobInfo jobInfo) {
 		dateMap.put(entry.getDate(), entry);

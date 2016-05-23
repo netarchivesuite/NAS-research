@@ -25,23 +25,23 @@ import dk.netarkivet.research.cdx.CDXEntry;
  */
 public class WarcPacker {
 	/** The log.*/
-	private static Logger logger = LoggerFactory.getLogger(CDXEntry.class);
+	private static Logger logger = LoggerFactory.getLogger(WarcPacker.class);
 
     /** Default date element for the warc file name. Null for no date element.*/
-    private final static Date DEFAULT_WARC_FILENAME_DATE = null;
+	protected static final Date DEFAULT_WARC_FILENAME_DATE = null;
     /** Default hostname element for the warc file name. Null for no hostname element.*/
-    private final static String DEFAULT_WARC_FILENAME_HOSTNAME = null;
+    protected static final String DEFAULT_WARC_FILENAME_HOSTNAME = null;
     /** Default extension for the warc file. Null for no extension.*/
-    private final static String DEFAULT_WARC_FILENAME_EXTENSION = null;
+    protected static final String DEFAULT_WARC_FILENAME_EXTENSION = null;
     /** Whether or not to compress the warc file.*/
-    public final static Boolean DEFAULT_COMPRESS = false;
+    protected static final Boolean DEFAULT_COMPRESS = false;
     /** Whether or not to overwrite existing files.*/
-    private final static Boolean DEFAULT_OVERWRITE = false;
+    protected static final Boolean DEFAULT_OVERWRITE = false;
     
 	/** The archive extractor for extracting warc-records from the archive.*/
-    private final ArchiveExtractor archive;
+    protected final ArchiveExtractor archive;
     /** Whether or not to compress the warc-file.*/
-    private final Boolean useCompression;
+    protected final Boolean useCompression;
     
     /**
      * Constructor.

@@ -5,6 +5,9 @@ import java.io.IOException;
 
 import dk.netarkivet.research.cdx.CDXEntry;
 
+/**
+ * Extracts data from an archive.
+ */
 public interface ArchiveExtractor {
 	/**
      * Extract the WARC-record from archive.
@@ -12,5 +15,5 @@ public interface ArchiveExtractor {
      * @return a File object The WARC-record
      * @throws IOException If the extraction fails.
      */
-    public File extractWarcRecord(CDXEntry index) throws IOException;
+    File extractWarcRecord(CDXEntry index) throws IOException;
 }

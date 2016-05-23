@@ -85,7 +85,7 @@ public class CsvWidReader implements WidReader {
 	 * @return The WPID, or null if the line does not have the right format.
 	 */
 	protected WID extractWID(String line) {
-		String split[] = line.split("[;,]");
+		String[] split = line.split("[;,]");
 		
 		// Ignore, if it is an empty line
 		if(split.length == 0) {

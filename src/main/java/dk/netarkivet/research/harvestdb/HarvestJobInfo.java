@@ -33,13 +33,13 @@ public class HarvestJobInfo {
 	/**
 	 * Constructor.
 	 * @param nasJob A NAS job from the harvest database.
+	 * @param nasHd A harvest definition from the NAS harvest database.
 	 */
 	public HarvestJobInfo(Job nasJob, HarvestDefinition nasHd) {
 		this.id = nasJob.getJobID();
 		this.type = nasJob.isSnapshot() ? "snapshot" : "selective/event";
 		this.status = nasJob.getStatus().name();
 		this.name = nasHd.getName();
-//		nasJob.get
 	}
 	
 	/**

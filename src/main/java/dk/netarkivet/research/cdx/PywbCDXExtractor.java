@@ -22,7 +22,7 @@ import dk.netarkivet.research.wid.WPID;
  */
 public class PywbCDXExtractor extends AbstractCDXExtractor {
 	/** The log.*/
-	private static Logger logger = LoggerFactory.getLogger(CDXEntry.class);
+	private static Logger logger = LoggerFactory.getLogger(PywbCDXExtractor.class);
 
 	/** The prefix for the URL argument in the HTTP request.*/
 	protected static final String URL_ARGUMENT_PREFIX = "url=";
@@ -54,7 +54,7 @@ public class PywbCDXExtractor extends AbstractCDXExtractor {
 	
 	/** The prefix for the URL argument in the HTTP request.*/
 	private final String cdxUrl;
-	
+	/** The HTTP retriever, for communicating with the CDX server.*/
 	protected final HttpRetriever httpRetriever;
 	
 	/**
@@ -169,7 +169,7 @@ public class PywbCDXExtractor extends AbstractCDXExtractor {
 		}
 
 		for(int i = 0; i < format.length; i++) {
-				res.put(format[i], cdxLineSplit[i]);
+			res.put(format[i], cdxLineSplit[i]);
 		}
 		return res;
 	}

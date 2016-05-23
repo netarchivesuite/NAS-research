@@ -10,6 +10,9 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Class for encapsulating HTTP methods.
+ */
 public class HttpRetriever {
 	/** The log.*/
 	private static Logger logger = LoggerFactory.getLogger(HttpRetriever.class);
@@ -32,7 +35,8 @@ public class HttpRetriever {
 			
 			HttpResponse response = httpClient.execute(httpGet);
 			if(response.getStatusLine().getStatusCode() != 200) {
-				logger.warn("Failed to retrieve data. Received response code " + response.getStatusLine().getStatusCode());
+				logger.warn("Failed to retrieve data. Received response code " 
+						+ response.getStatusLine().getStatusCode());
 				return null;
 			}
 			

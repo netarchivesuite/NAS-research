@@ -19,6 +19,7 @@ public class NasHarvestJobExtractor implements HarvestJobExtractor {
 
 	/** The harvest job database.*/
 	private final JobDAO jobDb;
+	/** The harvest definition database.*/
 	private final HarvestDefinitionDAO harvestDb;
 	
 	/**
