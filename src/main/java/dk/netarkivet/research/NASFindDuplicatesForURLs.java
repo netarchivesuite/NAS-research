@@ -46,6 +46,7 @@ public class NASFindDuplicatesForURLs {
 			System.err.println(" 1. Input file, containing lines where the first element is the URL to search for");
 			System.err.println(" 2. the base URL to the CDX-server.");
 			System.err.println(" 3. (OPTIONAL) output directory, otherwise it is printed.");
+			System.err.println(" 4. (OPTIONAL) whether or not to use the actual job database.");
 			throw new IllegalArgumentException();
 		}
 
@@ -65,8 +66,14 @@ public class NASFindDuplicatesForURLs {
 		File outDir;
 		outDir = FileUtils.createDir( args.length > 2 ? args[2] : ".");
 
+		HarvestJobExtractor jobExtractor;
+		if(args.length > 3 && args[3].startsWith("y")) {
+			jobExtractor = null;
+		} else {
+			jobExtractor = new NasHarvestJobExtractor();
+		}
+		
 		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerBaseUrl, new HttpRetriever());
-		HarvestJobExtractor jobExtractor = new NasHarvestJobExtractor();
 		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor, jobExtractor);
 
 		NASFindDuplicatesForURLs findDuplicates = new NASFindDuplicatesForURLs(duplicateExtractor, inputFile, outDir);

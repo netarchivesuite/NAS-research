@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.harvestdb.HarvestJobExtractor;
+import dk.netarkivet.research.harvestdb.HarvestJobInfo;
 import dk.netarkivet.research.utils.DateUtils;
 
 /**
@@ -23,7 +24,7 @@ public class DuplicateExtractor {
 	/** The CDX extractor.*/
 	protected final CDXExtractor cdxExtractor;
 	/** The Harvest Job extractor.*/
-	protected final HarvestJobExtractor jobExtractor;
+	protected HarvestJobExtractor jobExtractor;
 	
 	/**
 	 * Constructor.
@@ -50,7 +51,7 @@ public class DuplicateExtractor {
 		
 		for(CDXEntry entry : cdxs) {
 			if(DateUtils.checkDateInterval(entry, earliestDate, latestDate)) {
-				res.addElement(entry, jobExtractor.extractJob(getJobID(entry)));
+				res.addElement(entry, extractJobInfo(entry));
 			}
 		}
 		
@@ -58,11 +59,14 @@ public class DuplicateExtractor {
 	}
 	
 	/**
-	 * Extracts the harvest job id from the filename in the CDX entry.
+	 * Extracts the harvest job info for the harvest job id in the filename in the CDX entry.
 	 * @param entry The CDX entry.
-	 * @return The harvest job id. Or null if the filename does not contain
+	 * @return The harvest job info. Or null if something goes wrong, e.g. malformed filename or missing extractor.
 	 */
-	protected Long getJobID(CDXEntry entry) {
+	protected HarvestJobInfo extractJobInfo(CDXEntry entry) {
+		if(jobExtractor == null) {
+			return null;
+		}
 		String filename = entry.getFilename();
 		if(filename == null || filename.isEmpty()) {
 			return null;
@@ -71,7 +75,7 @@ public class DuplicateExtractor {
 			logger.warn("CDXEntry with odd filename: " + filename);
 			return null;
 		}
-		String res = filename.split("[-]")[0];
-		return Long.parseLong(res);
+		Long jobId = Long.parseLong(filename.split("[-]")[0]);
+		return jobExtractor.extractJob(jobId);
 	}
 }

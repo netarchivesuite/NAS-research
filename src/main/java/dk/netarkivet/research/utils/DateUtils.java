@@ -29,7 +29,7 @@ public class DateUtils {
 	
 	/** The date format for the */
 	protected static final List<String> WAYBACK_DATE_FORMATS = Collections.unmodifiableList(Arrays.asList(
-			"YYYY-MM-DD hh:mm:ss", "YYYY-MM-DD hh:mm"));
+			"YYYY-MM-DD hh:mm:ss", "YYYY-MM-DD hh:mm", "DD-MM-YYYY"));
 
 	/** Basic <code>DateFormat</code> is not thread safe. */
 	protected static final ThreadLocal<DateFormat> CDX_DATE_PARSER_THREAD = new ThreadLocal<DateFormat>() {

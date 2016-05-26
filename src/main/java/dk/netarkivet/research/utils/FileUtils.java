@@ -59,7 +59,7 @@ public class FileUtils {
 			throw new IllegalArgumentException("The location for the output file is not vacent.");
 		} else {
 			boolean dirSuccess= outDir.mkdirs();
-			if(!dirSuccess) {
+			if(!dirSuccess && !outDir.isDirectory()) {
 				throw new IllegalArgumentException("Cannot create the directory '" + dirPath + "'.");
 			}
 		}

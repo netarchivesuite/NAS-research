@@ -5,7 +5,7 @@ ProgDir=`dirname "$0"`
 MAIN_CLASS=dk.netarkivet.research.NASFindDuplicatesForURLs
 
 if [ -z "${NAS_SETTINGS}" ]; then
-  $NAS_SETTINGS=${assembly.config.env.name}/settings.xml
+  NAS_SETTINGS=$${assembly.config.env.name}/settings.xml
   if [ ! -f "${NAS_SETTINGS}" ]; then
     echo "A NAS settings file is needed. Either use environment variable \$NAS_SETTINGS or place it in $NAS_SETTINGS" 
     exit -1;

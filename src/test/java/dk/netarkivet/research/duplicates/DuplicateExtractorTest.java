@@ -1,11 +1,11 @@
 package dk.netarkivet.research.duplicates;
 
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
@@ -20,6 +20,7 @@ import dk.netarkivet.research.cdx.CDXConstants;
 import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.harvestdb.HarvestJobExtractor;
+import dk.netarkivet.research.harvestdb.HarvestJobInfo;
 import dk.netarkivet.research.utils.DateUtils;
 
 public class DuplicateExtractorTest extends ExtendedTestCase {
@@ -34,6 +35,8 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 			CDXEntry.createCDXEntry(new String[] {"https://netarkivet.dk", "20160606060606", "a9f5f03efdc6d97874959c1e838f1343"}, new Character[] {'A', 'b', 'k'})
 			);
 	
+	HarvestJobInfo testHarvestJobInfo = new HarvestJobInfo(3715L, "type", "status", "name");
+	
 	@Test
 	public void testDuplicate() throws Exception {
 		CDXExtractor extractor = mock(CDXExtractor.class);
@@ -47,63 +50,81 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 		assertEquals(map.getDateToChecksumMap().size(), testEntries.size());
 		
 		verify(extractor).retrieveAllCDX(eq(testUrl));
-		verify(jobExtractor, times(6)).extractJob((Long) eq(null));
+		verifyZeroInteractions(jobExtractor);
 	}
 	
 	@Test
-	public void testJobIDExtractorSuccess() {
+	public void testJobInfoExtractorSuccess() {
 		addDescription("Testing the extraction of a JOB id from a CDX when the filename is properly formatted.");
 		CDXEntry entry = CDXEntry.createCDXEntry(new String[] {"https://netarkivet.dk", "20160606060606", "a9f5f03efdc6d97874959c1e838f1343", "3715-167-20120811062241-00003-sb-test-har-001.statsbiblioteket.dk.arc"}, 
 				new Character[] {'A', 'b', 'k', CDXConstants.CDX_CHAR_FILE_NAME});
 
 		CDXExtractor extractor = mock(CDXExtractor.class);
 		HarvestJobExtractor jobExtractor = mock(HarvestJobExtractor.class);
+		when(jobExtractor.extractJob(eq(3715L))).thenReturn(testHarvestJobInfo);
 
 		DuplicateExtractor finder = new DuplicateExtractor(extractor, jobExtractor);
-		Long l = finder.getJobID(entry);
-		assertEquals(3715L, l.longValue());
+		HarvestJobInfo hji = finder.extractJobInfo(entry);
+		assertEquals(3715L, hji.getId().longValue());
 	}
 
 	@Test
-	public void testJobIDExtractorNoFilenameFailure() {
+	public void testJobInfoExtractorNoFilenameFailure() {
 		addDescription("Testing the extraction of a JOB id from a CDX, when the filename is missing");
 		CDXEntry entry = CDXEntry.createCDXEntry(new String[] {"https://netarkivet.dk", "20160606060606", "a9f5f03efdc6d97874959c1e838f1343"}, 
 				new Character[] {'A', 'b', 'k'});
 
 		CDXExtractor extractor = mock(CDXExtractor.class);
 		HarvestJobExtractor jobExtractor = mock(HarvestJobExtractor.class);
+		when(jobExtractor.extractJob(eq(3715L))).thenReturn(testHarvestJobInfo);
 
 		DuplicateExtractor finder = new DuplicateExtractor(extractor, jobExtractor);
-		Long l = finder.getJobID(entry);
-		assertNull(l);
+		HarvestJobInfo hji = finder.extractJobInfo(entry);
+		assertNull(hji);
 	}
 
 	@Test
-	public void testJobIDExtractorBadFilenameFormatFailure() {
+	public void testJobInfoExtractorBadFilenameFormatFailure() {
 		addDescription("Testing the extraction of a JOB id from a CDX, when the filename does not have a default format");
 		CDXEntry entry = CDXEntry.createCDXEntry(new String[] {"https://netarkivet.dk", "20160606060606", "a9f5f03efdc6d97874959c1e838f1343", "ThisIsASillyFilename.arc"}, 
 				new Character[] {'A', 'b', 'k', CDXConstants.CDX_CHAR_FILE_NAME});
 
 		CDXExtractor extractor = mock(CDXExtractor.class);
 		HarvestJobExtractor jobExtractor = mock(HarvestJobExtractor.class);
+		when(jobExtractor.extractJob(eq(3715L))).thenReturn(testHarvestJobInfo);
 
 		DuplicateExtractor finder = new DuplicateExtractor(extractor, jobExtractor);
-		Long l = finder.getJobID(entry);
-		assertNull(l);
+		HarvestJobInfo hji = finder.extractJobInfo(entry);
+		assertNull(hji);
 	}
 
 	@Test
-	public void testJobIDExtractorEmptyFilenameFormatFailure() {
+	public void testJobInfoExtractorEmptyFilenameFormatFailure() {
 		addDescription("Testing the extraction of a JOB id from a CDX, when the filename is empty");
 		CDXEntry entry = CDXEntry.createCDXEntry(new String[] {"https://netarkivet.dk", "20160606060606", "a9f5f03efdc6d97874959c1e838f1343", ""}, 
 				new Character[] {'A', 'b', 'k', CDXConstants.CDX_CHAR_FILE_NAME});
 
 		CDXExtractor extractor = mock(CDXExtractor.class);
 		HarvestJobExtractor jobExtractor = mock(HarvestJobExtractor.class);
+		when(jobExtractor.extractJob(eq(3715L))).thenReturn(testHarvestJobInfo);
 
 		DuplicateExtractor finder = new DuplicateExtractor(extractor, jobExtractor);
-		Long l = finder.getJobID(entry);
-		assertNull(l);
+		HarvestJobInfo hji = finder.extractJobInfo(entry);
+		assertNull(hji);
+	}
+
+	@Test
+	public void testJobInfoExtractorNull() {
+		addDescription("Testing the extraction of a JOB id from a CDX, when the filename is empty");
+		CDXEntry entry = CDXEntry.createCDXEntry(new String[] {"https://netarkivet.dk", "20160606060606", "a9f5f03efdc6d97874959c1e838f1343", ""}, 
+				new Character[] {'A', 'b', 'k', CDXConstants.CDX_CHAR_FILE_NAME});
+
+		CDXExtractor extractor = mock(CDXExtractor.class);
+		HarvestJobExtractor jobExtractor = null;
+
+		DuplicateExtractor finder = new DuplicateExtractor(extractor, jobExtractor);
+		HarvestJobInfo hji = finder.extractJobInfo(entry);
+		assertNull(hji);
 	}
 	
 	@Test

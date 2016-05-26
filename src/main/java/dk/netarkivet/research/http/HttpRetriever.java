@@ -29,8 +29,7 @@ public class HttpRetriever {
 	 * @return The response, or null if it is a bad response or an exception was thrown.
 	 */
 	public String retrieveFromUrl(String url) {
-		try {
-			CloseableHttpClient httpClient = HttpClients.createDefault();
+		try (CloseableHttpClient httpClient = HttpClients.createDefault();){
 			HttpGet httpGet = new HttpGet(url);
 			
 			HttpResponse response = httpClient.execute(httpGet);

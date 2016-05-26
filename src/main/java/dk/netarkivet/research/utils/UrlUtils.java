@@ -46,6 +46,20 @@ public class UrlUtils {
 	}
 	
 	/**
+	 * Strips both the protocol and the wwww from the URL.
+	 * Will also handle www with numbers, e.g. http://www1.test.com will become test.com
+	 * @param url The URL to strip.
+	 * @return The stripped URL.
+	 */
+	public static String stripProtocolAndWWW(String url) {
+		String res = stripProtocol(url);
+		if(res.startsWith("www")) {
+			res = res.replaceFirst("www[0-9]*[\\.]", "");
+		}
+		return res;
+	}
+	
+	/**
 	 * Strips the protocol from the URL.
 	 * E.g. http://example.com would become example.com
 	 * @param url The URL to strip the protocol from.

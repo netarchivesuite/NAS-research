@@ -62,7 +62,7 @@ public class CDXConstants {
 	public static final char CDX_CHAR_UNCOMPRESSED_ARC_FILE_OFFSET = 'v';
 
 	/** The default order of CDX char arguments for a NAS CDX file.*/
-	public static final char[] DEFAULT_CDX_CHAR_FORMAT = new char[]{
+	public static final Character[] DEFAULT_CDX_CHAR_FORMAT = new Character[]{
 			CDXConstants.CDX_CHAR_ORIGINAL_URL,
 			CDXConstants.CDX_CHAR_DATE,
 			CDXConstants.CDX_CHAR_FILE_NAME,
