@@ -26,7 +26,6 @@ import dk.netarkivet.research.wid.WidReader;
  * 
  * It translates the CSV file into WPIDS, which are extracted as CDX indices from a CDXServer.
  * The WARC records can be extracted from another tool.
- * 
  */
 public class NASExtractCDXFromCSV {
 	

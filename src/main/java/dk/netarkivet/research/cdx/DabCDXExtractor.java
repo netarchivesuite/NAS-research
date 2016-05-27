@@ -49,6 +49,14 @@ public class DabCDXExtractor extends AbstractCDXExtractor {
 					CDXConstants.CDX_CHAR_REDIRECT,
 					CDXConstants.CDX_CHAR_COMPRESSED_ARC_FILE_OFFSET,
 					CDXConstants.CDX_CHAR_FILE_NAME));
+	
+	/**
+	 * Retrieves the default CDX format for this extractor.
+	 * @return The default CDX format.
+	 */
+	public static Collection<Character> getDefaultCDXFormat() {
+		return Collections.unmodifiableList(CDX_FORMAT_CHARS);
+	}
 
 	/** The prefix for the URL argument in the HTTP request.*/
 	private final String cdxUrl;

@@ -148,6 +148,7 @@ public class CDXEntry {
 			
 			res.append(" ");
 		}
+		res.append("\n");
 		return res.toString();
 	}
 	
