@@ -25,11 +25,15 @@ public class TestFileUtils {
 	}
 
 	public static File createTestFile(File dir, String content) throws Exception {
-		File testFile = new File(dir, "test");
+		return TestFileUtils.createTestFile(dir, "test", content);
+	}
+	
+	public static File createTestFile(File dir, String name, String content) throws Exception {
+		File testFile = new File(dir, name);
 		try (FileOutputStream fos = new FileOutputStream(testFile)) {
 			fos.write(content.getBytes());
 		}
-		return testFile;
+		return testFile;		
 	}
 
 	public static Collection<String> readFile(File f) {
