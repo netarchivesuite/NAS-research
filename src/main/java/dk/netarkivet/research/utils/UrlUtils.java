@@ -1,6 +1,8 @@
 package dk.netarkivet.research.utils;
 
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 import dk.netarkivet.research.exception.ArgumentCheck;
 
@@ -100,4 +102,34 @@ public class UrlUtils {
 		int lastSlash = url.lastIndexOf("/");
 		return url.substring(0, lastSlash+1);
 	}
+	
+    /**
+     * Looks up the IP number of the local host. Note that Java does not guarantee that the result is IPv4 or IPv6.
+     * @return the found IP; returns "n/a" if it could not be found.
+     */
+    public static String getLocalIP() {
+        String result = null;
+        try {
+            result = InetAddress.getLocalHost().getHostAddress();
+        }
+        catch (UnknownHostException e) {
+        }
+        return result;
+    }
+    
+    /**
+     * Get the first hostname available for this machine, or "localhost" if none are available.
+     * @return A hostname, as returned by InetAddress.getLocalHost().getCanonicalHostName()()
+     */
+    public static String getLocalHostName() {
+        String hostname = null;
+        try {
+            InetAddress localhost = InetAddress.getLocalHost();
+            String localhostName = localhost.getCanonicalHostName();
+            return localhostName;
+        }
+        catch (UnknownHostException e) {
+        }
+        return hostname;
+    }
 }

@@ -44,6 +44,7 @@ public class CDXFileReader {
     	    while ((line = br.readLine()) != null) {
     	    	CDXEntry entry = CDXEntry.createCDXEntry(line.split(" "), cdxFormat);
     	    	if(entry != null) {
+    	    		logger.info(entry.toString());
     	    		res.add(entry);
     	    	}
     	    }

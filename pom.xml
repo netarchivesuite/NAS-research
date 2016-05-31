@@ -32,6 +32,11 @@
 			<version>${jwat.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.jwat</groupId>
+			<artifactId>jwat-archive</artifactId>
+			<version>${jwat.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.netarchivesuite</groupId>
 			<artifactId>archive-core</artifactId>
 			<version>${netarchivesuite.version}</version>

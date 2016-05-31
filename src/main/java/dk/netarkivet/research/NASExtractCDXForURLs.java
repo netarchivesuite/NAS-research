@@ -102,7 +102,7 @@ public class NASExtractCDXForURLs {
 			while((line = reader.readLine()) != null) {
 				String[] split = line.split("[;,]");
 				if(split != null && split.length > 0 && ("x".equalsIgnoreCase(split[0]) || "w".equalsIgnoreCase(split[0]))) {
-					makeDuplicateFilesForCSVLine(split);
+					extractCDXsForCSVLine(split);
 				} else {
 					logger.debug("Ignoring line: " + line);
 				}
@@ -121,7 +121,7 @@ public class NASExtractCDXForURLs {
 	 * @param split The CSV line in the format "x;url;earliest date;latest date" - with both dates as optional. 
 	 * @param outDir The directory where the output files should be placed.
 	 */
-	protected void makeDuplicateFilesForCSVLine(String[] split) 
+	protected void extractCDXsForCSVLine(String[] split) 
 			throws IOException {
 		String url = split[1];
 		Date earliestDate = null;
@@ -132,6 +132,9 @@ public class NASExtractCDXForURLs {
 				latestDate = DateUtils.extractCsvDate(split[3]);
 			}
 		}
+		
+		logger.info("Extracting CDX indices for '" + url + "' in the time interval '" + earliestDate + "' to '" 
+				+ latestDate + "'");
 
 		Collection<CDXEntry> entries = extractor.retrieveCDXForInterval(url, earliestDate, latestDate);
 		String urlFilename = UrlUtils.fileEncodeUrl(url);

@@ -54,6 +54,10 @@ public class NASExtractWarcFromCDX {
             ArchiveExtractor extractor = new NASArchiveExtractor(arcRepositoryClient);
             WarcPacker warcPacker = new WarcPacker(extractor);
             warcPacker.extractToWarc(cdxEntries, outDir);
+            arcRepositoryClient.close();
+            
+            System.out.println("Finished");
+            System.exit(0);
     	} catch (IOException e) {
     		e.printStackTrace(System.err);
     		System.exit(-1);

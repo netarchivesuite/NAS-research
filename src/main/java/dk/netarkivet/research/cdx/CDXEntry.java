@@ -1,6 +1,7 @@
 package dk.netarkivet.research.cdx;
 
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,6 +23,29 @@ public class CDXEntry {
 	/** The log.*/
 	private static Logger logger = LoggerFactory.getLogger(CDXEntry.class);
 
+	/**
+	 * Instantiation method.
+	 * @param cdxLine Array of CDX values.
+	 * @param format Array of the format for the CDX value.
+	 * @return The CDX entry, or null if it failed to 
+	 */
+	public static CDXEntry createCDXEntry(String[] cdxLine, Character[] format) {
+		if (cdxLine.length != format.length) {
+			logger.warn("CDX line ('" + cdxLine.length + "') and CDX format ('" + format.length + "') does not have "
+					+ "same size.");
+			return null;
+		}
+		
+		Map<Character, String> cdxMapping = new HashMap<Character, String>();
+		for(int i = 0; i < cdxLine.length; i++) {
+			if(format[i] != ' ') {
+				cdxMapping.put(format[i], cdxLine[i]);
+			}
+		}
+		
+		return createCDXEntry(cdxMapping);
+	}
+	
 	/** CDX element A or N. */
 	protected String urlNorm;
 	/** CDX element b. */
@@ -57,6 +81,9 @@ public class CDXEntry {
 	}
 	/** @return CDX element b. */
 	public Long getDate() {
+		if(date == null) {
+			return 0L;
+		}
 		return date;
 	}
 	/** @return CDX element e. */
@@ -73,6 +100,9 @@ public class CDXEntry {
 	}
 	/** @return CDX element s. */
 	public Integer getStatusCode() {
+		if(statusCode == null) {
+			return 200;
+		}
 		return statusCode;
 	}
 	/** @return CDX element c or k. */
@@ -81,10 +111,16 @@ public class CDXEntry {
 	}
 	/** @return CDX element v or V. */
 	public Long getOffset() {
+		if(offset == null) {
+			return 0L;
+		}
 		return offset;
 	}
 	/** @return CDX element n. */
 	public Long getLength() {
+		if(length == null) {
+			return 0L;
+		}
 		return length;
 	}
 	/** @return CDX element g. */
@@ -106,40 +142,40 @@ public class CDXEntry {
 		for(Character c : charKeys) {
 			switch(c) {
 			case CDXConstants.CDX_CHAR_DATE:
-				res.append(DateUtils.dateToWaybackDate(new Date(date)));
+				addCDXElementToStringBuffer(DateUtils.dateToWaybackDate(new Date(getDate())), res);
 				break;
 			case CDXConstants.CDX_CHAR_IP:
-				res.append(ip);
+				addCDXElementToStringBuffer(ip, res);
 				break;
 			case CDXConstants.CDX_CHAR_CANONIZED_URL:
 			case CDXConstants.CDX_CHAR_MASSAGED_URL:
-				res.append(urlNorm);
+				addCDXElementToStringBuffer(urlNorm, res);
 				break;
 			case CDXConstants.CDX_CHAR_ORIGINAL_URL:
-				res.append(url);
+				addCDXElementToStringBuffer(url, res);
 				break;
 			case CDXConstants.CDX_CHAR_MIME_TYPE:
-				res.append(contentType);
+				addCDXElementToStringBuffer(contentType, res);
 				break;
 			case CDXConstants.CDX_CHAR_RESPONSE_CODE:
-				res.append(statusCode.toString());
+				addCDXElementToStringBuffer(statusCode, res);
 				break;
 			case CDXConstants.CDX_CHAR_OLD_STYLE_CHECKSUM:
 			case CDXConstants.CDX_CHAR_NEW_STYLE_CHECKSUM:
-				res.append(digest);
+				addCDXElementToStringBuffer(digest, res);
 				break;
 			case CDXConstants.CDX_CHAR_COMPRESSED_ARC_FILE_OFFSET:
 			case CDXConstants.CDX_CHAR_UNCOMPRESSED_ARC_FILE_OFFSET:
-				res.append(offset.toString());
+				addCDXElementToStringBuffer(offset, res);
 				break;
 			case CDXConstants.CDX_CHAR_ARC_DOCUMENT_LENGTH:
-				res.append(length.toString());
+				addCDXElementToStringBuffer(length, res);
 				break;
 			case CDXConstants.CDX_CHAR_FILE_NAME:
-				res.append(filename);
+				addCDXElementToStringBuffer(filename, res);
 				break;
 			case CDXConstants.CDX_CHAR_REDIRECT:
-				res.append(redirect);
+				addCDXElementToStringBuffer(redirect, res);
 				break;
 			default:
 				logger.warn("Cannot handle cdx element '" + c + "'.");
@@ -221,26 +257,18 @@ public class CDXEntry {
 		return cdxEntry;
 	}
 
-	/**
-	 * Instantiation method.
-	 * @param cdxLine Array of CDX values.
-	 * @param format Array of the format for the CDX value.
-	 * @return The CDX entry, or null if it failed to 
-	 */
-	public static CDXEntry createCDXEntry(String[] cdxLine, Character[] format) {
-		if (cdxLine.length != format.length) {
-			logger.warn("CDX line ('" + cdxLine.length + "') and CDX format ('" + format.length + "') does not have "
-					+ "same size.");
-			return null;
+	private void addCDXElementToStringBuffer(Object element, StringBuilder sb) {
+		if(element == null) {
+			sb.append("-");
+		} else if(element instanceof String) {
+			sb.append(element);
+		} else {
+			sb.append(element.toString());
 		}
-		
-		Map<Character, String> cdxMapping = new HashMap<Character, String>();
-		for(int i = 0; i < cdxLine.length; i++) {
-			if(format[i] != ' ') {
-				cdxMapping.put(format[i], cdxLine[i]);
-			}
-		}
-		
-		return createCDXEntry(cdxMapping);
+	}
+	
+	@Override
+	public String toString() {
+		return extractCDXAsLine(Arrays.asList(CDXConstants.DEFAULT_CDX_CHAR_FORMAT));
 	}
 }

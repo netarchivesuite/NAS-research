@@ -1,13 +1,25 @@
 package dk.netarkivet.research.warc;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 
+import org.jwat.archive.ManagedPayload;
+import org.jwat.common.ANVLRecord;
+import org.jwat.common.Base32;
+import org.jwat.common.ContentType;
+import org.jwat.common.HttpHeader;
+import org.jwat.common.Payload;
 import org.jwat.common.RandomAccessFileInputStream;
+import org.jwat.common.Uri;
 import org.jwat.warc.WarcConstants;
+import org.jwat.warc.WarcDigest;
 import org.jwat.warc.WarcFileNaming;
 import org.jwat.warc.WarcFileNamingDefault;
 import org.jwat.warc.WarcFileWriter;
@@ -19,6 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dk.netarkivet.research.cdx.CDXEntry;
+import dk.netarkivet.research.utils.ChecksumUtils;
+import dk.netarkivet.research.utils.UrlUtils;
 
 /**
  * Packing WARC files by using CDX entries to extract records from the archive.
@@ -42,6 +56,8 @@ public class WarcPacker {
     protected final ArchiveExtractor archive;
     /** Whether or not to compress the warc-file.*/
     protected final Boolean useCompression;
+    /** The URI for the warc info.*/
+    protected Uri currentWarcInfoUUID;
     
     /**
      * Constructor.
@@ -84,10 +100,13 @@ public class WarcPacker {
         	for (CDXEntry cdxEntry : entries) {
         		if (warcFileWriter.nextWriter()) {
         			warcWriter = warcFileWriter.getWriter();
+        			writeInfoRecord(warcFileWriter);
         		}
         		File resultFile = archive.extractWarcRecord(cdxEntry); 
-        		writeWarcRecord(warcWriter, resultFile, cdxEntry);
-        		resultFile.delete();
+        		if(resultFile != null) {
+        			writeWarcRecord(warcWriter, resultFile, cdxEntry);
+        			resultFile.delete();
+        		}
         	}
         	warcFileWriter.close();
         } catch (Throwable t) {
@@ -96,24 +115,92 @@ public class WarcPacker {
     }
     
     /**
-     * Write a given warc-record to the warc-file through the warc-writer.
+     * Write a warc-record to the warc-file through the warc-writer.
      * @param warcWriter The warc writer for writing the warc record to the warc file.
-     * @param warcRecordFile The file containing the warc-record.
+     * @param payloadFile The file containing the payload for the warc-record.
      * @param cdxEntry The CDX entry for the warc-record.
      * @throws IOException If it fails to write the warc-record to the warc-file.
      */
-    private void writeWarcRecord(WarcWriter warcWriter, File warcRecordFile, CDXEntry cdxEntry) throws IOException {
-    	try (RandomAccessFile payloadRaf = new RandomAccessFile(warcRecordFile, "r");
+    private void writeWarcRecord(WarcWriter warcWriter, File payloadFile, CDXEntry cdxEntry) throws IOException {
+    	try (RandomAccessFile payloadRaf = new RandomAccessFile(payloadFile, "r");
     			RandomAccessFileInputStream payloadRafin = new RandomAccessFileInputStream(payloadRaf);
     			) {
     		WarcRecord warcRecord = WarcRecord.createRecord(warcWriter);
     		WarcHeader warcHeader = warcRecord.header;
-    		warcHeader.addHeader(WarcConstants.FN_CONTENT_LENGTH, warcRecordFile.length(), null);
-    		warcHeader.addHeader(WarcConstants.FN_CONTENT_TYPE, cdxEntry.getContentType());
+        	ManagedPayload managedPayload = ManagedPayload.checkout();
+    		Payload payload = Payload.processPayload(payloadRafin, payloadFile.length(), 16384, null);
+    		HttpHeader httpHeader = HttpHeader.processPayload(HttpHeader.HT_RESPONSE, payload.getInputStream(), payload.getRemaining(), null);
+    		if (httpHeader.isValid()) {
+    			payload.setPayloadHeaderWrapped(httpHeader);
+    		}
+			managedPayload.manageRecord(payload, true);
+
+            Uri recordId;
+            try {
+                recordId = new Uri("urn:uuid:" + UUID.randomUUID().toString());
+            } catch (URISyntaxException e) {
+                throw new IllegalStateException("Epic fail creating URI from UUID!");
+            }
+            warcHeader.warcTypeIdx = WarcConstants.RT_IDX_RESPONSE;
+            warcHeader.addHeader(WarcConstants.FN_WARC_RECORD_ID, recordId, null);
+            warcHeader.addHeader(WarcConstants.FN_WARC_DATE, new Date(), null);
+            warcHeader.addHeader(WarcConstants.FN_WARC_WARCINFO_ID, currentWarcInfoUUID, null);
     		warcHeader.addHeader(WarcConstants.FN_WARC_IP_ADDRESS, cdxEntry.getIP());
-    		warcHeader.addHeader(WarcConstants.FN_WARC_DATE, new Date(cdxEntry.getDate()), null);
-    		warcWriter.writeHeader(warcRecord);
-    		warcWriter.streamPayload(payloadRafin);
+            warcHeader.addHeader(WarcConstants.FN_WARC_TARGET_URI, cdxEntry.getUrl());
+    		warcHeader.addHeader(WarcConstants.FN_CONTENT_LENGTH, payloadFile.length(), null);
+    		warcHeader.addHeader(WarcConstants.FN_CONTENT_TYPE, cdxEntry.getContentType());
+    		
+            if (managedPayload.httpHeaderBytes != null) {
+            	WarcDigest payloadDigest = WarcDigest.createWarcDigest("SHA1", managedPayload.payloadDigestBytes, "Base32", Base32.encodeArray(managedPayload.payloadDigestBytes));
+                warcHeader.addHeader(WarcConstants.FN_WARC_PAYLOAD_DIGEST, payloadDigest, null);
+            }
+            WarcDigest blockDigest = WarcDigest.createWarcDigest("SHA1", managedPayload.blockDigestBytes, "Base32", Base32.encodeArray(managedPayload.blockDigestBytes));
+            warcHeader.addHeader(WarcConstants.FN_WARC_BLOCK_DIGEST, blockDigest, null);
+            warcWriter.writeHeader(warcRecord);
+            if (managedPayload.httpHeaderBytes != null) {
+                warcWriter.writePayload(managedPayload.httpHeaderBytes);
+            }
+            InputStream payIn = managedPayload.getPayloadStream();
+            warcWriter.streamPayload(payIn);
+            payIn.close();
+            managedPayload.close();
     	}
+    }
+    
+    /**
+     * Writes a info record to the WARC file.
+     * @param warcWriter The WARC writer for writing to the WARC file.
+     * @throws IOException If an i/o issue occurs.
+     * @throws URISyntaxException If an URI is malformed.
+     */
+    private void writeInfoRecord(WarcFileWriter warcWriter) throws IOException, URISyntaxException {
+        ANVLRecord infoPayload = new ANVLRecord();
+        infoPayload.addLabelValue("software", "Netarkiv Extract WARC for research projects");
+        infoPayload.addLabelValue("ip", UrlUtils.getLocalIP());
+        infoPayload.addLabelValue("hostname", UrlUtils.getLocalHostName());
+        infoPayload.addLabelValue("conformsTo", "http://bibnum.bnf.fr/WARC/WARC_ISO_28500_version1_latestdraft.pdf");
+        
+        String filename = warcWriter.getFile().getName();
+        if (filename.endsWith(WarcFileWriter.ACTIVE_SUFFIX)) {
+        	filename = filename.substring(0, filename.length() - WarcFileWriter.ACTIVE_SUFFIX.length());
+        }
+        Uri recordId = new Uri("urn:uuid:" + UUID.randomUUID().toString());
+        currentWarcInfoUUID = recordId;
+        byte[] payloadAsBytes = infoPayload.getUTF8Bytes();
+        byte[] digestBytes = ChecksumUtils.sha1Digest(payloadAsBytes);
+        WarcDigest blockDigest = WarcDigest.createWarcDigest("SHA1", digestBytes, "Base32", Base32.encodeArray(digestBytes));
+        WarcRecord record = WarcRecord.createRecord(warcWriter.writer);
+        WarcHeader header = record.header;
+        header.warcTypeIdx = WarcConstants.RT_IDX_WARCINFO;
+        header.addHeader(WarcConstants.FN_WARC_RECORD_ID, recordId, null);
+        header.addHeader(WarcConstants.FN_WARC_DATE, new Date(), null);
+        header.addHeader(WarcConstants.FN_WARC_FILENAME, filename);
+        header.addHeader(WarcConstants.FN_CONTENT_TYPE, ContentType.parseContentType(WarcConstants.CT_APP_WARC_FIELDS), null);
+        header.addHeader(WarcConstants.FN_CONTENT_LENGTH, new Long(payloadAsBytes.length), null);
+        header.addHeader(WarcConstants.FN_WARC_BLOCK_DIGEST, blockDigest, null);
+        warcWriter.writer.writeHeader(record);
+        ByteArrayInputStream bin = new ByteArrayInputStream(payloadAsBytes);
+        warcWriter.writer.streamPayload(bin);
+        warcWriter.writer.closeRecord();
     }
 }

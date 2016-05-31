@@ -30,6 +30,7 @@ public class CDXFileWriter {
 	}
 	
 	public void writeCDXEntries(Collection<CDXEntry> entries, Collection<Character> cdxFormat) {
+		logger.debug("Writing CDX indices to file '" + outputFile.getName() + "'.");
 		try(FileOutputStream fos = new FileOutputStream(outputFile)) {
 			String firstLine = createFirstLine(cdxFormat);
 			fos.write(firstLine.getBytes());
