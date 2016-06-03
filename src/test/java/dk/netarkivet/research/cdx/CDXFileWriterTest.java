@@ -40,7 +40,7 @@ public class CDXFileWriterTest extends ExtendedTestCase {
 	}
 	
     @Test
-    public void testWritingFile() throws Exception {
+    public void testWritingFileWithNoCDXindices() throws Exception {
     	addDescription("Test loading the test cdx file.");
 
     	File outputFile = new File(dirPath, "OutputFile-" + Math.random());
@@ -48,6 +48,10 @@ public class CDXFileWriterTest extends ExtendedTestCase {
     	cfw.writeCDXEntries(new ArrayList<CDXEntry>(), Arrays.asList(CDXConstants.DEFAULT_CDX_CHAR_FORMAT));
     	
     	assertEquals(TestFileUtils.countNumberOfLines(outputFile), 1);
+    }
+    
+    @Test
+    public void testStuff() {
     	
     }
 }

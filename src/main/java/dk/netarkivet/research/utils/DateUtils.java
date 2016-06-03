@@ -132,4 +132,20 @@ public class DateUtils {
 			return new Date(d.getTime());
 		}
 	}
+	
+	/**
+	 * Parses the format: "Sun, 27 May 2007 23:49:43 GMT"
+	 * @param date The string date.
+	 * @return The actual date.
+	 */
+	public static Date extractHttpHeaderDate(String date) {
+        try {
+            DateFormat formatter = new SimpleDateFormat("EEE, DD MMM YYYY hh:mm:ss ZZZ", Locale.ENGLISH);
+            return formatter.parse(date);
+        } catch (ParseException e) {
+            logger.debug("Could not parse the date in the expected format.", e);
+        }
+        return null;
+		
+	}
 }
