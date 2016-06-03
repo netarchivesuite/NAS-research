@@ -29,6 +29,11 @@ public class CDXFileWriter {
 		this.outputFile = outputFile;
 	}
 	
+	/**
+	 * Write CDX entries to the output file in the given CDX format.
+	 * @param entries The CDX entries.
+	 * @param cdxFormat The CDX format.
+	 */
 	public void writeCDXEntries(Collection<CDXEntry> entries, Collection<Character> cdxFormat) {
 		logger.debug("Writing CDX indices to file '" + outputFile.getName() + "'.");
 		try(FileOutputStream fos = new FileOutputStream(outputFile)) {
@@ -46,6 +51,11 @@ public class CDXFileWriter {
 		}
 	}
 	
+	/**
+	 * Creates the first line of the CDX file, which describe the CDX format.
+	 * @param cdxFormat The format in the order of characters.
+	 * @return The first line of the CDX file.
+	 */
 	protected String createFirstLine(Collection<Character> cdxFormat) {
 		StringBuilder res = new StringBuilder();
 		res.append(" CDX");

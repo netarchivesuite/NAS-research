@@ -33,15 +33,10 @@ public class WarcPackerTest extends ExtendedTestCase {
 	
 	File contentFile;
 	
-//	@BeforeClass
-//	public void setup() throws Exception {
-//	}
-	
 	@BeforeMethod
 	public void setupMethod() throws Exception {
 		baseDir = new File(baseDirPath);
 		if(baseDir.exists()) {
-			System.err.println("WHY AM I HERE!!!");
 			TestFileUtils.removeFile(baseDir);
 		}
 		baseDir = FileUtils.createDir(baseDirPath);
@@ -57,10 +52,6 @@ public class WarcPackerTest extends ExtendedTestCase {
 	public void cleanUpMethod() throws Exception {
 		TestFileUtils.removeFile(baseDir);
 	}
-	
-//	@AfterClass
-//	public void cleanUp() throws Exception {
-//	}
 	
 	@Test
 	public void testWarcPackerWithEmptyCDXList() throws Exception {

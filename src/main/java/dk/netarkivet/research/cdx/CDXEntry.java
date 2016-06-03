@@ -256,14 +256,23 @@ public class CDXEntry {
 
 		return cdxEntry;
 	}
-
-	private void addCDXElementToStringBuffer(Object element, StringBuilder sb) {
+	
+	/**
+	 * Adds a CDX element to a string buffer.
+	 * Will add a '-' if the element is null or empty.
+	 * @param element The element to add to the string buffer. 
+	 * @param sb The string buffer where the element should be added.
+	 */
+	protected void addCDXElementToStringBuffer(Object element, StringBuilder sb) {
 		if(element == null) {
 			sb.append("-");
-		} else if(element instanceof String) {
-			sb.append(element);
 		} else {
-			sb.append(element.toString());
+			String s = (element instanceof String) ? (String) element : element.toString();
+			if(s.isEmpty()) {
+				sb.append("-");
+			} else {
+				sb.append(s);
+			}
 		}
 	}
 	
