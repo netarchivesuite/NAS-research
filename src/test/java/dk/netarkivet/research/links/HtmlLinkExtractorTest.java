@@ -1,18 +1,13 @@
 package dk.netarkivet.research.links;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
-import java.text.DateFormat;
 import java.util.Collection;
-import java.util.Date;
-import java.util.Locale;
 
 import org.jaccept.structure.ExtendedTestCase;
 import org.jwat.warc.WarcReader;

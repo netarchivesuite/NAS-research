@@ -3,16 +3,22 @@ package dk.netarkivet.research;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collection;
 
-import org.jwat.common.HeaderLine;
-import org.jwat.warc.WarcConstants;
 import org.jwat.warc.WarcRecord;
 
+import dk.netarkivet.research.cdx.CDXExtractor;
+import dk.netarkivet.research.cdx.DabCDXExtractor;
+import dk.netarkivet.research.http.HttpRetriever;
+import dk.netarkivet.research.links.HtmlLinkExtractor;
+import dk.netarkivet.research.links.LinkExtractor;
+import dk.netarkivet.research.links.LinkStatus;
+import dk.netarkivet.research.links.LinksLocator;
 import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.utils.FileUtils;
-import dk.netarkivet.research.utils.StreamUtils;
-import dk.netarkivet.research.utils.UrlUtils;
 import dk.netarkivet.research.warc.WarcExtractor;
 
 /**
@@ -29,17 +35,20 @@ import dk.netarkivet.research.warc.WarcExtractor;
  * Link URL - The URL for the link, which we are trying to discover.
  * Closest date for the Link URL - 
  */
-public class LinkAnalyser {
+public class NASLinkAnalyser {
 	/**
-	 * 
-	 * @param args
+	 * Main method.
+	 * @param args Arguments. Must have the WARC file as first argument, the second argument
+	 * must be the URL for the DAB cdx-server.
+	 * Can optionally have the output file as third argument.
 	 */
 	public static void main( String[] args ) {
 
-		if(args.length < 1) {
+		if(args.length < 2) {
 			System.err.println("Not enough arguments. Requires the following arguments:");
 			System.err.println(" 1. WARC file");
-			System.err.println(" 2. (OPTIONAL) output file location. Otherwise it will be named after tje WARC file");
+			System.err.println(" 2. URL for the DAB CDX server");
+			System.err.println(" 3. (OPTIONAL) output file location. Otherwise it will be named after the WARC file");
 			System.exit(-1);
 		}
 
@@ -49,10 +58,19 @@ public class LinkAnalyser {
 					+ "(either does not exists or is a directory)");
 			System.exit(-1);
 		}
+		
+		String cdxBaseUrl = args[1];
+		try {
+			new URL(cdxBaseUrl);
+		} catch (MalformedURLException e) {
+			System.err.println("Invalid URL for the CDX server");
+			e.printStackTrace(System.err);
+			System.exit(-1);
+		}
 
 		File outFile;
-		if(args.length > 1) {
-			outFile = new File(args[1]);
+		if(args.length > 2) {
+			outFile = new File(args[2]);
 		} else {
 			outFile = new File(getOutputFileNameFromWarcFileName(warcFile.getName()));
 		}
@@ -64,8 +82,8 @@ public class LinkAnalyser {
 			System.exit(-1);
 		}
 
-		LinkAnalyser wtf = new LinkAnalyser(warcFile, outFile);
-		wtf.analyseWarcFile();
+		NASLinkAnalyser wtf = new NASLinkAnalyser(warcFile, outFile, cdxBaseUrl);
+		wtf.analyseWarcFile(new HttpRetriever());
 
 		System.out.println("Finished");
 		System.exit(0);
@@ -92,31 +110,68 @@ public class LinkAnalyser {
 	protected final File warcFile;
 	/** Output CSV file for the results.*/
 	protected final File outputFile;
+	/** The URL for the CDX server.*/
+	protected final String cdxServerUrl;
 
 	/**
 	 * Constructor.
 	 * @param warcFile The WARC file to extract.
 	 * @param outFile The file where the output should be printed, in the described CSV format.
 	 */
-	public LinkAnalyser(File warcFile, File outFile) {
+	public NASLinkAnalyser(File warcFile, File outFile, String cdxServerUrl) {
 		this.warcFile = warcFile;
 		this.outputFile = outFile;
+		this.cdxServerUrl = cdxServerUrl;
 	}
 
 	/**
 	 * Extracts the links from each HTML record, analyse them and print the results.
+	 * @param httpRetriever The http retriever.
 	 */
-	public void analyseWarcFile() {
-		try {
+	public void analyseWarcFile(HttpRetriever httpRetriever) {
+		try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+			fos.write("URL of referral;Date for referral;Status for Link URL;Link URL;Closest date for Link URL".getBytes());
+			LinkExtractor linkExtractor = new HtmlLinkExtractor();
+			CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerUrl, httpRetriever);
+			LinksLocator linkLocator = new LinksLocator(linkExtractor, cdxExtractor);
+			
 			WarcExtractor we = new WarcExtractor(warcFile);
 			WarcRecord wr;
 			while((wr = we.getNext()) != null) {
-//				if(wr.header.warcTypeIdx != WarcConstants.FN_IDX_WARC_WARCINFO_ID) {
-//					printRecord(wr);
-//				}
+				printLinks(linkLocator.locateLinks(wr), fos);
 			}
+			
+			fos.flush();
 		} catch (IOException e) {
 			throw new IllegalStateException("Issue occured when ", e);
+		}
+	}
+	
+	/**
+	 * Prints the links and their states to the output file.
+	 * Each link will be printed in the following format:
+	 * 	URL of referral;Date for referral;Status for Link URL;Link URL;Closest date for Link URL
+	 * @param links The links along with their states.
+	 * @param out The output stream.
+	 * @throws IOException If something goes wrong when writing.
+	 */
+	protected void printLinks(Collection<LinkStatus> links, OutputStream out) throws IOException {
+		for(LinkStatus ls : links) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(ls.getReferralUrl() + ";");
+			sb.append(DateUtils.dateToWaybackDate(ls.getReferralDate()) + ";");
+			if(ls.isFound()) {
+				sb.append("EXISTS_IN_ARCHIVE;");
+			} else {
+				sb.append("NOT_IN_ARCHIVE;");
+			}
+			sb.append(ls.getLinkUrl());
+			if(ls.getLinkDate() != null) {
+				sb.append(DateUtils.dateToWaybackDate(ls.getLinkDate()) + ";");
+			} else {
+				sb.append("N/A;");
+			}
+			out.write(sb.toString().getBytes());
 		}
 	}
 }
