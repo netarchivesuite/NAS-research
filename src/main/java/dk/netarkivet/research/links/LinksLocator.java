@@ -49,7 +49,8 @@ public class LinksLocator {
 		ArgumentCheck.checkNotNull(record, "WarcRecord record");
 		try {
 			String mimetype = getMimetype(record);
-			if(!linkExtractor.supportedMimetype().equalsIgnoreCase(mimetype)){
+			// Needs to use 'start with', since the record mimetype can have suffices such as encoding.
+			if(!mimetype.startsWith(linkExtractor.supportedMimetype())) {
 				return new ArrayList<LinkStatus>();
 			}
 			

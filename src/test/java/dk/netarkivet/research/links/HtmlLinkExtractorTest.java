@@ -44,4 +44,11 @@ public class HtmlLinkExtractorTest extends ExtendedTestCase {
 		assertFalse(urls.isEmpty());
 		assertEquals(21, urls.size());
 	}
+	
+	@Test
+	public void testSupportedMimetype() {
+		addDescription("Test the supported mimetype");
+		HtmlLinkExtractor extractor = new HtmlLinkExtractor();
+		assertEquals(HtmlLinkExtractor.HTML_MIMETYPE, extractor.supportedMimetype());
+	}
 }
