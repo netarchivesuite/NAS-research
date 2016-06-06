@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 
 public class ArgumentCheckTest extends ExtendedTestCase {
 	
-	public final File testFile = new File("src/test/resources/test-cdx.cdx");
+	public final File testFile = new File("src/test/resources/test.warc");
 	
 	@Test
 	public void testConstructorWithMessageOnly() throws Exception {

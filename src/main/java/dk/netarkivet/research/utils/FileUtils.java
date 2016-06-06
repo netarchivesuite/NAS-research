@@ -36,15 +36,23 @@ public class FileUtils {
 	 */
 	public static File ensureNewFile(File dir, String name) throws IOException {
 		File res = new File(dir, name);
-		if(res.exists()) {
-			deprecateFile(res);
-		}
-		if(!res.createNewFile()) {
-			throw new IllegalStateException("Cannot create the new file '" + name + "' in directory '"
-					+ dir.getAbsolutePath() + "'.");
-		}
-
+		ensureNewFile(res);
 		return res;
+	}
+
+	/**
+	 * Ensures the given file is created as a new file, and
+	 * that any existing file at that location is deprecated.
+	 * @param newFile The new file.
+	 * @throws IOException If the new file cannot be created.
+	 */
+	public static void ensureNewFile(File newFile) throws IOException {
+		if(newFile.exists()) {
+			deprecateFile(newFile);
+		}
+		if(!newFile.createNewFile()) {
+			throw new IllegalStateException("Cannot create the new file '" + newFile.getAbsolutePath() + "'.");
+		}
 	}
 
 	/**

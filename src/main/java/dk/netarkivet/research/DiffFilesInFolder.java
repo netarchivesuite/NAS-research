@@ -16,13 +16,19 @@ import dk.netarkivet.research.utils.UrlUtils;
 import dk.netarkivet.research.warc.WarcExtractor;
 
 /**
- * Extracts all the WARC records of a WARC file to a folder.
- * Each WARC record will only be left with its HTTP payload content, which means
- * that both WARC header and HTTP headers will not be extracted.
+ * Uses the extracted WARC records from WarcToFolder to make diffs between them.
+ * They must have the format 'url'-'date', and it will only make diffs between files with the same 
+ * 'URL' part of their filename.
+ * 
+ * The only argument required is the path to the folder.
  */
-public class WarcToFolder {
+public class DiffFilesInFolder {
 	public static void main( String[] args ) {
 
+		System.err.println("NOT IMPLEMENTED YET!!!");
+		System.exit(-1);
+		// TODO: FIXME: Implement!
+		// Use google-diff in the pom.
 		if(args.length < 1) {
 			System.err.println("Not enough arguments. Requires the following arguments:");
 			System.err.println(" 1. WARC file");
@@ -50,7 +56,7 @@ public class WarcToFolder {
 			System.exit(-1);
 		}
 
-		WarcToFolder wtf = new WarcToFolder(warcFile, outDir);
+		DiffFilesInFolder wtf = new DiffFilesInFolder(warcFile, outDir);
 		wtf.extract();
 
 		System.out.println("Finished");
@@ -87,7 +93,7 @@ public class WarcToFolder {
 	 * @param warcFile The WARC file to extract.
 	 * @param outDir The directory where the WARC record content should be placed.
 	 */
-	public WarcToFolder(File warcFile, File outDir) {
+	public DiffFilesInFolder(File warcFile, File outDir) {
 		this.warcFile = warcFile;
 		this.outputDirectory = outDir;
 	}
@@ -105,7 +111,7 @@ public class WarcToFolder {
 				}
 			}
 		} catch (IOException e) {
-			throw new IllegalStateException("Issue extracting the data.", e);
+
 		}
 	}
 
@@ -125,13 +131,7 @@ public class WarcToFolder {
 		}
 	}
 
-	/**
-	 * Extracts a filename for a WARC record, based on the target URI (or record ID if no target URI),
-	 * and the date (either from the HTTP header, or if no header, then the WARC record date).
-	 * @param wr The WARC record.
-	 * @return The filename.
-	 */
-	protected String getFileName(WarcRecord wr) {
+	protected String getFileName(WarcRecord wr) throws IOException {
 		String res;
 		if(wr.header.warcTargetUriStr != null && !wr.header.warcTargetUriStr.isEmpty()) {
 			res = UrlUtils.fileEncodeUrl(wr.header.warcTargetUriStr);

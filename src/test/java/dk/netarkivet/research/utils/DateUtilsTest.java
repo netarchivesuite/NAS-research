@@ -63,4 +63,13 @@ public class DateUtilsTest extends ExtendedTestCase {
 		Date d = DateUtils.extractCsvDate("Whenever");
 		assertNull(d);
 	}
+	
+	@Test
+	public void testExtractHttpHeaderDate() throws Exception {
+		addDescription("");
+		String date = "Wed, 09 Mar 2016 11:16:56 GMT";
+		Date d = DateUtils.extractHttpHeaderDate(date);
+		assertNotNull(d);
+		assertEquals(d.getTime(), 1457522216000L);
+	}
 }

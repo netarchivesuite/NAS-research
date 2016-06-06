@@ -205,5 +205,27 @@ public class CDXEntryTest extends ExtendedTestCase {
     	assertTrue(line.contains(b));
     	assertTrue(line.contains(a));
     }
+    
+    @Test
+    public void testExtractingEmptyCDX() throws Exception {
+    	addDescription("Test extracting an empty CDX entry.");
+    	CDXEntry entry = CDXEntry.createCDXEntry(new String[0], new Character[0]);
+    	
+    	assertNull(entry.getContentType());
+    	assertNull(entry.getDigest());
+    	assertNull(entry.getFilename());
+    	assertNull(entry.getIP());
+    	assertNull(entry.getRedirect());
+    	assertNull(entry.getUrl());
+    	assertNull(entry.getUrlNorm());
+    	
+    	assertEquals(0L, entry.getDate().longValue());
+    	assertEquals(0L, entry.getLength().longValue());
+    	assertEquals(0L, entry.getOffset().longValue());
+    	assertEquals(200, entry.getStatusCode().intValue());
+    	
+    	String s = entry.toString();
+    	assertNotNull(s);
+    }
 }
 

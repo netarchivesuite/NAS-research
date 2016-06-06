@@ -129,9 +129,15 @@ public class WarcPacker {
     		WarcHeader warcHeader = warcRecord.header;
         	ManagedPayload managedPayload = ManagedPayload.checkout();
     		Payload payload = Payload.processPayload(payloadRafin, payloadFile.length(), 16384, null);
-    		HttpHeader httpHeader = HttpHeader.processPayload(HttpHeader.HT_RESPONSE, payload.getInputStream(), payload.getRemaining(), null);
+    		HttpHeader httpHeader = HttpHeader.processPayload(HttpHeader.HT_RESPONSE, payload.getInputStream(), 
+    				payload.getRemaining(), null);
+    		
+    		String contentType;
     		if (httpHeader.isValid()) {
     			payload.setPayloadHeaderWrapped(httpHeader);
+    			contentType = "application/http; msgtype=response";
+    		} else {
+    			contentType = cdxEntry.getContentType();
     		}
 			managedPayload.manageRecord(payload, true);
 
@@ -148,13 +154,15 @@ public class WarcPacker {
     		warcHeader.addHeader(WarcConstants.FN_WARC_IP_ADDRESS, cdxEntry.getIP());
             warcHeader.addHeader(WarcConstants.FN_WARC_TARGET_URI, cdxEntry.getUrl());
     		warcHeader.addHeader(WarcConstants.FN_CONTENT_LENGTH, payloadFile.length(), null);
-    		warcHeader.addHeader(WarcConstants.FN_CONTENT_TYPE, cdxEntry.getContentType());
+    		warcHeader.addHeader(WarcConstants.FN_CONTENT_TYPE, contentType);
     		
             if (managedPayload.httpHeaderBytes != null) {
-            	WarcDigest payloadDigest = WarcDigest.createWarcDigest("SHA1", managedPayload.payloadDigestBytes, "Base32", Base32.encodeArray(managedPayload.payloadDigestBytes));
+            	WarcDigest payloadDigest = WarcDigest.createWarcDigest("SHA1", managedPayload.payloadDigestBytes,
+            			"Base32", Base32.encodeArray(managedPayload.payloadDigestBytes));
                 warcHeader.addHeader(WarcConstants.FN_WARC_PAYLOAD_DIGEST, payloadDigest, null);
             }
-            WarcDigest blockDigest = WarcDigest.createWarcDigest("SHA1", managedPayload.blockDigestBytes, "Base32", Base32.encodeArray(managedPayload.blockDigestBytes));
+            WarcDigest blockDigest = WarcDigest.createWarcDigest("SHA1", managedPayload.blockDigestBytes, "Base32", 
+            		Base32.encodeArray(managedPayload.blockDigestBytes));
             warcHeader.addHeader(WarcConstants.FN_WARC_BLOCK_DIGEST, blockDigest, null);
             warcWriter.writeHeader(warcRecord);
             if (managedPayload.httpHeaderBytes != null) {
@@ -188,14 +196,16 @@ public class WarcPacker {
         currentWarcInfoUUID = recordId;
         byte[] payloadAsBytes = infoPayload.getUTF8Bytes();
         byte[] digestBytes = ChecksumUtils.sha1Digest(payloadAsBytes);
-        WarcDigest blockDigest = WarcDigest.createWarcDigest("SHA1", digestBytes, "Base32", Base32.encodeArray(digestBytes));
+        WarcDigest blockDigest = WarcDigest.createWarcDigest("SHA1", digestBytes, 
+        		"Base32", Base32.encodeArray(digestBytes));
         WarcRecord record = WarcRecord.createRecord(warcWriter.writer);
         WarcHeader header = record.header;
         header.warcTypeIdx = WarcConstants.RT_IDX_WARCINFO;
         header.addHeader(WarcConstants.FN_WARC_RECORD_ID, recordId, null);
         header.addHeader(WarcConstants.FN_WARC_DATE, new Date(), null);
         header.addHeader(WarcConstants.FN_WARC_FILENAME, filename);
-        header.addHeader(WarcConstants.FN_CONTENT_TYPE, ContentType.parseContentType(WarcConstants.CT_APP_WARC_FIELDS), null);
+        header.addHeader(WarcConstants.FN_CONTENT_TYPE, 
+        		ContentType.parseContentType(WarcConstants.CT_APP_WARC_FIELDS), null);
         header.addHeader(WarcConstants.FN_CONTENT_LENGTH, new Long(payloadAsBytes.length), null);
         header.addHeader(WarcConstants.FN_WARC_BLOCK_DIGEST, blockDigest, null);
         warcWriter.writer.writeHeader(record);

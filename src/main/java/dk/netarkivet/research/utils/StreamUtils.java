@@ -36,10 +36,11 @@ public class StreamUtils {
 	 * @throws IOException If something goes wrong.
 	 */
 	public static void printInputStreamToOutputStream(InputStream is, OutputStream os) throws IOException {
-		byte[] b = new byte[32*1024];
+		byte[] b = new byte[64*1024];
 		try {
-			while(is.read(b) > 0) {
-				os.write(b);
+			int l;
+			while((l = is.read(b)) > 0) {
+				os.write(b, 0, l);
 			}
 		} finally {
 			os.flush();

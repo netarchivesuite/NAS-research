@@ -5,6 +5,7 @@ import static org.testng.Assert.*;
 import java.io.File;
 
 import org.jaccept.structure.ExtendedTestCase;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -15,6 +16,8 @@ public class WarcToFolderTest extends ExtendedTestCase {
 
 	private File dir = new File("tempDir");
 	private File warcFile = new File("src/test/resources/test.warc");
+//	private File warcFile = new File("/home/jolf/research-output/CDX-EXTRACT-20160531153934-00000-kb-prod-acs-02.warc");
+//	private File warcFile = new File("/home/jolf/research-output/CDX-EXTRACT2.warc");
 	
 	@BeforeClass
 	public void setup() throws Exception {
@@ -27,6 +30,11 @@ public class WarcToFolderTest extends ExtendedTestCase {
 		dir.mkdir();		
 	}
 	
+	@AfterMethod
+	public void tearDown() throws Exception {
+		TestFileUtils.removeFile(dir);
+	}
+	
 	@Test
 	public void testExtractingAWarcFile() throws Exception {
 		WarcToFolder wtf = new WarcToFolder(warcFile, dir);
@@ -34,8 +42,5 @@ public class WarcToFolderTest extends ExtendedTestCase {
 		wtf.extract();
 		
 		assertEquals(dir.list().length, 4);
-		for(String f : dir.list()) {
-			System.err.println(f);
-		}
 	}
 }

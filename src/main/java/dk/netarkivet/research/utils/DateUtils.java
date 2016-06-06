@@ -29,7 +29,7 @@ public class DateUtils {
 	
 	/** The date format for the */
 	protected static final List<String> WAYBACK_DATE_FORMATS = Collections.unmodifiableList(Arrays.asList(
-			"YYYY-MM-DD hh:mm:ss", "YYYY-MM-DD hh:mm", "DD-MM-YYYY"));
+			"yyyy-MM-dd hh:mm:ss", "yyyy-MM-dd hh:mm", "dd-MM-yyyy"));
 
 	/** Basic <code>DateFormat</code> is not thread safe. */
 	protected static final ThreadLocal<DateFormat> CDX_DATE_PARSER_THREAD = new ThreadLocal<DateFormat>() {
@@ -140,7 +140,7 @@ public class DateUtils {
 	 */
 	public static Date extractHttpHeaderDate(String date) {
         try {
-            DateFormat formatter = new SimpleDateFormat("EEE, DD MMM YYYY hh:mm:ss ZZZ", Locale.ENGLISH);
+            DateFormat formatter = new SimpleDateFormat("EEE',' dd MMM yyyy hh:mm:ss ZZZ", Locale.ENGLISH);
             return formatter.parse(date);
         } catch (ParseException e) {
             logger.debug("Could not parse the date in the expected format.", e);

@@ -44,9 +44,9 @@ public class HtmlLinkExtractorTest extends ExtendedTestCase {
 	public void testExtraction() throws Exception {
 		addDescription("Test the extraction of the HTML from a WARC record");
 		assertNotNull(record);
-		HtmlLinkExtractor extractor = new HtmlLinkExtractor(record);
-		Collection<String> urls = extractor.extractLinks();
-		System.err.println("URLS: " + urls);
+		HtmlLinkExtractor extractor = new HtmlLinkExtractor();
+		Collection<String> urls = extractor.extractLinks(record.getPayloadContent(), new URL(record.header.warcTargetUriStr));
 		assertFalse(urls.isEmpty());
+		assertEquals(21, urls.size());
 	}
 }

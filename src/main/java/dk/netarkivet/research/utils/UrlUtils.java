@@ -4,12 +4,17 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import dk.netarkivet.research.exception.ArgumentCheck;
 
 /**
  * Utility methods for dealing with URLs.
  */
 public class UrlUtils {
+    /** Logging mechanism. */
+    private static Logger logger = LoggerFactory.getLogger(UrlUtils.class);
 
 	/**
 	 * Encoding an URL into a format, which can be used as a file-name.
@@ -105,31 +110,30 @@ public class UrlUtils {
 	
     /**
      * Looks up the IP number of the local host. Note that Java does not guarantee that the result is IPv4 or IPv6.
-     * @return the found IP; returns "n/a" if it could not be found.
+     * @return the found IP; returns "127.0.0.1", if it could not be extracted.
      */
     public static String getLocalIP() {
-        String result = null;
         try {
-            result = InetAddress.getLocalHost().getHostAddress();
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+        	logger.debug("Could not extract the local IP address. Returning '127.0.0.1'.", e);
+        	return "127.0.0.1";
         }
-        catch (UnknownHostException e) {
-        }
-        return result;
     }
     
     /**
      * Get the first hostname available for this machine, or "localhost" if none are available.
-     * @return A hostname, as returned by InetAddress.getLocalHost().getCanonicalHostName()()
+     * @return A hostname, as returned by InetAddress.getLocalHost().getCanonicalHostName()(),
+     * or 'localhost' if it could not be extracted.
      */
     public static String getLocalHostName() {
-        String hostname = null;
         try {
             InetAddress localhost = InetAddress.getLocalHost();
             String localhostName = localhost.getCanonicalHostName();
             return localhostName;
+        } catch (UnknownHostException e) {
+        	logger.debug("Could not extract the local hostname. Returning 'localhost'.", e);
+        	return "localhost";
         }
-        catch (UnknownHostException e) {
-        }
-        return hostname;
     }
 }
