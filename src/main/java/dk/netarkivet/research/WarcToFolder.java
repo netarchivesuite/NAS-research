@@ -21,21 +21,20 @@ import dk.netarkivet.research.warc.WarcExtractor;
  * that both WARC header and HTTP headers will not be extracted.
  */
 public class WarcToFolder {
-	public static void main( String[] args ) {
+	public static void main(String ... args) {
 
 		if(args.length < 1) {
 			System.err.println("Not enough arguments. Requires the following arguments:");
 			System.err.println(" 1. WARC file");
 			System.err.println(" 2. (OPTIONAL) output directory. If not given, then the WARC file content will "
 					+ " be extracted to a file with a name similar to the WARC file.");
-			System.exit(-1);
+			throw new IllegalArgumentException("Not enough arguments.");
 		}
 
 		File warcFile = new File(args[0]);
 		if(!warcFile.isFile()) {
-			System.err.println("The WARC file '" + warcFile.getAbsolutePath() + "' is not a file "
+			throw new IllegalArgumentException("The WARC file '" + warcFile.getAbsolutePath() + "' is not a file "
 					+ "(either does not exists or is a directory)");
-			System.exit(-1);
 		}
 
 		File outDir;
@@ -45,9 +44,8 @@ public class WarcToFolder {
 			outDir = new File(getDirectoryNameFromFileName(warcFile.getName()));
 		}
 		if(!outDir.isDirectory() && !outDir.mkdir()) {
-			System.err.println("The output directory '" + outDir.getAbsolutePath() + "' is not a valid "
+			throw new IllegalArgumentException("The output directory '" + outDir.getAbsolutePath() + "' is not a valid "
 					+ "directory (either is a file or it cannot be instantiated as a directory)");
-			System.exit(-1);
 		}
 
 		WarcToFolder wtf = new WarcToFolder(warcFile, outDir);

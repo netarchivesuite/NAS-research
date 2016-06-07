@@ -43,4 +43,22 @@ public class WarcToFolderTest extends ExtendedTestCase {
 		
 		assertEquals(dir.list().length, 4);
 	}
+	
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testMainTooFewArgumentsFailure() throws Exception {
+		addDescription("Test the main function with too few arguments (e.g. no arguments).");
+		WarcToFolder.main();
+	}
+	
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testMainBadWarcFileFailure() throws Exception {
+		addDescription("Test the main function with a non-existing file as argument.");
+		WarcToFolder.main("TestFile" + Math.random());
+	}
+	
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testMainBadOutputDirFailure() throws Exception {
+		addDescription("Test the main function with the path to output directory being the path to a file.");
+		WarcToFolder.main(warcFile.getAbsolutePath(), warcFile.getAbsolutePath());
+	}
 }
