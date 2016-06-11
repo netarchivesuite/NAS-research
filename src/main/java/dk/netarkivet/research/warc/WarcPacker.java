@@ -105,7 +105,9 @@ public class WarcPacker {
         		File resultFile = archive.extractWarcRecord(cdxEntry); 
         		if(resultFile != null) {
         			writeWarcRecord(warcWriter, resultFile, cdxEntry);
-        			resultFile.delete();
+        			if(!resultFile.delete()) {
+        				logger.info("Could not cleanup file '" + resultFile.getAbsolutePath() + "'");
+        			}
         		}
         	}
         	warcFileWriter.close();
@@ -206,7 +208,7 @@ public class WarcPacker {
         header.addHeader(WarcConstants.FN_WARC_FILENAME, filename);
         header.addHeader(WarcConstants.FN_CONTENT_TYPE, 
         		ContentType.parseContentType(WarcConstants.CT_APP_WARC_FIELDS), null);
-        header.addHeader(WarcConstants.FN_CONTENT_LENGTH, new Long(payloadAsBytes.length), null);
+        header.addHeader(WarcConstants.FN_CONTENT_LENGTH, Long.valueOf(payloadAsBytes.length), null);
         header.addHeader(WarcConstants.FN_WARC_BLOCK_DIGEST, blockDigest, null);
         warcWriter.writer.writeHeader(record);
         ByteArrayInputStream bin = new ByteArrayInputStream(payloadAsBytes);

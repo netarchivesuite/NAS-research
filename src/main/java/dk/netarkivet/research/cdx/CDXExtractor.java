@@ -3,6 +3,7 @@ package dk.netarkivet.research.cdx;
 import java.util.Collection;
 import java.util.Date;
 
+import dk.netarkivet.research.wid.WID;
 import dk.netarkivet.research.wid.WPID;
 import dk.netarkivet.research.wid.WaybackWID;
 
@@ -23,6 +24,14 @@ public interface CDXExtractor {
 	 * @return The CDX entry for Wayback WID.
 	 */
 	CDXEntry retrieveCDX(WaybackWID wid);
+	
+	/**
+	 * Retrieves all the CDX entries for all the WIDs.
+	 * If no CDX can be retrieved for a WID, then a null is returned in its place.
+	 * @param wids The collection of WIDs.
+	 * @return The collection of CDX entries for all the WIDs.
+	 */
+	Collection<CDXEntry> retrieveCDXentries(Collection<WID> wids);
 	
 	/**
 	 * Retrieves all the CDX indices for the a given URL

@@ -52,6 +52,18 @@ public class DateUtils {
 	}
 	
 	/**
+	 * Converts from date to Wayback date string.
+	 * @param date The date to convert from.
+	 * @return The Wayback format for the date.
+	 */
+	public static String dateToWaybackDate(Long date) {
+		if(date == null) {
+			return null;
+		}
+		return dateToWaybackDate(new Date(date));
+	}
+	
+	/**
 	 * Converts from the Wayback date string to java.utils.Date.
 	 * @param date The date string from wayback.
 	 * @return The Date.

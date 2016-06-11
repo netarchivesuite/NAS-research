@@ -10,6 +10,7 @@ import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.harvestdb.HarvestJobExtractor;
 import dk.netarkivet.research.harvestdb.HarvestJobInfo;
+import dk.netarkivet.research.utils.CDXUtils;
 import dk.netarkivet.research.utils.DateUtils;
 
 /**
@@ -64,18 +65,12 @@ public class DuplicateExtractor {
 	 * @return The harvest job info. Or null if something goes wrong, e.g. malformed filename or missing extractor.
 	 */
 	protected HarvestJobInfo extractJobInfo(CDXEntry entry) {
-		if(jobExtractor == null) {
+		Long jobId = CDXUtils.extractJobID(entry);
+		if(jobExtractor == null || jobId == null) {
+			logger.debug("Cannot extract harvest job info due to missing jobExtractor or jobId.");
 			return null;
 		}
-		String filename = entry.getFilename();
-		if(filename == null || filename.isEmpty()) {
-			return null;
-		}
-		if(!filename.contains("-")) {
-			logger.warn("CDXEntry with odd filename: " + filename);
-			return null;
-		}
-		Long jobId = Long.parseLong(filename.split("[-]")[0]);
+		logger.debug("Extracting harvest job info for job '" + jobId + "'.");
 		return jobExtractor.extractJob(jobId);
 	}
 }

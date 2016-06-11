@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dk.netarkivet.research.utils.DateUtils;
+import dk.netarkivet.research.wid.WID;
+import dk.netarkivet.research.wid.WPID;
 import dk.netarkivet.research.wid.WaybackWID;
 
 /**
@@ -41,6 +43,21 @@ public abstract class AbstractCDXExtractor implements CDXExtractor {
 			if(DateUtils.checkDateInterval(entry, earliestDate, latestDate)) {
 				res.add(entry);
 			}
+		}
+		return res;
+	}
+	
+	@Override
+	public Collection<CDXEntry> retrieveCDXentries(Collection<WID> wids) {
+		List<CDXEntry> res = new ArrayList<CDXEntry>(wids.size());
+		for(WID wid : wids) {
+    		if(wid instanceof WPID) {
+    			res.add(retrieveCDX((WPID) wid));
+    		} else if (wid instanceof WaybackWID){
+    			res.add(retrieveCDX((WaybackWID) wid));
+    		} else {
+    			res.add(null);
+    		}
 		}
 		return res;
 	}

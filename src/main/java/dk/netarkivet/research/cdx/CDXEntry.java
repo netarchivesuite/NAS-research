@@ -10,6 +10,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dk.netarkivet.research.utils.CDXUtils;
 import dk.netarkivet.research.utils.DateUtils;
 
 /**
@@ -142,40 +143,40 @@ public class CDXEntry {
 		for(Character c : charKeys) {
 			switch(c) {
 			case CDXConstants.CDX_CHAR_DATE:
-				addCDXElementToStringBuffer(DateUtils.dateToWaybackDate(new Date(getDate())), res);
+				CDXUtils.addCDXElementToStringBuffer(DateUtils.dateToWaybackDate(new Date(getDate())), res);
 				break;
 			case CDXConstants.CDX_CHAR_IP:
-				addCDXElementToStringBuffer(ip, res);
+				CDXUtils.addCDXElementToStringBuffer(ip, res);
 				break;
 			case CDXConstants.CDX_CHAR_CANONIZED_URL:
 			case CDXConstants.CDX_CHAR_MASSAGED_URL:
-				addCDXElementToStringBuffer(urlNorm, res);
+				CDXUtils.addCDXElementToStringBuffer(urlNorm, res);
 				break;
 			case CDXConstants.CDX_CHAR_ORIGINAL_URL:
-				addCDXElementToStringBuffer(url, res);
+				CDXUtils.addCDXElementToStringBuffer(url, res);
 				break;
 			case CDXConstants.CDX_CHAR_MIME_TYPE:
-				addCDXElementToStringBuffer(contentType, res);
+				CDXUtils.addCDXElementToStringBuffer(contentType, res);
 				break;
 			case CDXConstants.CDX_CHAR_RESPONSE_CODE:
-				addCDXElementToStringBuffer(statusCode, res);
+				CDXUtils.addCDXElementToStringBuffer(statusCode, res);
 				break;
 			case CDXConstants.CDX_CHAR_OLD_STYLE_CHECKSUM:
 			case CDXConstants.CDX_CHAR_NEW_STYLE_CHECKSUM:
-				addCDXElementToStringBuffer(digest, res);
+				CDXUtils.addCDXElementToStringBuffer(digest, res);
 				break;
 			case CDXConstants.CDX_CHAR_COMPRESSED_ARC_FILE_OFFSET:
 			case CDXConstants.CDX_CHAR_UNCOMPRESSED_ARC_FILE_OFFSET:
-				addCDXElementToStringBuffer(offset, res);
+				CDXUtils.addCDXElementToStringBuffer(offset, res);
 				break;
 			case CDXConstants.CDX_CHAR_ARC_DOCUMENT_LENGTH:
-				addCDXElementToStringBuffer(length, res);
+				CDXUtils.addCDXElementToStringBuffer(length, res);
 				break;
 			case CDXConstants.CDX_CHAR_FILE_NAME:
-				addCDXElementToStringBuffer(filename, res);
+				CDXUtils.addCDXElementToStringBuffer(filename, res);
 				break;
 			case CDXConstants.CDX_CHAR_REDIRECT:
-				addCDXElementToStringBuffer(redirect, res);
+				CDXUtils.addCDXElementToStringBuffer(redirect, res);
 				break;
 			default:
 				logger.warn("Cannot handle cdx element '" + c + "'.");
@@ -255,25 +256,6 @@ public class CDXEntry {
 		}
 
 		return cdxEntry;
-	}
-	
-	/**
-	 * Adds a CDX element to a string buffer.
-	 * Will add a '-' if the element is null or empty.
-	 * @param element The element to add to the string buffer. 
-	 * @param sb The string buffer where the element should be added.
-	 */
-	protected void addCDXElementToStringBuffer(Object element, StringBuilder sb) {
-		if(element == null) {
-			sb.append("-");
-		} else {
-			String s = (element instanceof String) ? (String) element : element.toString();
-			if(s.isEmpty()) {
-				sb.append("-");
-			} else {
-				sb.append(s);
-			}
-		}
 	}
 	
 	@Override

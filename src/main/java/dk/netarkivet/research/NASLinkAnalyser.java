@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Collection;
 
 import org.jwat.warc.WarcRecord;
@@ -130,7 +131,8 @@ public class NASLinkAnalyser {
 	 */
 	public void analyseWarcFile(HttpRetriever httpRetriever) {
 		try (FileOutputStream fos = new FileOutputStream(outputFile)) {
-			fos.write("URL of referral;Date for referral;Status for Link URL;Link URL;Closest date for Link URL".getBytes());
+			fos.write(("URL of referral;Date for referral;Status for Link URL;Link URL;"
+					+ "Closest date for Link URL").getBytes(Charset.defaultCharset()));
 			LinkExtractor linkExtractor = new HtmlLinkExtractor();
 			CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerUrl, httpRetriever);
 			LinksLocator linkLocator = new LinksLocator(linkExtractor, cdxExtractor);
@@ -171,7 +173,7 @@ public class NASLinkAnalyser {
 			} else {
 				sb.append("N/A;");
 			}
-			out.write(sb.toString().getBytes());
+			out.write(sb.toString().getBytes(Charset.defaultCharset()));
 		}
 	}
 }

@@ -3,6 +3,7 @@ package dk.netarkivet.research.cdx;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Collection;
 
 import org.slf4j.Logger;
@@ -38,11 +39,11 @@ public class CDXFileWriter {
 		logger.debug("Writing CDX indices to file '" + outputFile.getName() + "'.");
 		try(FileOutputStream fos = new FileOutputStream(outputFile)) {
 			String firstLine = createFirstLine(cdxFormat);
-			fos.write(firstLine.getBytes());
+			fos.write(firstLine.getBytes(Charset.defaultCharset()));
 			
 			for(CDXEntry entry : entries) {
 				String line = entry.extractCDXAsLine(cdxFormat);
-				fos.write(line.getBytes());
+				fos.write(line.getBytes(Charset.defaultCharset()));
 			}
 		} catch(IOException e) {
 			String errMsg = "Issue writing the CDX indices to file '" + outputFile.getAbsolutePath() + "'";
