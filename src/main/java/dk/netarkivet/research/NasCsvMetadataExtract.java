@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Collection;
 
 import org.slf4j.Logger;
@@ -193,7 +194,7 @@ public class NasCsvMetadataExtract {
     		line.append("Job Type;");
     		line.append("Job name;");
     		
-    		outStream.write(line.toString().getBytes());
+    		outStream.write(line.toString().getBytes(Charset.defaultCharset()));
     		outStream.flush();
     	}
     }
@@ -235,7 +236,7 @@ public class NasCsvMetadataExtract {
     			line.append(";");
     		}
     		
-    		outStream.write(line.toString().getBytes());
+    		outStream.write(line.toString().getBytes(Charset.defaultCharset()));
     		outStream.flush();
     		outStream.flush();
     	}

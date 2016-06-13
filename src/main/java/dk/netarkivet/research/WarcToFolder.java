@@ -41,7 +41,7 @@ public class WarcToFolder {
 		if(args.length > 1) {
 			outDir = new File(args[1]);
 		} else {
-			outDir = new File(getDirectoryNameFromFileName(warcFile.getName()));
+			outDir = new File(getDirectoryNameFromFileName(warcFile.getAbsolutePath()));
 		}
 		if(!outDir.isDirectory() && !outDir.mkdir()) {
 			throw new IllegalArgumentException("The output directory '" + outDir.getAbsolutePath() + "' is not a valid "
