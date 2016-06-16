@@ -2,7 +2,7 @@
 ProgDir=`dirname "$0"`
 . "${ProgDir}/env.sh"
 
-MAIN_CLASS=dk.netarkivet.research.NASExtractWarcFromCDX
+MAIN_CLASS=dk.netarkivet.research.NarkWarcExtract
 
 if [ -z "${NAS_SETTINGS}" ]; then
   NAS_SETTINGS=$${assembly.config.env.name}/settings.xml

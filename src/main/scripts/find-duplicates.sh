@@ -2,7 +2,7 @@
 ProgDir=`dirname "$0"`
 . "${ProgDir}/env.sh"
 
-MAIN_CLASS=dk.netarkivet.research.NASFindDuplicatesForURLs
+MAIN_CLASS=dk.netarkivet.research.ExtDuplicateFinder
 
 if [ -z "${NAS_SETTINGS}" ]; then
   NAS_SETTINGS=$${assembly.config.env.name}/settings.xml

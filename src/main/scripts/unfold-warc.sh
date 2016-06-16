@@ -2,7 +2,7 @@
 ProgDir=`dirname "$0"`
 . "${ProgDir}/env.sh"
 
-MAIN_CLASS=dk.netarkivet.research.WarcToFolder
+MAIN_CLASS=dk.netarkivet.research.ExtWarcUnfolder
 
 cd ${assembly.home.env.name.ref}
 

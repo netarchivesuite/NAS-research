@@ -2,7 +2,7 @@
 ProgDir=`dirname "$0"`
 . "${ProgDir}/env.sh"
 
-MAIN_CLASS=dk.netarkivet.research.NASLinkAnalyser
+MAIN_CLASS=dk.netarkivet.research.ExtLinkAnalyser
 
 cd ${assembly.home.env.name.ref}
 
