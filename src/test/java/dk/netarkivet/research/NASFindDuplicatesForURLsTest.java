@@ -85,7 +85,7 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 		
 		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerUrl, httpRetriever);
 		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor, jobExtractor);
-		NASFindDuplicatesForURLs nasDupFinder = new NASFindDuplicatesForURLs(duplicateExtractor, urlFile, outdir);
+		ExtDuplicateFinder nasDupFinder = new ExtDuplicateFinder(duplicateExtractor, urlFile, outdir);
 		nasDupFinder.findDuplicates();
 		
 		assertEquals(outdir.listFiles().length, 1);
@@ -106,7 +106,7 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 
 		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerUrl, httpRetriever);
 		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor, jobExtractor);
-		NASFindDuplicatesForURLs nasDupFinder = new NASFindDuplicatesForURLs(duplicateExtractor, urlFile, outdir);
+		ExtDuplicateFinder nasDupFinder = new ExtDuplicateFinder(duplicateExtractor, urlFile, outdir);
 		nasDupFinder.findDuplicates();
 		assertEquals(outdir.listFiles().length, 1);
 		
@@ -134,7 +134,7 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 		addDescription("Test missing file as argument");
 		File badTestFile = new File(dir, "ThisIsNotAFile" + Math.random());
 		
-		NASFindDuplicatesForURLs.main(badTestFile.getAbsolutePath(), cdxServerUrl, outdir.getAbsolutePath());
+		ExtDuplicateFinder.main(badTestFile.getAbsolutePath(), cdxServerUrl, outdir.getAbsolutePath());
 	}
 	
 	@Test(expectedExceptions = IllegalArgumentException.class)
@@ -142,21 +142,21 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 		addDescription("Test cdx-server-url argument, which is not an url");
 		String badUrl = "ThisIsNotAnUrl";
 		
-		NASFindDuplicatesForURLs.main(urlFile.getAbsolutePath(), badUrl, outdir.getAbsolutePath());
+		ExtDuplicateFinder.main(urlFile.getAbsolutePath(), badUrl, outdir.getAbsolutePath());
 	}
 	
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testMainFileAsOutputDirecotryArgument() throws Exception {
 		addDescription("Test that it fails, when using an file as output directory");
 		
-		NASFindDuplicatesForURLs.main(urlFile.getAbsolutePath(), cdxServerUrl, urlFile.getAbsolutePath());
+		ExtDuplicateFinder.main(urlFile.getAbsolutePath(), cdxServerUrl, urlFile.getAbsolutePath());
 	}
 		
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testMainNotEnoughArguments() throws Exception {
 		addDescription("Test that it fails, when not given enough arguments.");
 		
-		NASFindDuplicatesForURLs.main(urlFile.getAbsolutePath());
+		ExtDuplicateFinder.main(urlFile.getAbsolutePath());
 	}
 	
 	@Test
@@ -170,7 +170,7 @@ public class NASFindDuplicatesForURLsTest extends ExtendedTestCase {
 
 		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerUrl, httpRetriever);
 		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor, jobExtractor);
-		NASFindDuplicatesForURLs nasDupFinder = new NASFindDuplicatesForURLs(duplicateExtractor, csvFile, outdir);
+		ExtDuplicateFinder nasDupFinder = new ExtDuplicateFinder(duplicateExtractor, csvFile, outdir);
 		nasDupFinder.findDuplicates();
 		
 		assertEquals(outdir.listFiles().length, 4);

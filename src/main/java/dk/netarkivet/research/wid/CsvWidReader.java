@@ -71,8 +71,7 @@ public class CsvWidReader implements WidReader {
 				}
 			}
 		} catch (IOException e) {
-			logger.info("Failed extracting PWIDs from file '" + csvFile + "'.", e);
-			return null;
+			throw new IllegalStateException("Failed extracting PWIDs from file '" + csvFile + "'.", e);
 		}
 		return res;
 	}

@@ -16,39 +16,47 @@ import dk.netarkivet.research.utils.UrlUtils;
 import dk.netarkivet.research.warc.WarcExtractor;
 
 /**
- * Extracts all the WARC records of a WARC file to a folder.
- * Each WARC record will only be left with its HTTP payload content, which means
- * that both WARC header and HTTP headers will not be extracted.
+ * Uses the extracted WARC records from WarcToFolder to make diffs between them.
+ * They must have the format 'url'-'date', and it will only make diffs between files with the same 
+ * 'URL' part of their filename.
+ * 
+ * The only argument required is the path to the folder.
  */
-public class WarcToFolder {
-	public static void main(String ... args) {
+public class ExtDiffFilesInFolder {
+	public static void main( String[] args ) {
 
+		System.err.println("NOT IMPLEMENTED YET!!!");
+		System.exit(-1);
+		// TODO: FIXME: Implement!
+		// Use google-diff in the pom.
 		if(args.length < 1) {
 			System.err.println("Not enough arguments. Requires the following arguments:");
 			System.err.println(" 1. WARC file");
 			System.err.println(" 2. (OPTIONAL) output directory. If not given, then the WARC file content will "
 					+ " be extracted to a file with a name similar to the WARC file.");
-			throw new IllegalArgumentException("Not enough arguments.");
+			System.exit(-1);
 		}
 
 		File warcFile = new File(args[0]);
 		if(!warcFile.isFile()) {
-			throw new IllegalArgumentException("The WARC file '" + warcFile.getAbsolutePath() + "' is not a file "
+			System.err.println("The WARC file '" + warcFile.getAbsolutePath() + "' is not a file "
 					+ "(either does not exists or is a directory)");
+			System.exit(-1);
 		}
 
 		File outDir;
 		if(args.length > 1) {
 			outDir = new File(args[1]);
 		} else {
-			outDir = new File(getDirectoryNameFromFileName(warcFile.getAbsolutePath()));
+			outDir = new File(getDirectoryNameFromFileName(warcFile.getName()));
 		}
 		if(!outDir.isDirectory() && !outDir.mkdir()) {
-			throw new IllegalArgumentException("The output directory '" + outDir.getAbsolutePath() + "' is not a valid "
+			System.err.println("The output directory '" + outDir.getAbsolutePath() + "' is not a valid "
 					+ "directory (either is a file or it cannot be instantiated as a directory)");
+			System.exit(-1);
 		}
 
-		WarcToFolder wtf = new WarcToFolder(warcFile, outDir);
+		ExtDiffFilesInFolder wtf = new ExtDiffFilesInFolder(warcFile, outDir);
 		wtf.extract();
 
 		System.out.println("Finished");
@@ -85,7 +93,7 @@ public class WarcToFolder {
 	 * @param warcFile The WARC file to extract.
 	 * @param outDir The directory where the WARC record content should be placed.
 	 */
-	public WarcToFolder(File warcFile, File outDir) {
+	public ExtDiffFilesInFolder(File warcFile, File outDir) {
 		this.warcFile = warcFile;
 		this.outputDirectory = outDir;
 	}
@@ -103,7 +111,7 @@ public class WarcToFolder {
 				}
 			}
 		} catch (IOException e) {
-			throw new IllegalStateException("Issue extracting the data.", e);
+
 		}
 	}
 
@@ -123,13 +131,7 @@ public class WarcToFolder {
 		}
 	}
 
-	/**
-	 * Extracts a filename for a WARC record, based on the target URI (or record ID if no target URI),
-	 * and the date (either from the HTTP header, or if no header, then the WARC record date).
-	 * @param wr The WARC record.
-	 * @return The filename.
-	 */
-	protected String getFileName(WarcRecord wr) {
+	protected String getFileName(WarcRecord wr) throws IOException {
 		String res;
 		if(wr.header.warcTargetUriStr != null && !wr.header.warcTargetUriStr.isEmpty()) {
 			res = UrlUtils.fileEncodeUrl(wr.header.warcTargetUriStr);

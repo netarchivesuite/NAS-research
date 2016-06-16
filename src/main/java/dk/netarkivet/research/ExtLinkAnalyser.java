@@ -36,7 +36,7 @@ import dk.netarkivet.research.warc.WarcExtractor;
  * Link URL - The URL for the link, which we are trying to discover.
  * Closest date for the Link URL - 
  */
-public class NASLinkAnalyser {
+public class ExtLinkAnalyser {
 	/**
 	 * Main method.
 	 * @param args Arguments. Must have the WARC file as first argument, the second argument
@@ -83,7 +83,7 @@ public class NASLinkAnalyser {
 			System.exit(-1);
 		}
 
-		NASLinkAnalyser wtf = new NASLinkAnalyser(warcFile, outFile, cdxBaseUrl);
+		ExtLinkAnalyser wtf = new ExtLinkAnalyser(warcFile, outFile, cdxBaseUrl);
 		wtf.analyseWarcFile(new HttpRetriever());
 
 		System.out.println("Finished");
@@ -119,7 +119,7 @@ public class NASLinkAnalyser {
 	 * @param warcFile The WARC file to extract.
 	 * @param outFile The file where the output should be printed, in the described CSV format.
 	 */
-	public NASLinkAnalyser(File warcFile, File outFile, String cdxServerUrl) {
+	public ExtLinkAnalyser(File warcFile, File outFile, String cdxServerUrl) {
 		this.warcFile = warcFile;
 		this.outputFile = outFile;
 		this.cdxServerUrl = cdxServerUrl;

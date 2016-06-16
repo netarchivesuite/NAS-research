@@ -21,6 +21,7 @@ import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.harvestdb.HarvestJobExtractor;
 import dk.netarkivet.research.harvestdb.HarvestJobInfo;
+import dk.netarkivet.research.interval.UrlInterval;
 import dk.netarkivet.research.utils.DateUtils;
 
 public class DuplicateExtractorTest extends ExtendedTestCase {
@@ -45,7 +46,7 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 		when(extractor.retrieveAllCDX(anyString())).thenReturn(testEntries);
 		
 		DuplicateExtractor finder = new DuplicateExtractor(extractor, jobExtractor);
-		DuplicateMap map = finder.makeDuplicateMap(testUrl, null, null);
+		DuplicateMap map = finder.makeDuplicateMap(new UrlInterval(testUrl, null, null));
 		
 		assertEquals(map.getDateToChecksumMap().size(), testEntries.size());
 		
@@ -135,7 +136,7 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 		when(extractor.retrieveAllCDX(anyString())).thenReturn(new ArrayList<CDXEntry>());
 		
 		DuplicateExtractor finder = new DuplicateExtractor(extractor, jobExtractor);
-		DuplicateMap map = finder.makeDuplicateMap(testUrl, null, null);
+		DuplicateMap map = finder.makeDuplicateMap(new UrlInterval(testUrl, null, null));
 		
 		assertEquals(map.getDateToChecksumMap().size(), 0);		
 	}
@@ -149,7 +150,7 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 		when(extractor.retrieveAllCDX(anyString())).thenReturn(testEntries);
 		
 		DuplicateExtractor finder = new DuplicateExtractor(extractor, jobExtractor);
-		DuplicateMap map = finder.makeDuplicateMap(testUrl, DateUtils.waybackDateToDate("20120101000000"), DateUtils.waybackDateToDate("20140101000000"));
+		DuplicateMap map = finder.makeDuplicateMap(new UrlInterval(testUrl, DateUtils.waybackDateToDate("20120101000000"), DateUtils.waybackDateToDate("20140101000000")));
 		
 		assertEquals(map.getDateToChecksumMap().size(), 2);
 		assertEquals(map.getChecksumToDateListMap().size(), 1);
@@ -165,7 +166,7 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 		when(extractor.retrieveAllCDX(anyString())).thenReturn(testEntries);
 		
 		DuplicateExtractor finder = new DuplicateExtractor(extractor, jobExtractor);
-		DuplicateMap map = finder.makeDuplicateMap(testUrl, DateUtils.waybackDateToDate("20120101000000"), null);
+		DuplicateMap map = finder.makeDuplicateMap(new UrlInterval(testUrl, DateUtils.waybackDateToDate("20120101000000"), null));
 		
 		assertEquals(map.getDateToChecksumMap().size(), 5);
 		assertEquals(map.getChecksumToDateListMap().size(), 2);
@@ -182,7 +183,7 @@ public class DuplicateExtractorTest extends ExtendedTestCase {
 		when(extractor.retrieveAllCDX(anyString())).thenReturn(testEntries);
 		
 		DuplicateExtractor finder = new DuplicateExtractor(extractor, jobExtractor);
-		DuplicateMap map = finder.makeDuplicateMap(testUrl, null, DateUtils.waybackDateToDate("20140101000000"));
+		DuplicateMap map = finder.makeDuplicateMap(new UrlInterval(testUrl, null, DateUtils.waybackDateToDate("20140101000000")));
 		
 		assertEquals(map.getDateToChecksumMap().size(), 3);
 		assertEquals(map.getChecksumToDateListMap().size(), 1);

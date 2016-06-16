@@ -13,11 +13,9 @@ import dk.netarkivet.research.warc.NASArchiveExtractor;
 import dk.netarkivet.research.warc.WarcPacker;
 
 /**
- * Extracts a CDX file from a CSV file (in the NAS research format).
- * 
- * It translates the CSV file into WPIDS, which are extracted as CDX indices from a CDXServer.
+ * Extracts all the WARC records for a CDX file.
  */
-public class NASExtractWarcFromCDX {
+public class NarkWarcExtract {
     public static void main( String[] args ) {
     	if(args.length < 1) {
     		System.err.println("Not enough arguments. Requires the following arguments:");

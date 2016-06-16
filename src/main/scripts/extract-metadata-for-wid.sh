@@ -2,7 +2,7 @@
 ProgDir=`dirname "$0"`
 . "${ProgDir}/env.sh"
 
-MAIN_CLASS=dk.netarkivet.research.NASExtractCDXForURLs
+MAIN_CLASS=dk.netarkivet.research.ExtractWid
 
 # echo "NAS_SETTINGS: " $NAS_SETTINGS
 # echo "MAIN_CLASS: " $MAIN_CLASS

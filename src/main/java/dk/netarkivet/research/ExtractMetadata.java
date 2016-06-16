@@ -6,51 +6,64 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.cdx.CDXExtractor;
+import dk.netarkivet.research.cdx.CDXFileWriter;
 import dk.netarkivet.research.cdx.DabCDXExtractor;
 import dk.netarkivet.research.exception.ArgumentCheck;
 import dk.netarkivet.research.harvestdb.HarvestJobExtractor;
 import dk.netarkivet.research.harvestdb.HarvestJobInfo;
 import dk.netarkivet.research.harvestdb.NasHarvestJobExtractor;
 import dk.netarkivet.research.http.HttpRetriever;
+import dk.netarkivet.research.interval.CsvUrlIntervalReader;
+import dk.netarkivet.research.interval.UrlInterval;
 import dk.netarkivet.research.utils.CDXUtils;
 import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.wid.CsvWidReader;
 import dk.netarkivet.research.wid.WID;
-import dk.netarkivet.research.wid.WidReader;
 
 /**
- * Extracts a metadata CSV file from a CSV file extracted from a search-extract Excel document by ELZI.
+ * Extracts metadata for the entries of a NAS WID file.
+ * The NAS WID file is a CSV file converted from the search-extract Excel document by ELZI.
  * 
- * The extracted CSV file contains WIDs in the format of WPIDs and WaybackWIDs.
+ * The input CSV file must contain WIDs in the format of WPIDs and WaybackWIDs.
  * 
- * The metadata CSV file will basically contain the CDX entry for each WID, along with the metadata 
- * for the harvest job for the resource of the WID.
+ * This tool can either extract the CDX indices for the WIDs, 
+ * or a metadata CSV file which will contain both the information from the CDX entry for each WID, 
+ * along with the metadata for the harvest job for the resource of the WID.
  */
-public class NasCsvMetadataExtract {
+public class ExtractMetadata {
 	/** The log.*/
-	private static Logger logger = LoggerFactory.getLogger(NasCsvMetadataExtract.class);
+	private static Logger logger = LoggerFactory.getLogger(ExtractMetadata.class);
 	
 	/**
 	 * Main method.
 	 * @param args The list of arguments.
 	 */
-    public static void main( String ... args ) {
-    	if(args.length < 3) {
+    public static void main(String ... args) {
+    	if(args.length < 4) {
     		System.err.println("Not enough arguments. Requires the following arguments:");
-    		System.err.println(" 1. the CSV file with the NAS WIDs");
-    		System.err.println(" 2. the base URL to the CDX-server.");
-    		System.err.println(" 3. Whether or not to use the havest database, either 'y'/'yes' or 'n'/'no'.");
+    		System.err.println(" 1. the CSV file in either the NAS WID format, or the URL interval format.");
+    		System.err.println("  - NAS WID format has coloumns: 'W/X';#;url;date;location;filename");
+    		System.err.println("  - URL interval format has coloumns: 'W';url;earliest date;latest date");
+    		System.err.println(" 2. Format for CSV file: either 'WID' or 'URL'");
+    		System.err.println(" 3. the base URL to the CDX-server.");
+    		System.err.println(" 4. Whether or not to extract harvest job info, either 'y'/'yes' or 'n'/'no'.");
     		System.err.println(" - If this option is set to true, then it requires the parameter: '"
     				+ "dk.netarkivet.settings.file', which will be set by the script using the environment "
     				+ "variable NAS_SETTINGS.");
-    		System.err.println(" 4. (OPTIONAL) the location for the output CSV metadata file.");
+    		System.err.println(" 5. (OPTIONAL) Whether to extract in CSV format or CDX format, either 'cdx' or 'csv'.");
+    		System.err.println(" - This cannot be set to 'cdx' and still extract the harvest job info.");
+    		System.err.println(" - The CDX format will be a classical NAS CDX file.");
+    		System.err.println(" - Default is 'CSV'.");
+    		System.err.println(" 6. (OPTIONAL) the location for the output metadata file.");
     		
     		System.exit(-1);
     	}
@@ -61,7 +74,9 @@ public class NasCsvMetadataExtract {
     				+ "(either does not exists or is a directory)");
     	}
     	
-    	String cdxServerBaseUrl = args[1];
+    	InputFormat inputFormat = extractInputFormat(args[1]);
+    	
+    	String cdxServerBaseUrl = args[2];
     	try {
     		new URL(cdxServerBaseUrl);
     	} catch (IOException e) {
@@ -70,7 +85,7 @@ public class NasCsvMetadataExtract {
     	DabCDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerBaseUrl, new HttpRetriever());
     	
     	HarvestJobExtractor jobExtractor = null;
-    	if(extractWhetherToUseHarvestDb(args[2])) {
+    	if(extractWhetherToUseHarvestDb(args[3])) {
     		logger.debug("Using NAS harvest job database for extracting job info");
     		if(System.getProperty("dk.netarkivet.settings.file") == null) {
     			throw new IllegalArgumentException("No system property for the NAS settings file defined. "
@@ -83,9 +98,18 @@ public class NasCsvMetadataExtract {
     		jobExtractor = new NasHarvestJobExtractor();
     	}
     	
+    	OutputFormat outputFormat = OutputFormat.EXPORT_FORMAT_CSV;
+    	if(args.length > 4) {
+    		outputFormat = extractOutputFormat(args[4]);
+    	}
+    	if(outputFormat == OutputFormat.EXPORT_FORMAT_CDX && jobExtractor != null) {
+    		throw new IllegalArgumentException("Cannot export in CDX format when also extracting the harvest job info. \n"
+    				+ "Either turn off the harvest job extraction or change output format.");
+    	}
+    	
     	File outFile;
-    	if(args.length > 3) {
-    		outFile = new File(args[3]);
+    	if(args.length > 5) {
+    		outFile = new File(args[5]);
     	} else {
     		outFile = new File(".");
     	}
@@ -94,9 +118,9 @@ public class NasCsvMetadataExtract {
     		System.exit(-1);
     	}
     	
-    	NasCsvMetadataExtract extractor = new NasCsvMetadataExtract(csvFile, cdxExtractor, jobExtractor, outFile);
+    	ExtractMetadata extractor = new ExtractMetadata(csvFile, cdxExtractor, jobExtractor, outFile);
     	try {
-    		extractor.extractMetadata();
+    		extractor.extractMetadata(inputFormat, outputFormat);
     	} catch (IOException e) {
     		e.printStackTrace(System.err);
     		throw new IllegalStateException("Failed to extract the metadata", e);
@@ -131,8 +155,42 @@ public class NasCsvMetadataExtract {
     			+ "Must be either 'yes' or 'no'.");
     }
     
+    /**
+     * Extracts the argument for which output format to use.
+     * Must be either CDX or CSV. 
+     * @param arg The commandline argument.
+     * @return Either CDX or CSV.
+     */
+    protected static OutputFormat extractOutputFormat(String arg) {
+    	if(arg.isEmpty()) {
+    		return OutputFormat.EXPORT_FORMAT_CSV;
+    	}
+    	if(arg.equalsIgnoreCase(EXPORT_FORMAT_CSV)) {
+    		return OutputFormat.EXPORT_FORMAT_CSV;
+    	} else if(arg.equalsIgnoreCase(EXPORT_FORMAT_CDX)) {
+    		return OutputFormat.EXPORT_FORMAT_CDX;
+    	} 
+    	throw new IllegalArgumentException("Output format must be either 'CDX' or 'CSV'");
+    }
+    
+    /**
+     * Extracts the argument for which input format to use.
+     * Must be either URL or WID. 
+     * @param arg The commandline argument.
+     * @return Either CDX or CSV.
+     */
+    protected static InputFormat extractInputFormat(String arg) {
+    	if(arg.equalsIgnoreCase(INPUT_FORMAT_WID)) {
+    		return InputFormat.INPUT_FORMAT_WID;
+    	} else if(arg.equalsIgnoreCase(INPUT_FORMAT_URL_INTERVAL)) {
+    		return InputFormat.INPUT_FORMAT_URL_INTERVAL;
+    	} 
+    	throw new IllegalArgumentException("Output format must be either '"
+    			+ INPUT_FORMAT_URL_INTERVAL + "' or '" + INPUT_FORMAT_WID + "'");
+    }
+    
     /** The reader of WIDs from the CSV file.*/
-    protected final WidReader reader;
+    protected final File inputFile;
     /** The base URL for the CDX server.*/
     protected final CDXExtractor cdxExtractor;
     /** The extractor of the harvest job database.*/
@@ -143,6 +201,13 @@ public class NasCsvMetadataExtract {
     public static final Boolean APPEND_TO_FILE = true;
     /** The constants for not appending output data to the file.*/
     public static final Boolean NO_APPEND_TO_FILE = false;
+    /** Constant for the CDX export format.*/
+    public static final String EXPORT_FORMAT_CDX = "CDX";
+    /** Constant for the CSV export format.*/
+    public static final String EXPORT_FORMAT_CSV = "CSV";
+    
+    public static final String INPUT_FORMAT_URL_INTERVAL = "URL";
+    public static final String INPUT_FORMAT_WID = "WID";
     
     /**
      * Constructor.
@@ -151,22 +216,59 @@ public class NasCsvMetadataExtract {
      * @param jobExtractor The extractor of harvest job information.
      * @param outFile The output file.
      */
-    public NasCsvMetadataExtract(File csvFile, CDXExtractor cdxExtractor, HarvestJobExtractor jobExtractor, File outFile) {
-    	this.reader = new CsvWidReader(csvFile);
+    public ExtractMetadata(File csvFile, CDXExtractor cdxExtractor, HarvestJobExtractor jobExtractor, File outFile) {
+    	this.inputFile = csvFile;
     	this.cdxExtractor = cdxExtractor;
     	this.jobExtractor = jobExtractor;
     	this.outFile = outFile;
     }
     
     /**
-     * Extracts the metadata for the WIDs from the CSV file, then extract all the CDX entries for the WIDS,
+     * Extracts the metadata for the entries in the CSV file, then extract all the CDX entries for the WIDS,
      * then extract the job data, and finally print.
+     * @param inputFormat The input format, either 'WID' or 'URL interval'.
+     * @param outputFormat The output format, either 'CDX' or 'CSV'.
+     * @throws IOException If it fails to write to file.
      */
-    public void extractMetadata() throws IOException {
-    	Collection<WID> wids = reader.extractAllWIDs();
-
-    	Collection<CDXEntry> cdxEntries = cdxExtractor.retrieveCDXentries(wids);
+    public void extractMetadata(InputFormat inputFormat, OutputFormat outputFormat) throws IOException {
+    	Collection<CDXEntry> cdxEntries = extractCdxForFileEntries(inputFormat);
     	
+    	if(outputFormat.equals(EXPORT_FORMAT_CSV)) {
+    		extractToCsvFormat(cdxEntries);
+    	} else {
+    		CDXFileWriter outputWriter = new CDXFileWriter(outFile);
+    		outputWriter.writeCDXEntries(cdxEntries, DabCDXExtractor.getDefaultCDXFormat());
+    	}
+    }
+    
+    /**
+     * Extracts the CDX entries for the file of the given type.
+     * @param inputFormat The type of file. Either WID or URL interval.
+     * @return The CDX entries for the file.
+     */
+    protected Collection<CDXEntry> extractCdxForFileEntries(InputFormat inputFormat) {
+    	if(inputFormat == InputFormat.INPUT_FORMAT_WID) {
+    		CsvWidReader reader = new CsvWidReader(inputFile);
+    		Collection<WID> wids = reader.extractAllWIDs();
+    		return cdxExtractor.retrieveCDXentries(wids);
+    	} else {
+    		CsvUrlIntervalReader reader = new CsvUrlIntervalReader(inputFile);
+    		Collection<UrlInterval> intervals = reader.extractAllUrlIntervals();
+    		List<CDXEntry> res = new ArrayList<CDXEntry>(intervals.size());
+    		for(UrlInterval ui : intervals) {
+        		res.addAll(cdxExtractor.retrieveCDXForInterval(ui));
+    		}
+    		return res;
+    	}
+    }
+    
+    /**
+     * Extracts the CDX entries to the CSV metadata format, including extracting the job info.
+     * @param cdxEntries The CDX entries.
+     * @throws IOException If it fails to print to output file.
+     */
+    protected void extractToCsvFormat(Collection<CDXEntry> cdxEntries) throws IOException {
+    	writeFirstLineToFile();
     	for(CDXEntry entry : cdxEntries) {
     		HarvestJobInfo jobInfo = extractJobInfo(entry);
     		writeEntryToFile(entry, jobInfo);
@@ -234,10 +336,14 @@ public class NasCsvMetadataExtract {
     			line.append(";");
     			CDXUtils.addCDXElementToStringBuffer(jobInfo.getName(), line);
     			line.append(";");
+    		} else {
+    			line.append("N/A;");
+    			line.append("N/A;");
+    			line.append("N/A;");
+    			
     		}
     		
     		outStream.write(line.toString().getBytes(Charset.defaultCharset()));
-    		outStream.flush();
     		outStream.flush();
     	}
     }
@@ -261,4 +367,19 @@ public class NasCsvMetadataExtract {
 			return null;
 		}
     }
+    
+    /**
+     * The types of input formats supported.
+     */
+    protected enum InputFormat {
+    	INPUT_FORMAT_WID,
+    	INPUT_FORMAT_URL_INTERVAL;
+    };
+    /**
+     * The type of output formats supported.
+     */
+    protected enum OutputFormat {
+    	EXPORT_FORMAT_CDX,
+    	EXPORT_FORMAT_CSV;
+    };
 }

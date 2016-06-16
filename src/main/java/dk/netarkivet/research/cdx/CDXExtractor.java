@@ -1,8 +1,8 @@
 package dk.netarkivet.research.cdx;
 
 import java.util.Collection;
-import java.util.Date;
 
+import dk.netarkivet.research.interval.UrlInterval;
 import dk.netarkivet.research.wid.WID;
 import dk.netarkivet.research.wid.WPID;
 import dk.netarkivet.research.wid.WaybackWID;
@@ -32,7 +32,7 @@ public interface CDXExtractor {
 	 * @return The collection of CDX entries for all the WIDs.
 	 */
 	Collection<CDXEntry> retrieveCDXentries(Collection<WID> wids);
-	
+
 	/**
 	 * Retrieves all the CDX indices for the a given URL
 	 * 
@@ -42,11 +42,9 @@ public interface CDXExtractor {
 	Collection<CDXEntry> retrieveAllCDX(String url);
 	
 	/**
-	 * Retrieves all the CDX entries in the given date interval.
-	 * @param url The URL whose CDX indies should be retrieved.
-	 * @param earliestDate The earliest date for the CDX indices.
-	 * @param latestDate The latest date for the CDX indices.
+	 * Retrieves all the CDX entries in the given URL in a given date interval.
+	 * @param urlInterval The URL with the interval for those CDX indices which should be retrieved.
 	 * @return The collection of CDX indices for the given interval.
 	 */
-	Collection<CDXEntry> retrieveCDXForInterval(String url, Date earliestDate, Date latestDate);
+	Collection<CDXEntry> retrieveCDXForInterval(UrlInterval urlInterval);
 }

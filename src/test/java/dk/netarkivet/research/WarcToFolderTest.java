@@ -37,7 +37,7 @@ public class WarcToFolderTest extends ExtendedTestCase {
 	
 	@Test
 	public void testExtractingAWarcFile() throws Exception {
-		WarcToFolder wtf = new WarcToFolder(warcFile, dir);
+		ExtWarcUnfolder wtf = new ExtWarcUnfolder(warcFile, dir);
 		
 		wtf.extract();
 		
@@ -47,26 +47,26 @@ public class WarcToFolderTest extends ExtendedTestCase {
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testMainTooFewArgumentsFailure() throws Exception {
 		addDescription("Test the main function with too few arguments (e.g. no arguments).");
-		WarcToFolder.main();
+		ExtWarcUnfolder.main();
 	}
 	
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testMainBadWarcFileFailure() throws Exception {
 		addDescription("Test the main function with a non-existing file as argument.");
-		WarcToFolder.main("TestFile" + Math.random());
+		ExtWarcUnfolder.main("TestFile" + Math.random());
 	}
 	
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testMainBadOutputDirFailure() throws Exception {
 		addDescription("Test the main function with the path to output directory being the path to a file.");
-		WarcToFolder.main(warcFile.getAbsolutePath(), warcFile.getAbsolutePath());
+		ExtWarcUnfolder.main(warcFile.getAbsolutePath(), warcFile.getAbsolutePath());
 	}
 	
 	@Test
 	public void testGetDirectoryNameFromFilenameWithWarc() {
 		addDescription("Test getting the directory name from a filename ending on 'WARC'");
 		String filename = "test.warc";
-		String dirname = WarcToFolder.getDirectoryNameFromFileName(filename);
+		String dirname = ExtWarcUnfolder.getDirectoryNameFromFileName(filename);
 		
 		assertEquals(dirname, "test");
 	}
@@ -79,7 +79,7 @@ public class WarcToFolderTest extends ExtendedTestCase {
 			folder.mkdirs();
 			assertTrue(folder.isDirectory());
 			String filename = new File(dir, "test.warc").getAbsolutePath();
-			String dirpath = WarcToFolder.getDirectoryNameFromFileName(filename);
+			String dirpath = ExtWarcUnfolder.getDirectoryNameFromFileName(filename);
 			String dirname = dirpath.replace(dir.getAbsolutePath() + "/", "");
 
 			assertTrue(dirname.startsWith("test"));
@@ -94,7 +94,7 @@ public class WarcToFolderTest extends ExtendedTestCase {
 	public void testGetDirectoryNameFromFilenameWithNonWarc() {
 		addDescription("Test getting the directory name from a filename not ending on 'WARC'");
 		String filename = new File(dir, "test").getAbsolutePath();
-		String dirpath = WarcToFolder.getDirectoryNameFromFileName(filename);
+		String dirpath = ExtWarcUnfolder.getDirectoryNameFromFileName(filename);
 		String dirname = dirpath.replace(dir.getAbsolutePath() + "/", "");
 		
 		assertTrue(dirname.startsWith("test"));

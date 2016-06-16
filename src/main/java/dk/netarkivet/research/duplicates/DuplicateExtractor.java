@@ -10,6 +10,7 @@ import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.harvestdb.HarvestJobExtractor;
 import dk.netarkivet.research.harvestdb.HarvestJobInfo;
+import dk.netarkivet.research.interval.UrlInterval;
 import dk.netarkivet.research.utils.CDXUtils;
 import dk.netarkivet.research.utils.DateUtils;
 
@@ -45,13 +46,13 @@ public class DuplicateExtractor {
 	 * @param latestDate The latest date for the results.
 	 * @return The map of checksums and their dates.
 	 */
-	public DuplicateMap makeDuplicateMap(String url, Date earliestDate, Date latestDate) {
-		Collection<CDXEntry> cdxs = cdxExtractor.retrieveAllCDX(url);
+	public DuplicateMap makeDuplicateMap(UrlInterval urlInterval) {
+		Collection<CDXEntry> cdxs = cdxExtractor.retrieveAllCDX(urlInterval.getUrl());
 
 		DuplicateMap res = new DuplicateMap();
 		
 		for(CDXEntry entry : cdxs) {
-			if(DateUtils.checkDateInterval(entry, earliestDate, latestDate)) {
+			if(DateUtils.checkDateInterval(entry, urlInterval.getEarliestDate(), urlInterval.getLatestDate())) {
 				res.addElement(entry, extractJobInfo(entry));
 			}
 		}

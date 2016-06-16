@@ -8,6 +8,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dk.netarkivet.research.interval.UrlInterval;
 import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.wid.WID;
 import dk.netarkivet.research.wid.WPID;
@@ -32,15 +33,15 @@ public abstract class AbstractCDXExtractor implements CDXExtractor {
 	}
 	
 	@Override
-	public Collection<CDXEntry> retrieveCDXForInterval(String url, Date earliestDate, Date latestDate) {
-		Collection<CDXEntry> entries = retrieveAllCDX(url);
-		if(earliestDate == null && latestDate == null) {
+	public Collection<CDXEntry> retrieveCDXForInterval(UrlInterval urlInterval) {
+		Collection<CDXEntry> entries = retrieveAllCDX(urlInterval.getUrl());
+		if(urlInterval.getEarliestDate() == null && urlInterval.getLatestDate() == null) {
 			return entries;
 		}
 		
 		List<CDXEntry> res = new ArrayList<CDXEntry>();
 		for(CDXEntry entry : entries) {
-			if(DateUtils.checkDateInterval(entry, earliestDate, latestDate)) {
+			if(DateUtils.checkDateInterval(entry, urlInterval.getEarliestDate(), urlInterval.getLatestDate())) {
 				res.add(entry);
 			}
 		}

@@ -82,6 +82,7 @@ public class DateUtils {
 	 */
 	public static Date extractCsvDate(String date) {
 		if(date == null || date.trim().isEmpty()) {
+			logger.trace("Null or empty date attempted to extract. Returning null");
 			return null;
 		}
 		
@@ -90,7 +91,7 @@ public class DateUtils {
             Date d = formatter.parse(date);
             return d;
         } catch (ParseException e) {
-            logger.warn("Could not parse the timeout date, '" + date + "' with dateformat '" + CSV_DATE_FORMAT 
+            logger.debug("Could not parse the timeout date, '" + date + "' with dateformat '" + CSV_DATE_FORMAT 
                     + "' ", e);
         }
         

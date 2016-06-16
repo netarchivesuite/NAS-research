@@ -90,7 +90,7 @@ public class CsvWpidReaderTest extends ExtendedTestCase {
     	assertEquals(TestFileUtils.countNumberOfLines(mixedCsv), 15);
 	}
 	
-	@Test
+	@Test(expectedExceptions = IllegalStateException.class)
 	public void testMissingFileDuringExtraction() throws Exception {
 		addDescription("Test failure during parsing file, due to file being deleted prior to extraction");
 		File f = TestFileUtils.createTestFile(dir, "This Is Content");
@@ -99,8 +99,7 @@ public class CsvWpidReaderTest extends ExtendedTestCase {
 		
 		assertTrue(f.delete());
 		
-		Collection<WID> wids = reader.extractAllWIDs();
-		assertNull(wids);
+		reader.extractAllWIDs();
 	}
 	
 	@Test

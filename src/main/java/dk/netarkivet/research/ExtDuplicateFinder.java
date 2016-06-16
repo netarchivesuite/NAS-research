@@ -25,6 +25,7 @@ import dk.netarkivet.research.harvestdb.HarvestJobExtractor;
 import dk.netarkivet.research.harvestdb.HarvestJobInfo;
 import dk.netarkivet.research.harvestdb.NasHarvestJobExtractor;
 import dk.netarkivet.research.http.HttpRetriever;
+import dk.netarkivet.research.interval.UrlInterval;
 import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.utils.FileUtils;
 import dk.netarkivet.research.utils.UrlUtils;
@@ -36,9 +37,9 @@ import dk.netarkivet.research.utils.UrlUtils;
  * "url;earliest date; latest date"
  * Both the dates may be missing or the empty string, if an earliest or latest date respectively is not wanted.
  */
-public class NASFindDuplicatesForURLs {
+public class ExtDuplicateFinder {
     /** Logging mechanism. */
-    private static Logger logger = LoggerFactory.getLogger(NASFindDuplicatesForURLs.class);
+    private static Logger logger = LoggerFactory.getLogger(ExtDuplicateFinder.class);
 
 	public static void main(String ... args ) {
 		if(args.length < 2) {
@@ -76,7 +77,7 @@ public class NASFindDuplicatesForURLs {
 		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerBaseUrl, new HttpRetriever());
 		DuplicateExtractor duplicateExtractor = new DuplicateExtractor(cdxExtractor, jobExtractor);
 
-		NASFindDuplicatesForURLs findDuplicates = new NASFindDuplicatesForURLs(duplicateExtractor, inputFile, outDir);
+		ExtDuplicateFinder findDuplicates = new ExtDuplicateFinder(duplicateExtractor, inputFile, outDir);
 		findDuplicates.findDuplicates();
 	}
 	
@@ -93,7 +94,7 @@ public class NASFindDuplicatesForURLs {
 	 * @param csvFile The input CSV file.
 	 * @param outputDir The output directory.
 	 */
-	protected NASFindDuplicatesForURLs(DuplicateExtractor duplicateExtractor, File csvFile, File outputDir) {
+	protected ExtDuplicateFinder(DuplicateExtractor duplicateExtractor, File csvFile, File outputDir) {
 		this.extractor = duplicateExtractor;
 		this.csvFile = csvFile;
 		this.outputDir = outputDir;
@@ -140,7 +141,7 @@ public class NASFindDuplicatesForURLs {
 			}
 		}
 
-		DuplicateMap map = extractor.makeDuplicateMap(url, earliestDate, latestDate);
+		DuplicateMap map = extractor.makeDuplicateMap(new UrlInterval(url, earliestDate, latestDate));
 		String urlFilename = UrlUtils.fileEncodeUrl(url);
 		
 		createMapResultFile(map, urlFilename, url);
