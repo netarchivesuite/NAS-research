@@ -20,7 +20,7 @@ import dk.netarkivet.research.warc.WarcExtractor;
  * They must have the format 'url'-'date', and it will only make diffs between files with the same 
  * 'URL' part of their filename.
  * 
- * The only argument required is the path to the folder.
+ * The only argument required is the path to the folder. 
  */
 public class ExtDiffFilesInFolder {
 	public static void main( String[] args ) {
