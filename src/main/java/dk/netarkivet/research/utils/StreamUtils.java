@@ -24,7 +24,7 @@ public class StreamUtils {
 	public static String extractInputStreamAsText(InputStream is) throws IOException {
 		StringBuilder res = new StringBuilder();
 		for(String s : extractInputStreamAsLines(is)) {
-			res.append(s + "\n");
+			res.append(s);
 		}
 		return res.toString();
 	}

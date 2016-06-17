@@ -1,6 +1,9 @@
 package dk.netarkivet.research.utils;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,4 +47,30 @@ public class ListUtilsTest extends ExtendedTestCase {
 		addDescription("Tests the finding of the largest value in an empty list");
 		assertEquals(ListUtils.getLargest(new ArrayList<Long>()).longValue(), 0L);
 	}
+	
+	@Test
+	public void testLinesToWordsWithEmptyLine() {
+		addDescription("Testing the convertLinesToListOfWords with an empty line");
+		List<String> l = ListUtils.convertLinesToListOfWords(Arrays.asList(""));
+		assertNotNull(l);
+		assertTrue(l.isEmpty());
+	}
+
+	@Test
+	public void testLinesToWordsWithOnlySpacesInAllLines() {
+		addDescription("Testing the convertLinesToListOfWords with an empty line");
+		List<String> l = ListUtils.convertLinesToListOfWords(Arrays.asList("   ", "     "));
+		assertNotNull(l);
+		assertTrue(l.isEmpty());
+	}
+	
+	@Test
+	public void testLinesToWordsWithTwoWordsInOneLine() {
+		addDescription("Testing the convertLinesToListOfWords with an single line containing two words");
+		List<String> l = ListUtils.convertLinesToListOfWords(Arrays.asList("One Two"));
+		assertNotNull(l);
+		assertFalse(l.isEmpty());
+		assertEquals(l.size(), 2);
+	}
+
 }

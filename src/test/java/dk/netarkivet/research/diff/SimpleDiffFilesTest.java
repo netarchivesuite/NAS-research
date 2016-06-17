@@ -19,8 +19,6 @@ import dk.netarkivet.research.testutils.TestFileUtils;
 import dk.netarkivet.research.utils.FileUtils;
 
 public class SimpleDiffFilesTest extends ExtendedTestCase {
-	File orig = new File("src/test/resources/diff/test1_orig.txt");
-	File revised = new File("src/test/resources/diff/test1_revised.txt");
 	
 	@BeforeMethod
 	public void setupMethod() throws Exception {
@@ -31,10 +29,30 @@ public class SimpleDiffFilesTest extends ExtendedTestCase {
 	}
 	
     @Test
-    public void testDiff() throws Exception {
+    public void testDiffOnCompletelyDifferentFiles() throws Exception {
     	addDescription("Test the simple diff between two completely different files");
+    	File orig = new File("src/test/resources/diff/test1_orig.txt");
+    	File revised = new File("src/test/resources/diff/test1_revised.txt");
     	SimpleDiffFiles sdf = new SimpleDiffFiles();
     	sdf.diff(new FileInputStream(orig), new FileInputStream(revised));
 
+    }
+
+    @Test
+    public void testDiffOnIdenticalFiles() throws Exception {
+    	addDescription("Test the simple diff between two identical files");
+    	File orig = new File("src/test/resources/diff/test2_orig.txt");
+    	File revised = new File("src/test/resources/diff/test2_revised.txt");
+    	SimpleDiffFiles sdf = new SimpleDiffFiles();
+    	sdf.diff(new FileInputStream(orig), new FileInputStream(revised));
+    }
+    
+    @Test
+    public void testDiffOnSlightlyDifferentFiles() throws Exception {
+    	addDescription("Test the simple diff between two slightly different files");
+    	File orig = new File("src/test/resources/diff/test4_orig.txt");
+    	File revised = new File("src/test/resources/diff/test4_revised.txt");
+    	SimpleDiffFiles sdf = new SimpleDiffFiles();
+    	sdf.diff(new FileInputStream(orig), new FileInputStream(revised));
     }
 }
