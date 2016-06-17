@@ -6,6 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Utility class for handling input/output streams.
@@ -20,13 +23,27 @@ public class StreamUtils {
 	 */
 	public static String extractInputStreamAsText(InputStream is) throws IOException {
 		StringBuilder res = new StringBuilder();
+		for(String s : extractInputStreamAsLines(is)) {
+			res.append(s + "\n");
+		}
+		return res.toString();
+	}
+
+	/**
+	 * Extracts the content of an input stream as lines.
+	 * @param is The input stream.
+	 * @return A list of all the lines from the inputstream.
+	 * @throws IOException If it fails.
+	 */
+	public static List<String> extractInputStreamAsLines(InputStream is) throws IOException {
+		List<String> res = new ArrayList<String>();
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(is, Charset.defaultCharset()))) {
 			String line;
 			while((line = br.readLine()) != null) {
-				res.append(line);
+				res.add(line);
 			}
 		}
-		return res.toString();
+		return res;
 	}
 	
 	/**

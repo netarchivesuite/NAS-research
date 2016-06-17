@@ -11,6 +11,7 @@ public class FileUtils {
 	/**
 	 * Deprecates a file, by moving it from 'filepath/filename' to 'filepath/filename.old'.
 	 * Does this recursively, if a file with the name already exists.
+	 * Also works on directories.
 	 * @param file The file to deprecate.
 	 */
 	public static void deprecateFile(File file) {
