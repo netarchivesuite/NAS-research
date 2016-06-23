@@ -26,6 +26,7 @@ import dk.netarkivet.research.interval.CsvUrlIntervalReader;
 import dk.netarkivet.research.interval.UrlInterval;
 import dk.netarkivet.research.utils.CDXUtils;
 import dk.netarkivet.research.utils.DateUtils;
+import dk.netarkivet.research.utils.FileUtils;
 import dk.netarkivet.research.wid.CsvWidReader;
 import dk.netarkivet.research.wid.WID;
 
@@ -65,7 +66,7 @@ public class ExtractMetadata {
     		System.err.println(" - Default is 'CSV'.");
     		System.err.println(" 6. (OPTIONAL) the location for the output metadata file.");
     		
-    		System.exit(-1);
+    		throw new IllegalArgumentException("Not enough arguments");
     	}
     	
     	File csvFile = new File(args[0]);
@@ -111,13 +112,23 @@ public class ExtractMetadata {
     	if(args.length > 5) {
     		outFile = new File(args[5]);
     	} else {
-    		outFile = new File(".");
+    		outFile = new File(csvFile.getParentFile(), csvFile.getName() + ".out");
+    		if(outFile.exists()) {
+    			FileUtils.deprecateFile(outFile);
+    		}
     	}
     	if(outFile.exists()) {
     		System.err.println("The location for the output file is not vacent.");
     		System.exit(-1);
     	}
     	
+    	logger.debug("Using input file '" + csvFile.getAbsolutePath() + "'");
+    	logger.debug("Input file is in type '" + inputFormat.name() + "'");
+    	logger.debug("CDX server has url '" + cdxServerBaseUrl + "'");
+    	logger.debug("Use job extractor '" + (jobExtractor == null) + "'");
+    	logger.debug("Output format '" + csvFile.getAbsolutePath() + "'");
+    	logger.debug("Output file '" + outFile + "'");
+
     	ExtractMetadata extractor = new ExtractMetadata(csvFile, cdxExtractor, jobExtractor, outFile);
     	try {
     		extractor.extractMetadata(inputFormat, outputFormat);
@@ -189,14 +200,6 @@ public class ExtractMetadata {
     			+ INPUT_FORMAT_URL_INTERVAL + "' or '" + INPUT_FORMAT_WID + "'");
     }
     
-    /** The reader of WIDs from the CSV file.*/
-    protected final File inputFile;
-    /** The base URL for the CDX server.*/
-    protected final CDXExtractor cdxExtractor;
-    /** The extractor of the harvest job database.*/
-    protected final HarvestJobExtractor jobExtractor;
-    /** The file where the output is written.*/
-    protected final File outFile;
     /** The constants for appending output data to the file.*/
     public static final Boolean APPEND_TO_FILE = true;
     /** The constants for not appending output data to the file.*/
@@ -205,9 +208,19 @@ public class ExtractMetadata {
     public static final String EXPORT_FORMAT_CDX = "CDX";
     /** Constant for the CSV export format.*/
     public static final String EXPORT_FORMAT_CSV = "CSV";
-    
+    /** Constant for the URL interval input format.*/
     public static final String INPUT_FORMAT_URL_INTERVAL = "URL";
+    /** Constant for the WID input format.*/
     public static final String INPUT_FORMAT_WID = "WID";
+
+    /** The reader of WIDs from the CSV file.*/
+    protected final File inputFile;
+    /** The base URL for the CDX server.*/
+    protected final CDXExtractor cdxExtractor;
+    /** The extractor of the harvest job database.*/
+    protected final HarvestJobExtractor jobExtractor;
+    /** The file where the output is written.*/
+    protected final File outFile;
     
     /**
      * Constructor.
@@ -233,9 +246,11 @@ public class ExtractMetadata {
     public void extractMetadata(InputFormat inputFormat, OutputFormat outputFormat) throws IOException {
     	Collection<CDXEntry> cdxEntries = extractCdxForFileEntries(inputFormat);
     	
-    	if(outputFormat.equals(EXPORT_FORMAT_CSV)) {
+    	if(outputFormat == OutputFormat.EXPORT_FORMAT_CSV) {
+    		logger.info("Printing CDX");
     		extractToCsvFormat(cdxEntries);
     	} else {
+    		logger.info("Printing all metadata to CSV");
     		CDXFileWriter outputWriter = new CDXFileWriter(outFile);
     		outputWriter.writeCDXEntries(cdxEntries, DabCDXExtractor.getDefaultCDXFormat());
     	}
@@ -337,10 +352,10 @@ public class ExtractMetadata {
     			CDXUtils.addCDXElementToStringBuffer(jobInfo.getName(), line);
     			line.append(";");
     		} else {
+    			line.append(CDXUtils.extractJobID(entry));
+    			line.append(";");
     			line.append("N/A;");
     			line.append("N/A;");
-    			line.append("N/A;");
-    			
     		}
     		
     		outStream.write(line.toString().getBytes(Charset.defaultCharset()));

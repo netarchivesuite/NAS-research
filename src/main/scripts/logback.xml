@@ -15,6 +15,7 @@
     </encoder>
   </appender>
 
+  <logger name="dk.netarkivet.research" level="DEBUG" />
   <logger name="org.bitrepository" level="WARN" />
   <logger name="org.apache" level="INFO" />
 
