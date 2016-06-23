@@ -4,5 +4,5 @@ import java.io.InputStream;
 
 public interface DiffFiles {
 
-	DiffResults diff(InputStream is1, InputStream is2);
+	DiffResultWrapper diff(InputStream is1, InputStream is2);
 }

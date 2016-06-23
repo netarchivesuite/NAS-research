@@ -73,8 +73,8 @@ public class ListUtils {
 	 */
 	public static List<String> convertStringsToListOfCharacters(Collection<String> strings) {
 		List<String> res = new ArrayList<String>();
-		for(String w : strings) {
-			for(char c : w.toCharArray()) {
+		for(String s : strings) {
+			for(char c : s.toCharArray()) {
 				res.add(String.valueOf(c));
 			}
 		}

@@ -34,25 +34,26 @@ public class SimpleDiffFilesTest extends ExtendedTestCase {
     	File orig = new File("src/test/resources/diff/test1_orig.txt");
     	File revised = new File("src/test/resources/diff/test1_revised.txt");
     	SimpleDiffFiles sdf = new SimpleDiffFiles();
-    	sdf.diff(new FileInputStream(orig), new FileInputStream(revised));
-
+    	DiffResultWrapper dr = sdf.diff(new FileInputStream(orig), new FileInputStream(revised));
+    	System.err.println(dr.toString());
     }
 
-    @Test
+//    @Test
     public void testDiffOnIdenticalFiles() throws Exception {
     	addDescription("Test the simple diff between two identical files");
     	File orig = new File("src/test/resources/diff/test2_orig.txt");
     	File revised = new File("src/test/resources/diff/test2_revised.txt");
     	SimpleDiffFiles sdf = new SimpleDiffFiles();
-    	sdf.diff(new FileInputStream(orig), new FileInputStream(revised));
+    	DiffResultWrapper dr = sdf.diff(new FileInputStream(orig), new FileInputStream(revised));
     }
     
-    @Test
+//    @Test
     public void testDiffOnSlightlyDifferentFiles() throws Exception {
     	addDescription("Test the simple diff between two slightly different files");
     	File orig = new File("src/test/resources/diff/test4_orig.txt");
     	File revised = new File("src/test/resources/diff/test4_revised.txt");
     	SimpleDiffFiles sdf = new SimpleDiffFiles();
-    	sdf.diff(new FileInputStream(orig), new FileInputStream(revised));
+    	DiffResultWrapper dr = sdf.diff(new FileInputStream(orig), new FileInputStream(revised));
+    	System.err.println(dr.toString());
     }
 }
