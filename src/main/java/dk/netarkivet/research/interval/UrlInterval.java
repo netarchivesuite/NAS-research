@@ -9,9 +9,9 @@ public class UrlInterval {
 	/** The URL for the interval.*/
 	protected final String url;
 	/** The earliest date for the interval.*/
-	protected Date earliestDate;
+	protected Date earliestDate = null;
 	/** The latest date for the interval.*/
-	protected Date latestDate;
+	protected Date latestDate = null;
 	
 	/**
 	 * Constructor.
@@ -21,8 +21,12 @@ public class UrlInterval {
 	 */
 	public UrlInterval(String url, Date earliestDate, Date latestDate) {
 		this.url = url;
-		this.earliestDate = earliestDate;
-		this.latestDate = latestDate;
+		if(earliestDate != null) {
+			this.earliestDate = new Date(earliestDate.getTime());
+		}
+		if(latestDate != null){ 
+			this.latestDate = new Date(latestDate.getTime());
+		} 
 	}
 	
 	/**
@@ -36,13 +40,19 @@ public class UrlInterval {
 	 * @return The earlist date for the interval.
 	 */
 	public Date getEarliestDate() {
-		return earliestDate;
+		if(earliestDate == null) {
+			return null;
+		}
+		return new Date(earliestDate.getTime());
 	}
 	
 	/**
 	 * @return The latest date for the interval.
 	 */
 	public Date getLatestDate() {
-		return latestDate;
+		if(latestDate == null) {
+			return null;
+		}
+		return new Date(latestDate.getTime());
 	}
 }

@@ -1,7 +1,6 @@
 package dk.netarkivet.research.duplicates;
 
 import java.util.Collection;
-import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,12 +38,9 @@ public class DuplicateExtractor {
 	}
 	
 	/**
-	 * 
-	 * Extracts a map of unique checksums and a list of dates for each checksum.
-	 * @param url The URL for extracting the checksum.
-	 * @param earliestDate The earliest date for the results. 
-	 * @param latestDate The latest date for the results.
-	 * @return The map of checksums and their dates.
+	 * Create a duplicate map for a given URL interval.
+	 * @param urlInterval The URL interval to extract the CDX from for creating the duplicate map.
+	 * @return The duplicate map for the URL interval.
 	 */
 	public DuplicateMap makeDuplicateMap(UrlInterval urlInterval) {
 		Collection<CDXEntry> cdxs = cdxExtractor.retrieveAllCDX(urlInterval.getUrl());

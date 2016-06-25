@@ -41,7 +41,7 @@ public class CDXFileWriterTest extends ExtendedTestCase {
 
     	addStep("Writing an empty list of CDX entries with default CDX format", 
     			"Should have only CDX header line.");
-    	cfw.writeCDXEntries(new ArrayList<CDXEntry>(), Arrays.asList(CDXConstants.DEFAULT_CDX_CHAR_FORMAT));
+    	cfw.writeCDXEntries(new ArrayList<CDXEntry>(), CDXConstants.getNasDefaultCDXFormat());
     	assertEquals(TestFileUtils.countNumberOfLines(outputFile), 1);
     }
     
@@ -53,7 +53,7 @@ public class CDXFileWriterTest extends ExtendedTestCase {
     	CDXEntry entry = CDXEntry.createCDXEntry(new String[] {"http://netarkivet.dk", "20110101010101", "VJ3CKK3ZH2FR7V2KM5TSI3TENA7ZSWKM"}, new Character[] {'A', 'b', 'k'});
     	addStep("Writing an empty list of CDX entries with default CDX format", 
     			"Should have only CDX header line.");
-    	cfw.writeCDXEntries(Arrays.asList(entry), Arrays.asList(CDXConstants.DEFAULT_CDX_CHAR_FORMAT));    	
+    	cfw.writeCDXEntries(Arrays.asList(entry), CDXConstants.getNasDefaultCDXFormat());    	
     	assertEquals(TestFileUtils.countNumberOfLines(outputFile), 2);
 
     }

@@ -1,21 +1,13 @@
 package dk.netarkivet.research;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Date;
 
-import org.jwat.common.HeaderLine;
-import org.jwat.warc.WarcConstants;
-import org.jwat.warc.WarcRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.utils.FileUtils;
-import dk.netarkivet.research.utils.StreamUtils;
-import dk.netarkivet.research.utils.UrlUtils;
-import dk.netarkivet.research.warc.WarcExtractor;
 
 /**
  * Uses the extracted WARC records from WarcToFolder to make diffs between them.
@@ -135,7 +127,7 @@ public class ExtDiffFilesInFolder {
 			return OutputFormat.OUTPUT_FORMAT_VERBOSE;
 		} else if(arg.startsWith("s") || arg.startsWith("S")) {
 			return OutputFormat.OUTPUT_FORMAT_SUMMARY;
-		} else if(arg.startsWith("b") || arg.startsWith("b")) {
+		} else if(arg.startsWith("b") || arg.startsWith("B")) {
 			return OutputFormat.OUTPUT_FORMAT_BOTH;
 			
 		}

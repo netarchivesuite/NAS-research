@@ -310,6 +310,7 @@ public class ExtractMetadata {
     		line.append("Job ID;");
     		line.append("Job Type;");
     		line.append("Job name;");
+    		line.append("\n");
     		
     		outStream.write(line.toString().getBytes(Charset.defaultCharset()));
     		outStream.flush();
@@ -357,6 +358,7 @@ public class ExtractMetadata {
     			line.append("N/A;");
     			line.append("N/A;");
     		}
+    		line.append("\n");
     		
     		outStream.write(line.toString().getBytes(Charset.defaultCharset()));
     		outStream.flush();

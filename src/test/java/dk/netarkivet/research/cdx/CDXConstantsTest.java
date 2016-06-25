@@ -19,7 +19,7 @@ public class CDXConstantsTest extends ExtendedTestCase {
 	@Test
 	public void testDefaultCDXFormat() {
 		addDescription("Test the elements in the default CDX format");
-		List<Character> defaultFormat = Arrays.asList(CDXConstants.DEFAULT_CDX_CHAR_FORMAT);
+		List<Character> defaultFormat = CDXConstants.getNasDefaultCDXFormat();
 		
 		assertTrue(defaultFormat.contains(CDXConstants.CDX_CHAR_ORIGINAL_URL));
 		assertTrue(defaultFormat.contains(CDXConstants.CDX_CHAR_DATE));

@@ -1,7 +1,6 @@
 package dk.netarkivet.research.cdx;
 
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -260,6 +259,6 @@ public class CDXEntry {
 	
 	@Override
 	public String toString() {
-		return extractCDXAsLine(Arrays.asList(CDXConstants.DEFAULT_CDX_CHAR_FORMAT));
+		return extractCDXAsLine(CDXConstants.getNasDefaultCDXFormat());
 	}
 }

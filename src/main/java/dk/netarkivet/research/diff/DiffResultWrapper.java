@@ -48,7 +48,8 @@ public class DiffResultWrapper {
 	}
 
 	/**
-	 * @return The number of chars in all the revised lines.
+	 * @param type The type of diff result to extract the number of chars for.
+	 * @return The number of chars in the revised diff for the given type..
 	 */
 	public int getRevisedLineDiffCharCount(DiffResultType type) {
 		int res = 0;

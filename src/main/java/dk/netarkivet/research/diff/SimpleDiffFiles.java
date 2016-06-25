@@ -10,6 +10,10 @@ import difflib.Patch;
 import dk.netarkivet.research.utils.ListUtils;
 import dk.netarkivet.research.utils.StreamUtils;
 
+/**
+ * Simple diff.
+ * Extracts the difference between two simple text input streams.  
+ */
 public class SimpleDiffFiles implements DiffFiles {
 
 	/**
@@ -26,7 +30,7 @@ public class SimpleDiffFiles implements DiffFiles {
 			Patch<String> linePatch = DiffUtils.diff(origLines, revisedLines);
 			
 			for(Delta<String> d : linePatch.getDeltas()) {
-				res.addResult(extractDiffResult(d, origLines, revisedLines));
+				res.addResult(extractDiffResult(d));
 			}
 			
 			return res;
@@ -35,18 +39,24 @@ public class SimpleDiffFiles implements DiffFiles {
 		}
 	}
 	
-	protected DiffResult extractDiffResult(Delta<String> delta, List<String> origLines, List<String> revisedLines) {
+	/**
+	 * Extracts the results for a given delta.
+	 * If it is of the type CHANGE, then deltas for words and chars will also be calculated.
+	 * @param delta The complete delta.
+	 * @return The results of the diff.
+	 */
+	protected DiffResult extractDiffResult(Delta<String> delta) {
 		DiffResult res = new DiffResult(delta);
 		if(res.diffTypeIsChange) {
-			List<String> origWords = ListUtils.convertLinesToListOfWords(origLines);
-			List<String> revisedWords = ListUtils.convertLinesToListOfWords(revisedLines);
+			List<String> origWords = ListUtils.convertLinesToListOfWords(delta.getOriginal().getLines());
+			List<String> revisedWords = ListUtils.convertLinesToListOfWords(delta.getRevised().getLines());
 			Patch<String> wordPatch = DiffUtils.diff(origWords, revisedWords);
 			for(Delta<String> d : wordPatch.getDeltas()) {
 				res.insertWords(d);
 			}
 			
-			List<String> origChars = ListUtils.convertStringsToListOfCharacters(origLines);
-			List<String> revisedChars = ListUtils.convertStringsToListOfCharacters(revisedLines);
+			List<String> origChars = ListUtils.convertStringsToListOfCharacters(delta.getOriginal().getLines());
+			List<String> revisedChars = ListUtils.convertStringsToListOfCharacters(delta.getRevised().getLines());
 			Patch<String> charPatch = DiffUtils.diff(origChars, revisedChars);
 			for(Delta<String> d : charPatch.getDeltas()) {
 				res.insertChars(d);

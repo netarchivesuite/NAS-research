@@ -1,5 +1,8 @@
 package dk.netarkivet.research.cdx;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Container of constants for the CDX indices.
  */
@@ -62,21 +65,20 @@ public class CDXConstants {
 	public static final char CDX_CHAR_UNCOMPRESSED_ARC_FILE_OFFSET = 'v';
 
 	/** The default order of CDX char arguments for a NAS CDX file.*/
-	protected static final Character[] DEFAULT_CDX_CHAR_FORMAT = new Character[]{
-			CDXConstants.CDX_CHAR_ORIGINAL_URL,
-			CDXConstants.CDX_CHAR_DATE,
-			CDXConstants.CDX_CHAR_FILE_NAME,
-			CDXConstants.CDX_CHAR_COMPRESSED_ARC_FILE_OFFSET,
-			CDXConstants.CDX_CHAR_MIME_TYPE,
-			CDXConstants.CDX_CHAR_RESPONSE_CODE,
-			CDXConstants.CDX_CHAR_NEW_STYLE_CHECKSUM
+	private static final Character[] DEFAULT_CDX_CHAR_FORMAT = new Character[]{
+		CDXConstants.CDX_CHAR_ORIGINAL_URL,
+		CDXConstants.CDX_CHAR_DATE,
+		CDXConstants.CDX_CHAR_FILE_NAME,
+		CDXConstants.CDX_CHAR_COMPRESSED_ARC_FILE_OFFSET,
+		CDXConstants.CDX_CHAR_MIME_TYPE,
+		CDXConstants.CDX_CHAR_RESPONSE_CODE,
+		CDXConstants.CDX_CHAR_NEW_STYLE_CHECKSUM
 	};
-	
-	/**
-	 * @return The default CDX format for Netarkivet.dk.
-	 */
-	public static Character[] getNasDefaultCDXFormat() {
-		return DEFAULT_CDX_CHAR_FORMAT;
-	}
 
+	/**
+	 * @return The default CDX format for Netarkivet.dk, in list format.
+	 */
+	public static List<Character> getNasDefaultCDXFormat() {
+		return Arrays.asList(DEFAULT_CDX_CHAR_FORMAT);
+	}
 }

@@ -154,7 +154,7 @@ public class DiffResult {
 		} else {
 			revisedChars.addAll(delta.getRevised().getLines());
 		}
-		revisedDiff.put(DiffResultType.CHAR, origChars);
+		revisedDiff.put(DiffResultType.CHAR, revisedChars);
 	}
 	
 	/**
