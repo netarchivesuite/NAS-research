@@ -118,6 +118,7 @@ public class ExtLinkAnalyser {
 	 * Constructor.
 	 * @param warcFile The WARC file to extract.
 	 * @param outFile The file where the output should be printed, in the described CSV format.
+	 * @param cdxServerUrl The CDX server url.
 	 */
 	public ExtLinkAnalyser(File warcFile, File outFile, String cdxServerUrl) {
 		this.warcFile = warcFile;

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,11 @@ public class ExtDiffFilesInFolder {
 	/** Logging mechanism. */
 	private static Logger logger = LoggerFactory.getLogger(ExtDiffFilesInFolder.class);
 
-	public static void main( String[] args ) {
+	/**
+	 * Main program.
+	 * @param args Arguments for the main program.
+	 */
+	public static void main(String ... args) {
 
 		if(args.length < 3) {
 			System.err.println("Not enough arguments. Requires the following arguments:");
@@ -177,7 +182,7 @@ public class ExtDiffFilesInFolder {
 	/**
 	 * Constructor.
 	 * @param inputDirectory The input directory where the 
-	 * @param outDir The directory where the WARC record content should be placed.
+	 * @param diff The diff handler.
 	 */
 	public ExtDiffFilesInFolder(File inputDirectory, Diff diff) {
 		this.fileDir = inputDirectory;
@@ -186,15 +191,16 @@ public class ExtDiffFilesInFolder {
 
 	/**
 	 * Performs the 'next file' diff strategy.
-	 * @param outFormat The output format.
 	 */
 	public void performNextFileDiffStrategy() {
 		Map<String, List<String>> fileMap = createFileNameMap();
-		for(String prefix : fileMap.keySet()) {
-			List<String> list = fileMap.get(prefix);
-			for(int i = 0; i < list.size()-1; i++) {
-				File orig = new File(fileDir, prefix + "-" + list.get(i));
-				File revised = new File(fileDir, prefix + "-" + list.get(i+1));
+		for(Map.Entry<String, List<String>> entry : fileMap.entrySet()) {
+			Iterator<String> iterator = entry.getValue().iterator();
+			File orig = new File(fileDir, entry.getKey() + "-" + iterator.next());
+			File revised;
+			String revisedFileSuffix;
+			while((revisedFileSuffix = iterator.next()) != null) {
+				revised = new File(fileDir, entry.getKey() + "-" + revisedFileSuffix);
 				try {
 					diffMethod.performDiff(orig, revised);
 				} catch(IOException e) {
@@ -202,10 +208,11 @@ public class ExtDiffFilesInFolder {
 							+ orig.getName() + "' and '" + revised.getName() + "'", e);
 				}
 				
+				orig = revised;
 			}
 			
-			if(list.size() < 2) {
-				logger.warn("Cannot perform diff for URL '" + prefix + "', since it requires at least two.");
+			if(entry.getValue().size() < 2) {
+				logger.warn("Cannot perform diff for URL '" + entry.getKey() + "', since it requires at least two.");
 			}
 		}
 	}
@@ -213,12 +220,12 @@ public class ExtDiffFilesInFolder {
 	/**
 	 * Performs the 'one file' diff strategy, where all the files in the file dir will be 
 	 * diff'ed 
-	 * @param diffFile
+	 * @param diffFile The base file for the 'one file' diff strategy.
 	 */
 	public void performOneFileDiffStrategy(File diffFile) {
 		for(String filename : FileUtils.getSortedListOfFilenames(fileDir)) {
 			File revisedFile = new File(fileDir, filename);
-			if(diffFile.getAbsolutePath() != revisedFile.getAbsolutePath()) {
+			if(!diffFile.getAbsolutePath().equals(revisedFile.getAbsolutePath())) {
 				try {
 					diffMethod.performDiff(diffFile, revisedFile);
 				} catch(IOException e) {
@@ -230,8 +237,8 @@ public class ExtDiffFilesInFolder {
 	}
 	
 	/**
-	 * Creates a map between the 
-	 * @return
+	 * Creates a map between the filename prefix and list of suffices for files with same prefix.
+	 * @return Map between prefixes and their suffices.
 	 */
 	protected Map<String, List<String>> createFileNameMap() {
 		Map<String, List<String>> res = new HashMap<String, List<String>>();

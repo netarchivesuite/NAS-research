@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.Date;
 
 import dk.netarkivet.research.exception.ArgumentCheck;
@@ -27,7 +29,8 @@ public class Diff {
 	/**
 	 * Constructor.
 	 * @param diffMethod The method.
-	 * @param diffPrinter The output printer.
+	 * @param outputFormat The output format.
+	 * @param outputDir The directory, where the output should be placed.
 	 */
 	public Diff(DiffFiles diffMethod, DiffOutputFormat outputFormat, File outputDir) {
 		this.diffMethod = diffMethod;
@@ -39,17 +42,20 @@ public class Diff {
 	 * Performs the diff between two files.
 	 * @param orig The original file.
 	 * @param revised The revised file.
+	 * @throws IOException If something goes wrong.
 	 */
 	public void performDiff(File orig, File revised) throws IOException {
-		DiffResultWrapper results = diffMethod.diff(new FileInputStream(orig), new FileInputStream(revised));
-		
-		if(outputFormat == DiffOutputFormat.OUTPUT_FORMAT_VERBOSE) {
-			writeFileOutput(results, orig.getName(), revised.getName());
-		} else if(outputFormat == DiffOutputFormat.OUTPUT_FORMAT_SUMMARY) {
-			writeSummaryOutput(results, orig.getName(), revised.getName());
-		} else {
-			writeFileOutput(results, orig.getName(), revised.getName());
-			writeSummaryOutput(results, orig.getName(), revised.getName());
+		try (InputStream origIs = new FileInputStream(orig);
+				InputStream revisedIs = new FileInputStream(revised)) {
+			DiffResultWrapper results = diffMethod.diff(origIs, revisedIs);
+			if(outputFormat == DiffOutputFormat.OUTPUT_FORMAT_VERBOSE) {
+				writeFileOutput(results, orig.getName(), revised.getName());
+			} else if(outputFormat == DiffOutputFormat.OUTPUT_FORMAT_SUMMARY) {
+				writeSummaryOutput(results, orig.getName(), revised.getName());
+			} else {
+				writeFileOutput(results, orig.getName(), revised.getName());
+				writeSummaryOutput(results, orig.getName(), revised.getName());
+			}
 		}
 	}
 	
@@ -60,11 +66,12 @@ public class Diff {
 	 * @param revisedFilename The name of the revised file.
 	 * @throws IOException If something goes wrong.
 	 */
-	protected void writeFileOutput(DiffResultWrapper results, String origFilename, String revisedFilename) throws IOException {
+	protected void writeFileOutput(DiffResultWrapper results, String origFilename, String revisedFilename) 
+			throws IOException {
 		String filename = makeDiffFilename(origFilename, revisedFilename);
 		File outputFile = FileUtils.ensureNewFile(outputDir, filename);
 		try (OutputStream os = new FileOutputStream(outputFile)) {
-			os.write(results.toString().getBytes());
+			os.write(results.toString().getBytes(Charset.defaultCharset()));
 			os.flush();
 		}
 	}
@@ -76,7 +83,8 @@ public class Diff {
 	 * @param revisedFilename The name of the revised file.
 	 * @throws IOException If something goes wrong with the writing.
 	 */
-	protected void writeSummaryOutput(DiffResultWrapper results, String origFilename, String revisedFilename) throws IOException {
+	protected void writeSummaryOutput(DiffResultWrapper results, String origFilename, String revisedFilename) 
+			throws IOException {
 		ArgumentCheck.checkIsFile(summaryFile, "Summary file has not yet been instantiated.");
 		try (OutputStream os = new FileOutputStream(summaryFile)) {
 			StringBuffer sb = new StringBuffer();
@@ -96,7 +104,7 @@ public class Diff {
 
 			sb.append("\n");
 
-			os.write(sb.toString().getBytes());
+			os.write(sb.toString().getBytes(Charset.defaultCharset()));
 			os.flush();
 		}
 	}
@@ -141,7 +149,7 @@ public class Diff {
 
 			sb.append("\n");
 
-			os.write(sb.toString().getBytes());
+			os.write(sb.toString().getBytes(Charset.defaultCharset()));
 			os.flush();
 		}
 	}

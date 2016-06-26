@@ -41,6 +41,10 @@ public class ExtDuplicateFinder {
     /** Logging mechanism. */
     private static Logger logger = LoggerFactory.getLogger(ExtDuplicateFinder.class);
 
+    /**
+     * Main program.
+     * @param args Arguments for the program.
+     */
 	public static void main(String ... args ) {
 		if(args.length < 2) {
 			System.err.println("Not enough arguments. Requires the following arguments:");
@@ -53,8 +57,8 @@ public class ExtDuplicateFinder {
 
 		File inputFile = new File(args[0]);
 		if(!inputFile.isFile()) {
-			throw new IllegalArgumentException("The input file '" + inputFile.getAbsolutePath() + "' is not a valid file "
-					+ "(either does not exists or is a directory)");
+			throw new IllegalArgumentException("The input file '" + inputFile.getAbsolutePath() + "' "
+					+ "is not a valid file (either does not exists or is a directory)");
 		}
 
 		String cdxServerBaseUrl = args[1];
@@ -109,7 +113,8 @@ public class ExtDuplicateFinder {
 			String line;
 			while((line = reader.readLine()) != null) {
 				String[] split = line.split("[;,]");
-				if(split != null && split.length > 0 && ("x".equalsIgnoreCase(split[0]) || "w".equalsIgnoreCase(split[0]))) {
+				if(split != null && split.length > 0 && ("x".equalsIgnoreCase(split[0]) 
+						|| "w".equalsIgnoreCase(split[0]))) {
 					makeDuplicateFilesForCSVLine(split);
 				} else {
 					logger.debug("Ignoring line: " + line);

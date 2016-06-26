@@ -84,7 +84,11 @@ public class FileUtils {
 	 * @return The sorted list of files.
 	 */
 	public static List<String> getSortedListOfFilenames(File dir) {
-		List<String> filenames = Arrays.asList(dir.list());
+		String[] list = dir.list();
+		if(list == null) {
+			return null;
+		}
+		List<String> filenames = Arrays.asList(list);
 		Collections.sort(filenames);
 		return filenames;
 	}

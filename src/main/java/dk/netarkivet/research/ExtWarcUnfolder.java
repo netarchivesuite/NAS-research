@@ -21,6 +21,10 @@ import dk.netarkivet.research.warc.WarcExtractor;
  * that both WARC header and HTTP headers will not be extracted.
  */
 public class ExtWarcUnfolder {
+	/**
+	 * Main method.
+	 * @param args The arguments for running the program.
+	 */
 	public static void main(String ... args) {
 
 		if(args.length < 1) {

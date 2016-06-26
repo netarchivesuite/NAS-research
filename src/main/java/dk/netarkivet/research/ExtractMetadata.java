@@ -104,8 +104,8 @@ public class ExtractMetadata {
     		outputFormat = extractOutputFormat(args[4]);
     	}
     	if(outputFormat == OutputFormat.EXPORT_FORMAT_CDX && jobExtractor != null) {
-    		throw new IllegalArgumentException("Cannot export in CDX format when also extracting the harvest job info. \n"
-    				+ "Either turn off the harvest job extraction or change output format.");
+    		throw new IllegalArgumentException("Cannot export in CDX format when also extracting the harvest job info."
+    				+ "\nEither turn off the harvest job extraction or change output format.");
     	}
     	
     	File outFile;
@@ -144,21 +144,21 @@ public class ExtractMetadata {
     /**
      * Extracts the argument for whether or not to extract the job info from the NAS HarvestDb.
      * Throws an exception, if it is not a valid argument.
-     * @param arg The argument. Must be 'y'/'yes' or 'n'/'no'.
+     * @param useHarvestDb The argument. Must be 'y'/'yes' or 'n'/'no'.
      * @return True if it starts with 'y', false if it starts with 'n'.
      */
-    protected static boolean extractWhetherToUseHarvestDb(String arg) {
-    	ArgumentCheck.checkNotNullOrEmpty(arg, "String arg");
-    	if(arg.equalsIgnoreCase("y") || arg.equalsIgnoreCase("yes")) {
+    protected static boolean extractWhetherToUseHarvestDb(String useHarvestDb) {
+    	ArgumentCheck.checkNotNullOrEmpty(useHarvestDb, "String arg");
+    	if(useHarvestDb.equalsIgnoreCase("y") || useHarvestDb.equalsIgnoreCase("yes")) {
     		return true;
-    	} else if(arg.equalsIgnoreCase("n") || arg.equalsIgnoreCase("no")) {
+    	} else if(useHarvestDb.equalsIgnoreCase("n") || useHarvestDb.equalsIgnoreCase("no")) {
     		return false;
     	}
     	logger.warn("Not default value for whether or not to extract the job info from the NAS harvest database. "
     			+ "Trying prefix 'y' or 'n'");
-    	if(arg.startsWith("y")) {
+    	if(useHarvestDb.startsWith("y")) {
     		return true;
-    	} else if(arg.startsWith("n")) {
+    	} else if(useHarvestDb.startsWith("n")) {
     		return false;
     	}
     	
@@ -169,16 +169,16 @@ public class ExtractMetadata {
     /**
      * Extracts the argument for which output format to use.
      * Must be either CDX or CSV. 
-     * @param arg The commandline argument.
+     * @param exportFormatName The commandline argument for the export format.
      * @return Either CDX or CSV.
      */
-    protected static OutputFormat extractOutputFormat(String arg) {
-    	if(arg.isEmpty()) {
+    protected static OutputFormat extractOutputFormat(String exportFormatName) {
+    	if(exportFormatName.isEmpty()) {
     		return OutputFormat.EXPORT_FORMAT_CSV;
     	}
-    	if(arg.equalsIgnoreCase(EXPORT_FORMAT_CSV)) {
+    	if(exportFormatName.equalsIgnoreCase(EXPORT_FORMAT_CSV)) {
     		return OutputFormat.EXPORT_FORMAT_CSV;
-    	} else if(arg.equalsIgnoreCase(EXPORT_FORMAT_CDX)) {
+    	} else if(exportFormatName.equalsIgnoreCase(EXPORT_FORMAT_CDX)) {
     		return OutputFormat.EXPORT_FORMAT_CDX;
     	} 
     	throw new IllegalArgumentException("Output format must be either 'CDX' or 'CSV'");
@@ -187,13 +187,13 @@ public class ExtractMetadata {
     /**
      * Extracts the argument for which input format to use.
      * Must be either URL or WID. 
-     * @param arg The commandline argument.
+     * @param inputFormatName The commandline argument for the input format.
      * @return Either CDX or CSV.
      */
-    protected static InputFormat extractInputFormat(String arg) {
-    	if(arg.equalsIgnoreCase(INPUT_FORMAT_WID)) {
+    protected static InputFormat extractInputFormat(String inputFormatName) {
+    	if(inputFormatName.equalsIgnoreCase(INPUT_FORMAT_WID)) {
     		return InputFormat.INPUT_FORMAT_WID;
-    	} else if(arg.equalsIgnoreCase(INPUT_FORMAT_URL_INTERVAL)) {
+    	} else if(inputFormatName.equalsIgnoreCase(INPUT_FORMAT_URL_INTERVAL)) {
     		return InputFormat.INPUT_FORMAT_URL_INTERVAL;
     	} 
     	throw new IllegalArgumentException("Output format must be either '"
@@ -225,7 +225,7 @@ public class ExtractMetadata {
     /**
      * Constructor.
      * @param csvFile The input file in the NAS CSV format.
-     * @param cdxServer The base url for the CDX server.
+     * @param cdxExtractor The extractor of CDX entries.
      * @param jobExtractor The extractor of harvest job information.
      * @param outFile The output file.
      */
@@ -389,14 +389,18 @@ public class ExtractMetadata {
      * The types of input formats supported.
      */
     protected enum InputFormat {
+    	/** The WID input format.*/
     	INPUT_FORMAT_WID,
+    	/** The URL interval input format.*/
     	INPUT_FORMAT_URL_INTERVAL;
     };
     /**
      * The type of output formats supported.
      */
     protected enum OutputFormat {
+    	/** The CDX output format.*/
     	EXPORT_FORMAT_CDX,
+    	/** The CSV output format.*/
     	EXPORT_FORMAT_CSV;
     };
 }

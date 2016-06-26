@@ -16,6 +16,10 @@ import dk.netarkivet.research.warc.WarcPacker;
  * Extracts all the WARC records for a CDX file.
  */
 public class NarkWarcExtract {
+	/**
+	 * Main method.
+	 * @param args The arguments for running the program.
+	 */
     public static void main( String[] args ) {
     	if(args.length < 1) {
     		System.err.println("Not enough arguments. Requires the following arguments:");
