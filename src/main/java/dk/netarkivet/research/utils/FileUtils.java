@@ -2,6 +2,9 @@ package dk.netarkivet.research.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Utility class for dealing with files.
@@ -73,5 +76,16 @@ public class FileUtils {
 			}
 		}
 		return outDir;
+	}
+	
+	/**
+	 * Extracts a list of files sorted by filename.
+	 * @param dir The directory with the files.
+	 * @return The sorted list of files.
+	 */
+	public static List<String> getSortedListOfFilenames(File dir) {
+		List<String> filenames = Arrays.asList(dir.list());
+		Collections.sort(filenames);
+		return filenames;
 	}
 }

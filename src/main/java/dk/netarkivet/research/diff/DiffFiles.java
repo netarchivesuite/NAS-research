@@ -11,7 +11,7 @@ public interface DiffFiles {
 	 * to figure out which data points has changed.
 	 * @param orig The original for the first to compare between.
 	 * @param revised The revised for the second element in the compare.
-	 * @return The results of the diff.
+	 * @return The diff results.
 	 */
 	DiffResultWrapper diff(InputStream orig, InputStream revised);
 }

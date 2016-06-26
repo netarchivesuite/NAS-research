@@ -1,11 +1,20 @@
 package dk.netarkivet.research;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dk.netarkivet.research.diff.Diff;
+import dk.netarkivet.research.diff.DiffFiles;
+import dk.netarkivet.research.diff.DiffOutputFormat;
+import dk.netarkivet.research.diff.SimpleDiffFiles;
 import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.utils.FileUtils;
 
@@ -31,9 +40,9 @@ import dk.netarkivet.research.utils.FileUtils;
  *  An optional argument is the output directory. 
  */
 public class ExtDiffFilesInFolder {
-	
-    /** Logging mechanism. */
-    private static Logger logger = LoggerFactory.getLogger(ExtDiffFilesInFolder.class);
+
+	/** Logging mechanism. */
+	private static Logger logger = LoggerFactory.getLogger(ExtDiffFilesInFolder.class);
 
 	public static void main( String[] args ) {
 
@@ -44,9 +53,11 @@ public class ExtDiffFilesInFolder {
 			System.err.println("  - To make diffs against a specific file, then make the specific file the argument");
 			System.err.println("  - To make diffs between a file and the next file, then give argument "
 					+ "'n'/'no'/'next'");
-			System.err.println(" 3. Output format, 'verbose', 'summary' or 'both'");
+			System.err.println(" 3. Output format: 'verbose', 'summary' or 'both'");
 			System.err.println(" 4. (OPTIONAL) output directory. If not given, then the output will be placed in a "
 					+ "'output' subfolder to the input file folder (argument 1).");
+			System.err.println(" 5. (OPTIONAL) Method: Simple, HTML elements, HTML paragraph text.");
+			System.err.println("  - Only the Simple diff method is implemented so far.");
 			System.exit(-1);
 		}
 
@@ -56,14 +67,14 @@ public class ExtDiffFilesInFolder {
 					+ "(either does not exists or is a file) - try giving the complete path.");
 			System.exit(-1);
 		}
-		
+
 		DiffStrategy diffStrategy = extractDiffStrategy(args[1]);
 		File diffFile = null;
 		if(diffStrategy == DiffStrategy.DIFF_STRATEGY_ONE_FILE) {
 			diffFile = new File(args[1]);
 		}
-		
-		OutputFormat outFormat = extractOutputFormat(args[2]);
+
+		DiffOutputFormat outFormat = DiffOutputFormat.extractOutputFormat(args[2]);
 
 		File outDir;
 		if(args.length > 3) {
@@ -79,61 +90,63 @@ public class ExtDiffFilesInFolder {
 		if(outDir.exists()) {
 			FileUtils.deprecateFile(outDir);
 		}
-
-		ExtDiffFilesInFolder extDiff = new ExtDiffFilesInFolder(inputDir, outDir);
-		if(diffStrategy == DiffStrategy.DIFF_STRATEGY_NEXT_FILE) {
-			extDiff.performNextFileDiffStrategy(outFormat);
+		DiffFiles diffMethod;
+		if(args.length > 4) {
+			diffMethod = getDiffFiles(args[4]);
 		} else {
-			extDiff.performOneFileDiffStrategy(diffFile, outFormat);
+			diffMethod = getDiffFiles(null);
+		}
+
+		logger.info("Performing diff on files in catalogue: " + inputDir.getAbsolutePath());
+		logger.info("Using diff stratygy: " + diffStrategy.name());
+		logger.info("Delivering in the output format: " + outFormat.name());
+		logger.info("And the output files will be placed in folder: " + outDir.getAbsolutePath());
+		logger.info("Using diff method: " + diffMethod.getClass().getName());
+		
+		Diff diff = new Diff(diffMethod, outFormat, outDir);
+
+		ExtDiffFilesInFolder extDiff = new ExtDiffFilesInFolder(inputDir, diff);
+		if(diffStrategy == DiffStrategy.DIFF_STRATEGY_NEXT_FILE) {
+			extDiff.performNextFileDiffStrategy();
+		} else {
+			extDiff.performOneFileDiffStrategy(diffFile);
 		}
 
 		System.out.println("Finished");
 		System.exit(0);
 	}
-	
+
 	/**
-	 * 
-	 * @param arg
-	 * @return
+	 * Extracts the diff strategy from the argument.
+	 * @param diffStrategyName The name of the diff strategy. 
+	 * @return The diff strategy.
 	 */
-	protected static DiffStrategy extractDiffStrategy(String arg) {
-		if(arg.equalsIgnoreCase("n") || arg.equalsIgnoreCase("no") || arg.equalsIgnoreCase("next")) {
+	protected static DiffStrategy extractDiffStrategy(String diffStrategyName) {
+		if(diffStrategyName.equalsIgnoreCase("n") || diffStrategyName.equalsIgnoreCase("no") || 
+				diffStrategyName.equalsIgnoreCase("next")) {
 			return DiffStrategy.DIFF_STRATEGY_NEXT_FILE;
-		} else if(new File(arg).isFile()) {
+		} else if(new File(diffStrategyName).isFile()) {
 			return DiffStrategy.DIFF_STRATEGY_ONE_FILE;
 		}
-		
+
 		throw new IllegalStateException("No argument for 'Next file' diff strategy, and argument does not point "
 				+ "to a file for the 'one file' diff strategy. Path might be wrong (try using complete path)");
 	}
-	
-	/**
-	 * Extract the output format.
-	 * @param arg 
-	 * @return
-	 */
-	protected static OutputFormat extractOutputFormat(String arg) {
-		if(arg.equalsIgnoreCase("verbose")) {
-			return OutputFormat.OUTPUT_FORMAT_VERBOSE;
-		} else if(arg.equalsIgnoreCase("summary")) {
-			return OutputFormat.OUTPUT_FORMAT_SUMMARY;
-		} else if(arg.equalsIgnoreCase("both")) {
-			return OutputFormat.OUTPUT_FORMAT_BOTH;
-		}
-		
-		logger.warn("Not the valid argument for the output format '" + arg + "'. "
-				+ "Trying to decipher by using the first character.");
-		if(arg.startsWith("v") || arg.startsWith("V")) {
-			return OutputFormat.OUTPUT_FORMAT_VERBOSE;
-		} else if(arg.startsWith("s") || arg.startsWith("S")) {
-			return OutputFormat.OUTPUT_FORMAT_SUMMARY;
-		} else if(arg.startsWith("b") || arg.startsWith("B")) {
-			return OutputFormat.OUTPUT_FORMAT_BOTH;
-			
-		}
 
-		throw new IllegalStateException("Invalid argument for the output format. Must be either: '"
-				+ "verbose', 'summary' or 'both'");
+	/**
+	 * Retrieves the method for making diffs corresponding to the argument.
+	 * @param diffMethodName The name of the diff method.
+	 * @return The class corresponding to the diff method.
+	 */
+	protected static DiffFiles getDiffFiles(String diffMethodName) {
+		if(diffMethodName == null || diffMethodName.isEmpty()) {
+			return new SimpleDiffFiles();
+		} 
+		if(diffMethodName.equalsIgnoreCase("SIMPLE")) {
+			return new SimpleDiffFiles();
+		}
+		throw new IllegalArgumentException("Cannot instantiate the diff method '"
+				+ diffMethodName + "'. It might not be implemented yet.");
 	}
 
 	/**
@@ -156,37 +169,99 @@ public class ExtDiffFilesInFolder {
 		return res + DateUtils.dateToWaybackDate(new Date());
 	}
 
-	/** The file to extract.*/
-	protected final File warcFile;
-	/** Directory to place the extracted WARC records.*/
-	protected final File outputDirectory;
+	/** The directory with the files to run diff upon.*/
+	protected final File fileDir;
+	/** The method for performing the diff.*/
+	protected final Diff diffMethod;
 
 	/**
 	 * Constructor.
 	 * @param inputDirectory The input directory where the 
 	 * @param outDir The directory where the WARC record content should be placed.
 	 */
-	public ExtDiffFilesInFolder(File inputDirectory, File outDir) {
-		this.warcFile = inputDirectory;
-		this.outputDirectory = outDir;
+	public ExtDiffFilesInFolder(File inputDirectory, Diff diff) {
+		this.fileDir = inputDirectory;
+		this.diffMethod = diff;
 	}
 
-	public void performNextFileDiffStrategy(OutputFormat outFormat) {
-		// TODO
+	/**
+	 * Performs the 'next file' diff strategy.
+	 * @param outFormat The output format.
+	 */
+	public void performNextFileDiffStrategy() {
+		Map<String, List<String>> fileMap = createFileNameMap();
+		for(String prefix : fileMap.keySet()) {
+			List<String> list = fileMap.get(prefix);
+			for(int i = 0; i < list.size()-1; i++) {
+				File orig = new File(fileDir, prefix + "-" + list.get(i));
+				File revised = new File(fileDir, prefix + "-" + list.get(i+1));
+				try {
+					diffMethod.performDiff(orig, revised);
+				} catch(IOException e) {
+					logger.error("Issue occured when performing diff upon files '"
+							+ orig.getName() + "' and '" + revised.getName() + "'", e);
+				}
+				
+			}
+			
+			if(list.size() < 2) {
+				logger.warn("Cannot perform diff for URL '" + prefix + "', since it requires at least two.");
+			}
+		}
+	}
+
+	/**
+	 * Performs the 'one file' diff strategy, where all the files in the file dir will be 
+	 * diff'ed 
+	 * @param diffFile
+	 */
+	public void performOneFileDiffStrategy(File diffFile) {
+		for(String filename : FileUtils.getSortedListOfFilenames(fileDir)) {
+			File revisedFile = new File(fileDir, filename);
+			if(diffFile.getAbsolutePath() != revisedFile.getAbsolutePath()) {
+				try {
+					diffMethod.performDiff(diffFile, revisedFile);
+				} catch(IOException e) {
+					logger.error("Issue occured when performing diff upon files '"
+							+ diffFile.getName() + "' and '" + filename + "'", e);
+				}
+			}
+		}
 	}
 	
-	public void performOneFileDiffStrategy(File diffFile, OutputFormat outFormat) {
-		// TODO
+	/**
+	 * Creates a map between the 
+	 * @return
+	 */
+	protected Map<String, List<String>> createFileNameMap() {
+		Map<String, List<String>> res = new HashMap<String, List<String>>();
+		for(String filename : FileUtils.getSortedListOfFilenames(fileDir)) {
+			String[] split = filename.split("-");
+			if(split.length != 2) {
+				logger.warn("The filename '" + filename + "' is not in the appropritate format 'url-date'. "
+						+ "Ignoring it.");
+				continue;
+			}
+			List<String> list = res.get(split[0]);
+			if(list == null) {
+				list = new ArrayList<String>();
+			}
+			list.add(split[1]);
+			res.put(split[0], list);
+		}
+		
+		return res;
 	}
-	
-	enum OutputFormat {
-		OUTPUT_FORMAT_VERBOSE,
-		OUTPUT_FORMAT_SUMMARY,
-		OUTPUT_FORMAT_BOTH
-	}
-	
+
+	/**
+	 * Strategy for making diffs between files.
+	 * Either diff all other files against one specific file,
+	 * or diff each file against the previous file.
+	 */
 	enum DiffStrategy {
+		/** The 'one file' strategy, where all other files are made diff against one specific file.*/
 		DIFF_STRATEGY_ONE_FILE,
+		/** The 'next file' strategy, where each file is made diff against the next file.*/
 		DIFF_STRATEGY_NEXT_FILE
 	}
 }

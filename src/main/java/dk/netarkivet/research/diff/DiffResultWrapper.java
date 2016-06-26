@@ -35,8 +35,7 @@ public class DiffResultWrapper {
 	}
 	
 	/**
-	 * 
-	 * @param type The type of diff to extract the 
+	 * @param type The type of diff result to extract the number of chars for.
 	 * @return The number of chars in all the orig diff of the given type.
 	 */
 	public int getOrigDiffCharCount(DiffResultType type) {
@@ -51,10 +50,38 @@ public class DiffResultWrapper {
 	 * @param type The type of diff result to extract the number of chars for.
 	 * @return The number of chars in the revised diff for the given type..
 	 */
-	public int getRevisedLineDiffCharCount(DiffResultType type) {
+	public int getRevisedDiffCharCount(DiffResultType type) {
 		int res = 0;
 		for(DiffResult dr : results) {
 			res += dr.getRevisedDiffSize(type);
+		}
+		return res;
+	}
+	
+	/**
+	 * @param change Whether or not it should be the change lines or the non-change lines (inserts / deletes).
+	 * @return The number of either change lines or non-change lines from the original.
+	 */
+	public int getOrigLineCount(boolean change) {
+		int res = 0;
+		for(DiffResult dr : results) {
+			if(dr.isChange() == change) {
+				res += dr.getOrigLineNumber();
+			}
+		}
+		return res;
+	}
+	
+	/**
+	 * @param change Whether or not it should be the change lines or the non-change lines (inserts / deletes).
+	 * @return The number of insert/delete lines from the revised.
+	 */
+	public int getRevisedLineCount(boolean change) {
+		int res = 0;
+		for(DiffResult dr : results) {
+			if(dr.isChange() == change) {
+				res += dr.getRevisedLineNumber();
+			}
 		}
 		return res;
 	}
