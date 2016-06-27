@@ -2,9 +2,11 @@ package dk.netarkivet.research.utils;
 
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.jaccept.structure.ExtendedTestCase;
 import org.testng.annotations.AfterClass;
@@ -85,6 +87,25 @@ public class FileUtilsTest extends ExtendedTestCase {
 		assertTrue(new File(depDir, contentFile.getName()).isFile());
 	}
 	
+	@Test(expectedExceptions = IllegalStateException.class)
+	public void testDeprecateFileWhenNotAllowed() throws Exception {
+		addDescription("Try to deprecate a file in a directory, where you do not have write access");
+		File subDir = new File(dir, "readonlyDirectory");
+		subDir.mkdir();
+		assertTrue(subDir.isDirectory());
+		File f = TestFileUtils.createTestFile(subDir, "This is the content");
+
+		try {
+			assertTrue(subDir.setReadOnly());
+			assertFalse(subDir.canWrite());
+			
+			FileUtils.deprecateFile(f);
+		} finally {
+			subDir.setWritable(true);
+			subDir.setExecutable(true);
+		}
+	}
+	
 	@Test
 	public void testEnsuringNewFileAtNewPosition() throws Exception {
 		addDescription("Testing ensuring a new file at a new position");
@@ -133,6 +154,25 @@ public class FileUtilsTest extends ExtendedTestCase {
 	}
 	
 	@Test(expectedExceptions = IOException.class)
+	public void testEnsuringNewFileAtReadOnlyDirectory() throws Exception {
+		addDescription("Test ensuring a new file, when the directory is read only.");
+		File subDir = new File(dir, "readonlyDirectory");
+		subDir.mkdir();
+		assertTrue(subDir.isDirectory());
+		File f = new File(subDir, "Test" + Math.random() + ".txt");
+
+		try {
+			assertTrue(subDir.setReadOnly());
+			assertFalse(subDir.canWrite());
+			
+			FileUtils.ensureNewFile(f);
+		} finally {
+			subDir.setWritable(true);
+			subDir.setExecutable(true);
+		}
+	}
+	
+	@Test(expectedExceptions = IOException.class)
 	public void testCreateInReadOnlyDirectory() throws Exception {
 		addDescription("Tests the creation of a new file in a read-only directory.");
 		File subDir = new File(dir, "readonlyDirectory");
@@ -148,5 +188,42 @@ public class FileUtilsTest extends ExtendedTestCase {
 			subDir.setWritable(true);
 			subDir.setExecutable(true);
 		}
+	}
+
+	@Test(expectedExceptions = IOException.class)
+	public void testCreateDirInReadOnlyDirectory() throws Exception {
+		addDescription("Test creating a directory in a directory which is read only.");
+		File subDir = new File(dir, "readonlyDirectory");
+
+		try {
+			assertTrue(dir.setReadOnly());
+			assertFalse(dir.canWrite());
+			
+			FileUtils.ensureNewFile(subDir);
+		} finally {
+			dir.setWritable(true);
+			dir.setExecutable(true);
+		}
+	}
+	
+	@Test
+	public void testSortFileInDir() {
+		addDescription("Test the sorting of files.");
+		File dir = new File("src/test/resources");
+		List<String> filenames = FileUtils.getSortedListOfFilenames(dir);
+		
+		assertFalse(filenames.isEmpty());
+		assertTrue(filenames.size() > 1);
+		
+		for(int i = 1; i < filenames.size(); i++) {
+			assertTrue(filenames.get(i-1).compareTo(filenames.get(i)) < 0);
+		}
+	}
+	
+	@Test
+	public void testSortFileInDirWhenGivenFile() {
+		addDescription("Test the sorting, when it is done on a file instead of a directory.");
+		File f = new File("src/test/rersouces/jaccept.properties");
+		assertNull(FileUtils.getSortedListOfFilenames(f));
 	}
 }

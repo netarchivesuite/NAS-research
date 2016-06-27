@@ -21,6 +21,7 @@ import dk.netarkivet.research.exception.ArgumentCheck;
 import dk.netarkivet.research.harvestdb.HarvestJobExtractor;
 import dk.netarkivet.research.harvestdb.HarvestJobInfo;
 import dk.netarkivet.research.harvestdb.NasHarvestJobExtractor;
+import dk.netarkivet.research.harvestdb.ScriptBasedHarvestJobExtractor;
 import dk.netarkivet.research.http.HttpRetriever;
 import dk.netarkivet.research.interval.CsvUrlIntervalReader;
 import dk.netarkivet.research.interval.UrlInterval;
@@ -57,9 +58,13 @@ public class ExtractMetadata {
     		System.err.println(" 2. Format for CSV file: either 'WID' or 'URL'");
     		System.err.println(" 3. the base URL to the CDX-server.");
     		System.err.println(" 4. Whether or not to extract harvest job info, either 'y'/'yes' or 'n'/'no'.");
-    		System.err.println(" - If this option is set to true, then it requires the parameter: '"
-    				+ "dk.netarkivet.settings.file', which will be set by the script using the environment "
-    				+ "variable NAS_SETTINGS.");
+    		System.err.println(" - If this option is set to true, then it requires one of the following "
+    				+ "environemnt variables: ");
+    		System.err.println("   * 'dk.netarkivet.settings.file', for the settings file for the NetarchiveSuite "
+    				+ "instance which contains the harvest database. This can be set by the script using the "
+    				+ "environment variable NAS_SETTINGS.");
+    		System.err.println("   * 'dk.netarkivet.research.script', for the script for extracting the job infos "
+    				+ "without going through NetarchiveSuite harvest db setup.");
     		System.err.println(" 5. (OPTIONAL) Whether to extract in CSV format or CDX format, either 'cdx' or 'csv'.");
     		System.err.println(" - This cannot be set to 'cdx' and still extract the harvest job info.");
     		System.err.println(" - The CDX format will be a classical NAS CDX file.");
@@ -88,15 +93,28 @@ public class ExtractMetadata {
     	HarvestJobExtractor jobExtractor = null;
     	if(extractWhetherToUseHarvestDb(args[3])) {
     		logger.debug("Using NAS harvest job database for extracting job info");
-    		if(System.getProperty("dk.netarkivet.settings.file") == null) {
-    			throw new IllegalArgumentException("No system property for the NAS settings file defined. "
-    					+ "Must be defined in 'dk.netarkivet.settings.file'.");
+    		if(System.getProperty("dk.netarkivet.settings.file") != null) {
+        		if(!(new File(System.getProperty("dk.netarkivet.settings.file")).isFile())) {
+        			throw new IllegalArgumentException("The NAS settings file is no a valid file "
+        					+ "(either not existing, or a directory)");
+        		}
+        		
+        		logger.info("Using the NAS harvest job extractor to extract directly from the database.");
+        		jobExtractor = new NasHarvestJobExtractor();
+    		} else if(System.getProperty("dk.netarkivet.research.script") != null) {
+    			File scriptFile = new File(System.getProperty("dk.netarkivet.research.script"));
+        		if(!(scriptFile.isFile())) {
+        			throw new IllegalArgumentException("The harvest job extraction script is no a valid file "
+        					+ "(either not existing, or a directory)");
+        		}
+        		
+        		logger.info("Using harvest job extractor script to extract harvest job infos.");
+        		jobExtractor = new ScriptBasedHarvestJobExtractor(scriptFile);
+    		} else {
+    			throw new IllegalArgumentException("No system property for neither the NAS settings file defined "
+    					+ "nor the extraction script has been set. Must be defined in either environment variables:"
+    					+ "+'dk.netarkivet.settings.file' or 'dk.netarkivet.research.script'.");
     		}
-    		if(!(new File(System.getProperty("dk.netarkivet.settings.file")).isFile())) {
-    			throw new IllegalArgumentException("The NAS settings file is no a valid file "
-    					+ "(either not existing, or a directory)");
-    		}
-    		jobExtractor = new NasHarvestJobExtractor();
     	}
     	
     	OutputFormat outputFormat = OutputFormat.EXPORT_FORMAT_CSV;

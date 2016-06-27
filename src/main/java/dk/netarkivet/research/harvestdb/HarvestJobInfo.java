@@ -7,6 +7,11 @@ import dk.netarkivet.harvester.datamodel.Job;
  * Container of information about a harvest job. 
  */
 public class HarvestJobInfo {
+	/** The name for the snapshot harvest type.*/
+	public static final String HARVEST_TYPE_SNAPSHOT = "snapshot";
+	/** The name for the non-snapshot harvest type.*/
+	public static final String HARVEST_TYPE_NOT_SNAPSHOT = "selective/event";
+	
 	/** The id of the job.*/
 	protected final Long id;
 	/** The type of job (e.g. snapshot or selective/event).*/
@@ -37,7 +42,7 @@ public class HarvestJobInfo {
 	 */
 	public HarvestJobInfo(Job nasJob, HarvestDefinition nasHd) {
 		this.id = nasJob.getJobID();
-		this.type = nasJob.isSnapshot() ? "snapshot" : "selective/event";
+		this.type = nasJob.isSnapshot() ? HARVEST_TYPE_SNAPSHOT : HARVEST_TYPE_NOT_SNAPSHOT;
 		this.status = nasJob.getStatus().name();
 		this.name = nasHd.getName();
 	}

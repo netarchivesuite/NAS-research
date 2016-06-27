@@ -6,10 +6,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Utility class for dealing with files.
  */
 public class FileUtils {
+	/** Logging mechanism. */
+	private static Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
 	/**
 	 * Deprecates a file, by moving it from 'filepath/filename' to 'filepath/filename.old'.
@@ -54,9 +59,8 @@ public class FileUtils {
 		if(newFile.exists()) {
 			deprecateFile(newFile);
 		}
-		if(!newFile.createNewFile()) {
-			throw new IllegalStateException("Cannot create the new file '" + newFile.getAbsolutePath() + "'.");
-		}
+		boolean success = newFile.createNewFile();
+		logger.debug("Ensured new file at '" + newFile.getAbsolutePath() + "': " + success);
 	}
 
 	/**
@@ -66,16 +70,16 @@ public class FileUtils {
 	 * @return The directory.
 	 */
 	public static File createDir(String dirPath) {
-		File outDir = new File(dirPath);
-		if(outDir.isFile()) {
+		File dir = new File(dirPath);
+		if(dir.isDirectory()) {
+			logger.debug("The directory '" + dir.getAbsolutePath() + "' already exists.");
+		} else if(dir.isFile()) {
 			throw new IllegalArgumentException("The location for the output file is not vacent.");
 		} else {
-			boolean dirSuccess= outDir.mkdirs();
-			if(!dirSuccess && !outDir.isDirectory()) {
-				throw new IllegalArgumentException("Cannot create the directory '" + dirPath + "'.");
-			}
+			boolean success = dir.mkdirs();
+			logger.debug("Ensured new file at '" + dir.getAbsolutePath() + "': " + success);
 		}
-		return outDir;
+		return dir;
 	}
 	
 	/**
