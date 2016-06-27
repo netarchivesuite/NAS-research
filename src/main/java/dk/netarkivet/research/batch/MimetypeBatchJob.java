@@ -59,7 +59,7 @@ public class MimetypeBatchJob extends ARCBatchJob {
 				if(split.length != 2) {
 					continue;
 				}
-				long size = Long.valueOf(split[1]);
+				Long size = Long.valueOf(split[1]);
 				
 				insertIntoMap(split[0], 1L, countMap);
 				insertIntoMap(split[0], size, sizeMap);
@@ -69,9 +69,9 @@ public class MimetypeBatchJob extends ARCBatchJob {
 			
 			output.write(("Total records: " + totalCount).getBytes());
 			output.write(("Total size: " + totalSize).getBytes());
-			output.write("Mimetype;count\n".getBytes());
+			output.write("Mimetype;count\n".getBytes(Charset.defaultCharset()));
 			writeMapToOutputStream(countMap, output);
-			output.write("Mimetype;size\n".getBytes());
+			output.write("Mimetype;size\n".getBytes(Charset.defaultCharset()));
 			writeMapToOutputStream(sizeMap, output);
 		} catch (IOException e) {
 			throw new IOFailure("", e);
