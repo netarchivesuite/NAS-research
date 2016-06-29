@@ -20,8 +20,8 @@ import dk.netarkivet.research.utils.StreamUtils;
  * 
  * 
  * E.g. If it is a NAS database, then you could have the following two commands in your script:
- * psql -h $DB_HOST -A -t -c "select snapshot from jobs WHERE job_id = $JOB_ID;" -U $USER $DB_NAME
- * psql -h $DB_HOST -A -t -c "select name FROM harvestdefinitions WHERE harvest_id = (select harvest_id from jobs WHERE job_id = $JOB_ID);" -U $USER $DB_NAME
+ ** psql -h $DB_HOST -A -t -c "select snapshot from jobs WHERE job_id = $JOB_ID;" -U $USER $DB_NAME
+ ** psql -h $DB_HOST -A -t -c "select name FROM harvestdefinitions WHERE harvest_id = \(select harvest_id from jobs WHERE job_id = $JOB_ID);" -U $USER $DB_NAME
  * 
  * Where:
  * $DB_HOST is the ip for the machine, where you are running the harvest postgresql.

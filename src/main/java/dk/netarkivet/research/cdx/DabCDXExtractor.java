@@ -59,9 +59,12 @@ public class DabCDXExtractor extends AbstractCDXExtractor {
 	}
 
 	/** The prefix for the URL argument in the HTTP request.*/
-	private final String cdxUrl;
+	protected final String cdxUrl;
 	/** The http retriever for handling the HTTP requests to the CDX server.*/
-	private final HttpRetriever httpRetriever;
+	protected final HttpRetriever httpRetriever;
+	
+	/** Map to keep track of the already extracted CDX entries, so we don't have to extract them several times.*/
+	protected final Map<String, List<CDXEntry>> cdxExtractMap = new HashMap<String, List<CDXEntry>>();
 
 	/**
 	 * Constructor.
@@ -81,22 +84,30 @@ public class DabCDXExtractor extends AbstractCDXExtractor {
 
 	@Override
 	public Collection<CDXEntry> retrieveAllCDX(String url) {
-		String requestUrlString = createRequestUrlForURL(url);
-		String response = httpRetriever.retrieveFromUrl(requestUrlString);
+		List<CDXEntry> res = cdxExtractMap.get(url);
 
-		if(response == null || response.isEmpty()) {
-			logger.warn("Failed to retrieve CDX indices for URL '" + url + "'. Returning a null");
-			return Arrays.asList();
+		if(res != null) {
+			logger.debug("Using already extracted CDX entries for the URL '" + url + "'.");
 		} else {
-			List<CDXEntry> res = new ArrayList<CDXEntry>();
-			for(String line : response.split("\n")) {
-				CDXEntry entry = CDXEntry.createCDXEntry(createCdxMap(line));
-				if(entry != null) {
-					res.add(entry);
+			logger.debug("Extracting CDX entries for URL '" + url + "'.");
+			String requestUrlString = createRequestUrlForURL(url);
+			String response = httpRetriever.retrieveFromUrl(requestUrlString);
+			if(response == null || response.isEmpty()) {
+				logger.warn("Failed to retrieve CDX indices for the URL '" + url + "'. Returning a null");
+				res = Arrays.asList();
+			} else {
+				res = new ArrayList<CDXEntry>();
+				for(String line : response.split("\n")) {
+					CDXEntry entry = CDXEntry.createCDXEntry(createCdxMap(line));
+					if(entry != null) {
+						res.add(entry);
+					}
 				}
 			}
-			return res;
+			cdxExtractMap.put(url, res);
 		}
+		
+		return res;
 	}
 
 	/**

@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Date;
 
-import dk.netarkivet.research.exception.ArgumentCheck;
 import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.utils.FileUtils;
 
@@ -25,6 +24,9 @@ public class Diff {
 	protected final File outputDir;
 	/** The file where the summary is written. Is only used, if the output format supports it.*/
 	protected File summaryFile;
+	
+	/** Value for appending to a file, when creating an file output stream.*/
+	protected final Boolean APPEND_TO_FILE = true;
 	
 	/**
 	 * Constructor.
@@ -51,10 +53,10 @@ public class Diff {
 			if(outputFormat == DiffOutputFormat.OUTPUT_FORMAT_VERBOSE) {
 				writeFileOutput(results, orig.getName(), revised.getName());
 			} else if(outputFormat == DiffOutputFormat.OUTPUT_FORMAT_SUMMARY) {
-				writeSummaryOutput(results, orig.getName(), revised.getName());
+				writeSummaryOutput(results, orig, revised);
 			} else {
 				writeFileOutput(results, orig.getName(), revised.getName());
-				writeSummaryOutput(results, orig.getName(), revised.getName());
+				writeSummaryOutput(results, orig, revised);
 			}
 		}
 	}
@@ -79,17 +81,21 @@ public class Diff {
 	/**
 	 * Writes the summary output for give results to the summary file.
 	 * @param results The results to write the summary of.
-	 * @param origFilename The name of the original file.
-	 * @param revisedFilename The name of the revised file.
+	 * @param origFile The original file.
+	 * @param revisedFile The revised file.
 	 * @throws IOException If something goes wrong with the writing.
 	 */
-	protected void writeSummaryOutput(DiffResultWrapper results, String origFilename, String revisedFilename) 
+	protected void writeSummaryOutput(DiffResultWrapper results, File origFile, File revisedFile) 
 			throws IOException {
-		ArgumentCheck.checkIsFile(summaryFile, "Summary file has not yet been instantiated.");
-		try (OutputStream os = new FileOutputStream(summaryFile)) {
+		if(summaryFile == null || !summaryFile.isFile()) {
+			initialiseSummaryFile();
+		}
+		try (OutputStream os = new FileOutputStream(summaryFile, APPEND_TO_FILE)) {
 			StringBuffer sb = new StringBuffer();
-			sb.append(origFilename + ";");
-			sb.append(revisedFilename + ";");
+			sb.append(origFile.getName() + ";");
+			sb.append(origFile.length() + ";");
+			sb.append(revisedFile.getName() + ";");
+			sb.append(revisedFile.length() + ";");
 			sb.append(results.getResults().size() + ";");
 			sb.append(results.getOrigLineCount(false) + ";");
 			sb.append(results.getRevisedLineCount(false) + ";");
@@ -118,7 +124,11 @@ public class Diff {
 	protected String makeDiffFilename(String origFilename, String revisedFilename) {
 		String[] origSplit = origFilename.split("-");
 		String[] revisedSplit = origFilename.split("-");
-		return "diff_" + origSplit[0] + "_" + origSplit[1] + "-" + revisedSplit[1];
+		if(origSplit.length < 2 || revisedSplit.length < 2) {
+			return "diff_" + origSplit[0] + "_" + revisedSplit[0];
+		} else {
+			return "diff_" + origSplit[0] + "_" + origSplit[1] + "-" + revisedSplit[1];
+		}
 	}
 	
 	/**
@@ -131,10 +141,12 @@ public class Diff {
 		}
 		summaryFile = FileUtils.ensureNewFile(outputDir, "diff-Summary-" + DateUtils.dateToWaybackDate(new Date()));
 		
-		try (OutputStream os = new FileOutputStream(summaryFile)) {
+		try (OutputStream os = new FileOutputStream(summaryFile, APPEND_TO_FILE)) {
 			StringBuffer sb = new StringBuffer();
 			sb.append("Orig_filename;");
+			sb.append("Orig file size;");
 			sb.append("Revised_filename;");
+			sb.append("Revised file size;");
 			sb.append("Number of diffs;");
 			sb.append("Orig number of insert/delete lines;");
 			sb.append("Revised number of insert/delete lines;");

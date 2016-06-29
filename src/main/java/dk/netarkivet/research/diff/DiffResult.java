@@ -30,11 +30,28 @@ public class DiffResult {
 	 * @param delta The base diff delta for the lines.
 	 */
 	public DiffResult(Delta<String> delta) {
-		diffTypeIsChange = (delta.getType() == Delta.TYPE.CHANGE);
-		origDiff.put(DiffResultType.LINE, new ArrayList<String>(delta.getOriginal().getLines()));
-		origLineNumber = delta.getOriginal().getPosition();
-		revisedDiff.put(DiffResultType.LINE, new ArrayList<String>(delta.getRevised().getLines()));
-		revisedLineNumber = delta.getRevised().getPosition();
+		this.diffTypeIsChange = (delta.getType() == Delta.TYPE.CHANGE);
+		this.origDiff.put(DiffResultType.LINE, new ArrayList<String>(delta.getOriginal().getLines()));
+		this.origLineNumber = delta.getOriginal().getPosition();
+		this.revisedDiff.put(DiffResultType.LINE, new ArrayList<String>(delta.getRevised().getLines()));
+		this.revisedLineNumber = delta.getRevised().getPosition();
+	}
+	
+	/**
+	 * Constructor.
+	 * @param isChange Whether it has type CHANGE.
+	 * @param origDiffLines The orig lines for the diff.
+	 * @param origLineNumber The orig line number for the diff.
+	 * @param revisedDiffLines The revised lines for the diff.
+	 * @param revisedLineNumber The revised line number for the diff.
+	 */
+	public DiffResult(boolean isChange, List<String> origDiffLines, int origLineNumber, 
+			List<String> revisedDiffLines, int revisedLineNumber) {
+		this.diffTypeIsChange = isChange;
+		this.origDiff.put(DiffResultType.LINE, origDiffLines);
+		this.origLineNumber = origLineNumber;
+		this.revisedDiff.put(DiffResultType.LINE, revisedDiffLines);
+		this.revisedLineNumber = revisedLineNumber;
 	}
 	
 	/**
@@ -57,56 +74,26 @@ public class DiffResult {
 		return revisedLineNumber;
 	}
 
-	/**
-	 * @return The line diff for the original.
-	 */
-	public List<String> getOrigLine() {
-		return new ArrayList<String>(origDiff.get(DiffResultType.LINE));
-	}
-	
 	/** 
-	 * @return The line diff of the derived.
+	 * @param type The type of the orig results, which is to be retrieved. 
+	 * @return Contains the original diff for the given result type. 
+	 * Is should only be applicable for 'CHAR' and 'WORD' if 'CHANGE' is true.
 	 */
-	public List<String> getRevisedLine() {
-		return new ArrayList<String>(revisedDiff.get(DiffResultType.LINE));
-	}
-	
-	/** 
-	 * @return Contains the original diff for the words. Is only applicable for the 'CHANGE'.
-	 */
-	public List<String> getOrigWords() {
-		if(origDiff.containsKey(DiffResultType.WORD)) {
-			return new ArrayList<String>(origDiff.get(DiffResultType.WORD));
+	public List<String> getOrigResultList(DiffResultType type) {
+		if(origDiff.containsKey(type)) {
+			return new ArrayList<String>(origDiff.get(type));
 		} 
 		return null;
 	}
 	
 	/** 
-	 * @return Contains the revised diff for the words. Is only applicable for the 'CHANGE'.
+	 * @param type The type of the revised results, which is to be retrieved. 
+	 * @return Contains the revised diff for the given result type. 
+	 * Is should only be applicable for 'CHAR' and 'WORD' if 'CHANGE' is true.
 	 */
-	public List<String> getRevisedWords() {
-		if(revisedDiff.containsKey(DiffResultType.WORD)) {
-			return new ArrayList<String>(revisedDiff.get(DiffResultType.WORD));
-		} 
-		return null;
-	}
-	
-	/** 
-	 * @return Contains the original diff for the chars. Is only applicable for the 'CHANGE'.
-	 */
-	public List<String> getOrigChars() {
-		if(origDiff.containsKey(DiffResultType.CHAR)) {
-			return new ArrayList<String>(origDiff.get(DiffResultType.CHAR));
-		} 
-		return null;
-	}
-	
-	/** 
-	 * @return Contains the revised diff for the chars. Is only applicable for the 'CHANGE'.
-	 */
-	public List<String> getRevisedChars() {
-		if(revisedDiff.containsKey(DiffResultType.CHAR)) {
-			return new ArrayList<String>(revisedDiff.get(DiffResultType.CHAR));
+	public List<String> getRevisedResultList(DiffResultType type) {
+		if(revisedDiff.containsKey(type)) {
+			return new ArrayList<String>(revisedDiff.get(type));
 		} 
 		return null;
 	}
@@ -180,7 +167,7 @@ public class DiffResult {
 	 */
 	protected int getLineDiffSize(List<String> list) {
 		if(list == null) {
-			return -1;
+			return 0;
 		}
 		int res = 0;
 		for(String s : list) {
@@ -188,5 +175,4 @@ public class DiffResult {
 		}
 		return res;		
 	}
-
 }

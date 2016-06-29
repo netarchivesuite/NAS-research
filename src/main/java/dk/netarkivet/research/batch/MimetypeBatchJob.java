@@ -15,7 +15,8 @@ import dk.netarkivet.common.exceptions.IOFailure;
 import dk.netarkivet.common.utils.arc.ARCBatchJob;
 
 /**
- * BatchJob 
+ * BatchJob for extracting mimetypes.
+ * 
  */
 public class MimetypeBatchJob extends ARCBatchJob {
 
@@ -47,7 +48,7 @@ public class MimetypeBatchJob extends ARCBatchJob {
 	
 	@Override
 	public boolean postProcess(InputStream input, OutputStream output) {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(input, Charset.defaultCharset()));
 		Map<String, Long> countMap = new HashMap<String, Long>();
 		Map<String, Long> sizeMap = new HashMap<String, Long>();
 		int totalCount = 0;
@@ -67,11 +68,11 @@ public class MimetypeBatchJob extends ARCBatchJob {
 				totalSize += size;
 			}
 			
-			output.write(("Total records: " + totalCount).getBytes());
-			output.write(("Total size: " + totalSize).getBytes());
+			output.write(("Total records: " + totalCount + "\n").getBytes(Charset.defaultCharset()));
+			output.write(("Total size: " + totalSize + "\n").getBytes(Charset.defaultCharset()));
 			output.write("Mimetype;count\n".getBytes(Charset.defaultCharset()));
 			writeMapToOutputStream(countMap, output);
-			output.write("Mimetype;size\n".getBytes(Charset.defaultCharset()));
+			output.write("\n\nMimetype;size\n".getBytes(Charset.defaultCharset()));
 			writeMapToOutputStream(sizeMap, output);
 		} catch (IOException e) {
 			throw new IOFailure("", e);

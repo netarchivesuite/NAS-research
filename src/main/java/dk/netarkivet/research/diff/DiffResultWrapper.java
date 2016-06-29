@@ -66,7 +66,7 @@ public class DiffResultWrapper {
 		int res = 0;
 		for(DiffResult dr : results) {
 			if(dr.isChange() == change) {
-				res += dr.getOrigLineNumber();
+				res += dr.getOrigResultList(DiffResultType.LINE).size();
 			}
 		}
 		return res;
@@ -80,7 +80,7 @@ public class DiffResultWrapper {
 		int res = 0;
 		for(DiffResult dr : results) {
 			if(dr.isChange() == change) {
-				res += dr.getRevisedLineNumber();
+				res += dr.getRevisedResultList(DiffResultType.LINE).size();
 			}
 		}
 		return res;
@@ -92,18 +92,20 @@ public class DiffResultWrapper {
 		for(DiffResult dr : results) {
 			sb.append(dr.isChange() ? "Change: " : "Not change: ");
 			sb.append("\n");
-			for(int i = 0; i < dr.getOrigLine().size(); i++) {
-				sb.append((dr.getOrigLineNumber() + i) + " > " + dr.getOrigLine().get(i) + "\n");
+			for(int i = 0; i < dr.getOrigResultList(DiffResultType.LINE).size(); i++) {
+				sb.append((dr.getOrigLineNumber() + i) + " > " + dr.getOrigResultList(DiffResultType.LINE).get(i) 
+						+ "\n");
 			}
-			for(int i = 0; i < dr.getRevisedLine().size(); i++) {
-				sb.append((dr.getRevisedLineNumber() + i) + " < " + dr.getRevisedLine().get(i) + "\n");
+			for(int i = 0; i < dr.getRevisedResultList(DiffResultType.LINE).size(); i++) {
+				sb.append((dr.getRevisedLineNumber() + i) + " < " 
+						+ dr.getRevisedResultList(DiffResultType.LINE).get(i) + "\n");
 			}
 			
 			if(dr.isChange()) {
-				sb.append("w > " + dr.getOrigWords() + "\n");
-				sb.append("w < " + dr.getRevisedWords() + "\n");
-				sb.append("c > " + dr.getOrigChars() + "\n");
-				sb.append("c < " + dr.getRevisedChars() + "\n");
+				sb.append("w > " + dr.getOrigResultList(DiffResultType.WORD) + "\n");
+				sb.append("w < " + dr.getRevisedResultList(DiffResultType.WORD)+ "\n");
+				sb.append("c > " + dr.getOrigResultList(DiffResultType.CHAR) + "\n");
+				sb.append("c < " + dr.getRevisedResultList(DiffResultType.CHAR) + "\n");
 			}
 		}
 		return sb.toString();
