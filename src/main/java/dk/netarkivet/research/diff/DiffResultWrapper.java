@@ -36,51 +36,59 @@ public class DiffResultWrapper {
 	
 	/**
 	 * @param type The type of diff result to extract the number of chars for.
+	 * @param deltaType The type of diffs to calculate the diffs for.
 	 * @return The number of chars in all the orig diff of the given type.
 	 */
-	public int getOrigDiffCharCount(DiffResultType type) {
+	public int getOrigDiffCharCount(DiffResultType type, DeltaType deltaType) {
 		int res = 0;
 		for(DiffResult dr : results) {
-			res += dr.getOrigDiffSize(type);
+			if(dr.getDeltaType() == deltaType) {
+				res += dr.getOrigDiffSize(type);
+			}
 		}
 		return res;
 	}
 
 	/**
 	 * @param type The type of diff result to extract the number of chars for.
+	 * @param deltaType The type of diffs to calculate the diffs for.
 	 * @return The number of chars in the revised diff for the given type..
 	 */
-	public int getRevisedDiffCharCount(DiffResultType type) {
+	public int getRevisedDiffCharCount(DiffResultType type, DeltaType deltaType) {
 		int res = 0;
 		for(DiffResult dr : results) {
-			res += dr.getRevisedDiffSize(type);
-		}
-		return res;
-	}
-	
-	/**
-	 * @param change Whether or not it should be the change lines or the non-change lines (inserts / deletes).
-	 * @return The number of either change lines or non-change lines from the original.
-	 */
-	public int getOrigLineCount(boolean change) {
-		int res = 0;
-		for(DiffResult dr : results) {
-			if(dr.isChange() == change) {
-				res += dr.getOrigResultList(DiffResultType.LINE).size();
+			if(dr.getDeltaType() == deltaType) {
+				res += dr.getRevisedDiffSize(type);
 			}
 		}
 		return res;
 	}
 	
 	/**
-	 * @param change Whether or not it should be the change lines or the non-change lines (inserts / deletes).
-	 * @return The number of insert/delete lines from the revised.
+	 * @param diffType the type of diff to calculate its number of groups.
+	 * @param deltaType The type of diffs to calculate lines for.
+	 * @return The number of elements of the given diff type from the original.
 	 */
-	public int getRevisedLineCount(boolean change) {
+	public int getOrigGroupCount(DiffResultType diffType, DeltaType deltaType) {
 		int res = 0;
 		for(DiffResult dr : results) {
-			if(dr.isChange() == change) {
-				res += dr.getRevisedResultList(DiffResultType.LINE).size();
+			if(dr.getDeltaType() == deltaType) {
+				res += dr.getOrigResultList(diffType).size();
+			}
+		}
+		return res;
+	}
+	
+	/**
+	 * @param diffType the type of diff to calculate its number of groups.
+	 * @param deltaType The type of diffs to calculate lines for.
+	 * @return The number of elements of the given diff type from the revised.
+	 */
+	public int getRevisedGroupCount(DiffResultType diffType, DeltaType deltaType) {
+		int res = 0;
+		for(DiffResult dr : results) {
+			if(dr.getDeltaType() == deltaType) {
+				res += dr.getRevisedResultList(diffType).size();
 			}
 		}
 		return res;
@@ -90,7 +98,7 @@ public class DiffResultWrapper {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		for(DiffResult dr : results) {
-			sb.append(dr.isChange() ? "Change: " : "Not change: ");
+			sb.append(dr.getDeltaType() == DeltaType.CHANGE ? "Change: " : "Not change: ");
 			sb.append("\n");
 			for(int i = 0; i < dr.getOrigResultList(DiffResultType.LINE).size(); i++) {
 				sb.append((dr.getOrigLineNumber() + i) + " > " + dr.getOrigResultList(DiffResultType.LINE).get(i) 
@@ -101,7 +109,7 @@ public class DiffResultWrapper {
 						+ dr.getRevisedResultList(DiffResultType.LINE).get(i) + "\n");
 			}
 			
-			if(dr.isChange()) {
+			if(dr.getDeltaType() == DeltaType.CHANGE) {
 				sb.append("w > " + dr.getOrigResultList(DiffResultType.WORD) + "\n");
 				sb.append("w < " + dr.getRevisedResultList(DiffResultType.WORD)+ "\n");
 				sb.append("c > " + dr.getOrigResultList(DiffResultType.CHAR) + "\n");

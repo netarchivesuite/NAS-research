@@ -32,10 +32,11 @@ public class MimetypeBatchJob extends ARCBatchJob {
 
 	@Override
 	public void processRecord(ARCRecord record, OutputStream os) {
-		String line = record.getHeader().getMimetype() + "##" + record.getHeaderString().length() + "\n";
+//		String line = record.getHeader().getMimetype() + "##" + record.getHeaderString().length() + "\n";
 		
 		try {
-			os.write(line.getBytes(Charset.defaultCharset()));
+//			os.write(line.getBytes(Charset.defaultCharset()));
+			os.write("Testing".getBytes(Charset.defaultCharset()));
 		} catch (IOException e) {
 			throw new IOFailure("Could not process the record.",e);
 		}

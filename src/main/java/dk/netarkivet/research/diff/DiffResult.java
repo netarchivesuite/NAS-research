@@ -21,8 +21,8 @@ public class DiffResult {
 	/** The diffs for the revised. Map between type (line, word or char) and the diff list.*/
 	protected final Map<DiffResultType, List<String>> revisedDiff = new HashMap<DiffResultType, List<String>>();
 	
-	/** Whether it is a change diff. As alternative to insert or delete.*/
-	protected final boolean diffTypeIsChange;
+	/** The type of delta for this diff result, e.g. is it a change or a insert/delete.*/
+	protected final DeltaType diffDeltaType;
 	
 	
 	/**
@@ -30,7 +30,7 @@ public class DiffResult {
 	 * @param delta The base diff delta for the lines.
 	 */
 	public DiffResult(Delta<String> delta) {
-		this.diffTypeIsChange = (delta.getType() == Delta.TYPE.CHANGE);
+		this.diffDeltaType = DeltaType.extractFromDelta(delta);
 		this.origDiff.put(DiffResultType.LINE, new ArrayList<String>(delta.getOriginal().getLines()));
 		this.origLineNumber = delta.getOriginal().getPosition();
 		this.revisedDiff.put(DiffResultType.LINE, new ArrayList<String>(delta.getRevised().getLines()));
@@ -47,7 +47,7 @@ public class DiffResult {
 	 */
 	public DiffResult(boolean isChange, List<String> origDiffLines, int origLineNumber, 
 			List<String> revisedDiffLines, int revisedLineNumber) {
-		this.diffTypeIsChange = isChange;
+		this.diffDeltaType = DeltaType.extractFromBoolean(isChange);
 		this.origDiff.put(DiffResultType.LINE, origDiffLines);
 		this.origLineNumber = origLineNumber;
 		this.revisedDiff.put(DiffResultType.LINE, revisedDiffLines);
@@ -57,8 +57,8 @@ public class DiffResult {
 	/**
 	 * @return Whether it is a change.
 	 */
-	public boolean isChange(){
-		return diffTypeIsChange;
+	public DeltaType getDeltaType(){
+		return diffDeltaType;
 	}
 
 	/** 

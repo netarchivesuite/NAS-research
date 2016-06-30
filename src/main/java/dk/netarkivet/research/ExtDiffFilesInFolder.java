@@ -63,14 +63,13 @@ public class ExtDiffFilesInFolder {
 					+ "'output' subfolder to the input file folder (argument 1).");
 			System.err.println(" 5. (OPTIONAL) Method: Simple, HTML elements, HTML paragraph text.");
 			System.err.println("  - Only the Simple diff method is implemented so far.");
-			System.exit(-1);
+			throw new IllegalArgumentException("Not enough arguments.");
 		}
 
 		File inputDir = new File(args[0]);
 		if(!inputDir.isDirectory()) {
-			System.err.println("The folder '" + inputDir.getAbsolutePath() + "' is not a proper directory"
+			throw new IllegalArgumentException("The folder '" + inputDir.getAbsolutePath() + "' is not a proper directory"
 					+ "(either does not exists or is a file) - try giving the complete path.");
-			System.exit(-1);
 		}
 
 		DiffStrategy diffStrategy = extractDiffStrategy(args[1]);
@@ -83,17 +82,20 @@ public class ExtDiffFilesInFolder {
 
 		File outDir;
 		if(args.length > 3) {
-			outDir = new File(args[1]);
+			outDir = new File(args[3]);
 		} else {
 			outDir = new File(inputDir, "output");
+			if(outDir.exists()) {
+				FileUtils.deprecateFile(outDir);
+			}
 		}
-		if(outDir.isFile() || !(outDir.isDirectory() && outDir.mkdirs())) {
-			System.err.println("The output directory '" + outDir.getAbsolutePath() + "' is not a valid "
-					+ "directory (either is a file or it cannot be instantiated as a directory)");
-			System.exit(-1);
+		if(!outDir.exists() && !outDir.mkdirs()) {
+			throw new IllegalArgumentException("Cannot instantiate a new directory at '" 
+					+ outDir.getAbsolutePath() + "'");
 		}
-		if(outDir.exists()) {
-			FileUtils.deprecateFile(outDir);
+		if(outDir.isFile()) {
+			throw new IllegalArgumentException("The output directory '" + outDir.getAbsolutePath() + "' is not a "
+					+ "valid directory (either is a file or it cannot be instantiated as a directory)");
 		}
 		DiffFiles diffMethod;
 		if(args.length > 4) {
@@ -199,7 +201,8 @@ public class ExtDiffFilesInFolder {
 			File orig = new File(fileDir, entry.getKey() + "-" + iterator.next());
 			File revised;
 			String revisedFileSuffix;
-			while((revisedFileSuffix = iterator.next()) != null) {
+			while(iterator.hasNext()) {
+				revisedFileSuffix = iterator.next();
 				revised = new File(fileDir, entry.getKey() + "-" + revisedFileSuffix);
 				try {
 					diffMethod.performDiff(orig, revised);

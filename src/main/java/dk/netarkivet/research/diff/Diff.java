@@ -26,7 +26,7 @@ public class Diff {
 	protected File summaryFile;
 	
 	/** Value for appending to a file, when creating an file output stream.*/
-	protected final Boolean APPEND_TO_FILE = true;
+	protected static final Boolean APPEND_TO_FILE = true;
 	
 	/**
 	 * Constructor.
@@ -72,10 +72,7 @@ public class Diff {
 			throws IOException {
 		String filename = makeDiffFilename(origFilename, revisedFilename);
 		File outputFile = FileUtils.ensureNewFile(outputDir, filename);
-		try (OutputStream os = new FileOutputStream(outputFile)) {
-			os.write(results.toString().getBytes(Charset.defaultCharset()));
-			os.flush();
-		}
+		printToFile(results.toString(), outputFile);
 	}
 	
 	/**
@@ -87,32 +84,31 @@ public class Diff {
 	 */
 	protected void writeSummaryOutput(DiffResultWrapper results, File origFile, File revisedFile) 
 			throws IOException {
-		if(summaryFile == null || !summaryFile.isFile()) {
-			initialiseSummaryFile();
-		}
-		try (OutputStream os = new FileOutputStream(summaryFile, APPEND_TO_FILE)) {
-			StringBuffer sb = new StringBuffer();
-			sb.append(origFile.getName() + ";");
-			sb.append(origFile.length() + ";");
-			sb.append(revisedFile.getName() + ";");
-			sb.append(revisedFile.length() + ";");
-			sb.append(results.getResults().size() + ";");
-			sb.append(results.getOrigLineCount(false) + ";");
-			sb.append(results.getRevisedLineCount(false) + ";");
-			sb.append(results.getOrigLineCount(true) + ";");
-			sb.append(results.getRevisedLineCount(true) + ";");
-			sb.append(results.getOrigDiffCharCount(DiffResultType.LINE) + ";");
-			sb.append(results.getRevisedDiffCharCount(DiffResultType.LINE) + ";");
-			sb.append(results.getOrigDiffCharCount(DiffResultType.WORD) + ";");
-			sb.append(results.getRevisedDiffCharCount(DiffResultType.WORD) + ";");
-			sb.append(results.getOrigDiffCharCount(DiffResultType.CHAR) + ";");
-			sb.append(results.getRevisedDiffCharCount(DiffResultType.CHAR) + ";");
+		initialiseSummaryFile();
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append(origFile.getName() + ";");
+		sb.append(origFile.length() + ";");
+		sb.append(revisedFile.getName() + ";");
+		sb.append(revisedFile.length() + ";");
+		sb.append(results.getResults().size() + ";");
+		sb.append(results.getOrigGroupCount(DiffResultType.LINE, DeltaType.INSERT_DELETE) + ";");
+		sb.append(results.getOrigDiffCharCount(DiffResultType.LINE, DeltaType.INSERT_DELETE) + ";");
+		sb.append(results.getRevisedGroupCount(DiffResultType.LINE, DeltaType.INSERT_DELETE) + ";");
+		sb.append(results.getRevisedDiffCharCount(DiffResultType.LINE, DeltaType.INSERT_DELETE) + ";");
+		sb.append(results.getOrigGroupCount(DiffResultType.LINE, DeltaType.CHANGE) + ";");
+		sb.append(results.getRevisedGroupCount(DiffResultType.LINE, DeltaType.CHANGE) + ";");
+		sb.append(results.getOrigDiffCharCount(DiffResultType.LINE, DeltaType.CHANGE) + ";");
+		sb.append(results.getRevisedDiffCharCount(DiffResultType.LINE, DeltaType.CHANGE) + ";");
+		sb.append(results.getOrigGroupCount(DiffResultType.WORD, DeltaType.CHANGE) + ";");
+		sb.append(results.getRevisedGroupCount(DiffResultType.WORD, DeltaType.CHANGE) + ";");
+		sb.append(results.getOrigDiffCharCount(DiffResultType.WORD, DeltaType.CHANGE) + ";");
+		sb.append(results.getRevisedDiffCharCount(DiffResultType.WORD, DeltaType.CHANGE) + ";");
+		sb.append(results.getOrigDiffCharCount(DiffResultType.CHAR, DeltaType.CHANGE) + ";");
+		sb.append(results.getRevisedDiffCharCount(DiffResultType.CHAR, DeltaType.CHANGE) + ";");
+		sb.append("\n");
 
-			sb.append("\n");
-
-			os.write(sb.toString().getBytes(Charset.defaultCharset()));
-			os.flush();
-		}
+		printToFile(sb.toString(), summaryFile);
 	}
 	
 	/**
@@ -123,46 +119,65 @@ public class Diff {
 	 */
 	protected String makeDiffFilename(String origFilename, String revisedFilename) {
 		String[] origSplit = origFilename.split("-");
-		String[] revisedSplit = origFilename.split("-");
+		String[] revisedSplit = revisedFilename.split("-");
 		if(origSplit.length < 2 || revisedSplit.length < 2) {
-			return "diff_" + origSplit[0] + "_" + revisedSplit[0];
+			return "diff_" + origFilename + "_" + revisedFilename;
 		} else {
-			return "diff_" + origSplit[0] + "_" + origSplit[1] + "-" + revisedSplit[1];
+			return "diff_" + origSplit[0] + "_" + origSplit[1] + "_" + revisedSplit[1];
 		}
 	}
 	
 	/**
 	 * Initializes the summary file.
 	 * Though only, if it is a output format, which uses the summary file.
+	 * @throws IOException If something goes wrong with creating the new summary file.
 	 */
 	protected void initialiseSummaryFile() throws IOException {
 		if(outputFormat == DiffOutputFormat.OUTPUT_FORMAT_VERBOSE) {
 			return;
 		}
-		summaryFile = FileUtils.ensureNewFile(outputDir, "diff-Summary-" + DateUtils.dateToWaybackDate(new Date()));
+		if(summaryFile != null && summaryFile.isFile()) {
+			return;
+		}
+		summaryFile = FileUtils.ensureNewFile(outputDir, "diff-summary-" + DateUtils.dateToWaybackDate(new Date()));
 		
-		try (OutputStream os = new FileOutputStream(summaryFile, APPEND_TO_FILE)) {
-			StringBuffer sb = new StringBuffer();
-			sb.append("Orig_filename;");
-			sb.append("Orig file size;");
-			sb.append("Revised_filename;");
-			sb.append("Revised file size;");
-			sb.append("Number of diffs;");
-			sb.append("Orig number of insert/delete lines;");
-			sb.append("Revised number of insert/delete lines;");
-			sb.append("Orig number of change lines;");
-			sb.append("Revised number of change lines;");
-			sb.append("Orig change line diff char count;");
-			sb.append("Revised change line diff char count;");
-			sb.append("Orig change word diff char count;");
-			sb.append("Revised change word diff char count;");
-			sb.append("Orig change char diff char count;");
-			sb.append("Revised change char diff char count;");
-
-			sb.append("\n");
-
-			os.write(sb.toString().getBytes(Charset.defaultCharset()));
+		StringBuffer sb = new StringBuffer();
+		sb.append("Orig_filename;");
+		sb.append("Orig file size;");
+		sb.append("Revised_filename;");
+		sb.append("Revised file size;");
+		sb.append("Number of diffs;");
+		sb.append("Orig number of insert (delete in revised) lines;");
+		sb.append("Orig insert char count;");
+		sb.append("Revised number of insert (delete in orig) lines;");
+		sb.append("Revised insert char count;");
+		sb.append("Orig number of change lines;");
+		sb.append("Revised number of change lines;");
+		sb.append("Orig change line diff char count;");
+		sb.append("Revised change line diff char count;");
+		sb.append("Orig number of change words;");
+		sb.append("Revised number of change words;");
+		sb.append("Orig change word diff char count;");
+		sb.append("Revised change word diff char count;");
+		sb.append("Orig change char diff char count;");
+		sb.append("Revised change char diff char count;");
+		sb.append("\n");
+		
+		printToFile(sb.toString(), summaryFile);
+	}
+	
+	/**
+	 * Prints the string content to the end of the file, e.g. appending, not overriding.
+	 * @param content The content to print to the file.
+	 * @param f The file to write to.
+	 */
+	protected void printToFile(String content, File f) {
+		try (OutputStream os = new FileOutputStream(f, APPEND_TO_FILE)){
+			os.write(content.getBytes(Charset.defaultCharset()));
 			os.flush();
+		} catch (IOException e) {
+			throw new IllegalStateException("The file '" + f.getAbsolutePath() + "' could not be appended with "
+					+ "the following: \n" + content, e);
 		}
 	}
 }

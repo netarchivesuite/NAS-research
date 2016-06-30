@@ -47,7 +47,7 @@ public class SimpleDiffFiles implements DiffFiles {
 	 */
 	protected DiffResult extractDiffResult(Delta<String> delta) {
 		DiffResult res = new DiffResult(delta);
-		if(res.diffTypeIsChange) {
+		if(res.diffDeltaType == DeltaType.CHANGE) {
 			List<String> origWords = ListUtils.convertLinesToListOfWords(delta.getOriginal().getLines());
 			List<String> revisedWords = ListUtils.convertLinesToListOfWords(delta.getRevised().getLines());
 			Patch<String> wordPatch = DiffUtils.diff(origWords, revisedWords);

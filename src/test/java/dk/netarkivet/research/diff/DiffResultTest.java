@@ -1,7 +1,6 @@
 package dk.netarkivet.research.diff;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 
@@ -28,7 +27,7 @@ public class DiffResultTest extends ExtendedTestCase {
     	assertNull(dr.getOrigResultList(DiffResultType.WORD));
     	assertNull(dr.getRevisedResultList(DiffResultType.WORD));
     	
-    	assertFalse(dr.isChange());
+    	assertEquals(dr.getDeltaType(), DeltaType.INSERT_DELETE);
     	
     	assertNotNull(dr.getOrigResultList(DiffResultType.LINE));
     	assertNotNull(dr.getRevisedResultList(DiffResultType.LINE));

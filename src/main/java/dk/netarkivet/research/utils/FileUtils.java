@@ -56,6 +56,7 @@ public class FileUtils {
 	 * @throws IOException If the new file cannot be created.
 	 */
 	public static void ensureNewFile(File newFile) throws IOException {
+		logger.debug("Ensuring new file at '" + newFile.getAbsolutePath() + "'.");
 		if(newFile.exists()) {
 			deprecateFile(newFile);
 		}

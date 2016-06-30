@@ -19,4 +19,4 @@ fi
 
 cd ${assembly.home.env.name.ref}
 
-"${JAVA}" ${JAVA_OPTS} $NAS_SETTINGS_OPTS -D${assembly.home.env.name}="${assembly.home.env.name.ref}" -cp "$CP" $MAIN_CLASS "$@"
+"${JAVA}" ${JAVA_OPTS} ${NAS_SETTINGS_OPTS} -D${assembly.home.env.name}="${assembly.home.env.name.ref}" -cp "$CP" $MAIN_CLASS "$@"
