@@ -18,7 +18,7 @@ import dk.netarkivet.common.utils.arc.ARCBatchJob;
  * BatchJob for extracting mimetypes.
  * 
  */
-public class MimetypeBatchJob extends ARCBatchJob {
+public class MimetypeArcBatchJob extends ARCBatchJob {
 
 	/**
 	 * Serial version uid.
