@@ -57,9 +57,9 @@ public class StreamUtils {
 			int l;
 			while((l = is.read(b)) > 0) {
 				os.write(b, 0, l);
+				os.flush();
 			}
 		} finally {
-			os.flush();
 			is.close();
 			os.close();
 		}

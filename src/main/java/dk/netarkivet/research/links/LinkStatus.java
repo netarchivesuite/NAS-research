@@ -30,7 +30,7 @@ public class LinkStatus {
 	 * @param referralDate The date for the resource, which contained the link.
 	 */
 	public LinkStatus(boolean found, String linkUrl, Date linkDate, String referralUrl, Date referralDate) {
-		ArgumentCheck.checkIsTrue(found && linkDate != null, "If the link is found, then the date may not be null");
+		ArgumentCheck.checkIsTrue(linkDate != null || !found, "If the link is found, then the date may not be null");
 		this.found = found;
 		this.linkUrl = linkUrl;
 		if(linkDate != null) {

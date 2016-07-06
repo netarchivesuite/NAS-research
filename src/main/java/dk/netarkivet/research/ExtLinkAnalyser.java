@@ -83,8 +83,10 @@ public class ExtLinkAnalyser {
 			System.exit(-1);
 		}
 
-		ExtLinkAnalyser wtf = new ExtLinkAnalyser(warcFile, outFile, cdxBaseUrl);
-		wtf.analyseWarcFile(new HttpRetriever());
+		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxBaseUrl, new HttpRetriever());
+		
+		ExtLinkAnalyser wtf = new ExtLinkAnalyser(cdxExtractor);
+		wtf.analyseWarcFile(warcFile, outFile);
 
 		System.out.println("Finished");
 		System.exit(0);
@@ -107,35 +109,26 @@ public class ExtLinkAnalyser {
 		return res + ".csv";
 	}
 
-	/** The file to extract.*/
-	protected final File warcFile;
-	/** Output CSV file for the results.*/
-	protected final File outputFile;
-	/** The URL for the CDX server.*/
-	protected final String cdxServerUrl;
+	/** The CDX extractor. */
+	protected final CDXExtractor cdxExtractor;
 
 	/**
 	 * Constructor.
-	 * @param warcFile The WARC file to extract.
-	 * @param outFile The file where the output should be printed, in the described CSV format.
-	 * @param cdxServerUrl The CDX server url.
+	 * @param cdxExtractor The extractor for the CDX entries.
 	 */
-	public ExtLinkAnalyser(File warcFile, File outFile, String cdxServerUrl) {
-		this.warcFile = warcFile;
-		this.outputFile = outFile;
-		this.cdxServerUrl = cdxServerUrl;
+	public ExtLinkAnalyser(CDXExtractor cdxExtractor) {
+		this.cdxExtractor = cdxExtractor;
 	}
-
 	/**
 	 * Extracts the links from each HTML record, analyse them and print the results.
-	 * @param httpRetriever The http retriever.
+	 * @param warcFile The file to extract links from.
+	 * @param outputFile Output CSV file for the results.
 	 */
-	public void analyseWarcFile(HttpRetriever httpRetriever) {
+	public void analyseWarcFile(File warcFile, File outputFile) {
 		try (FileOutputStream fos = new FileOutputStream(outputFile)) {
 			fos.write(("URL of referral;Date for referral;Status for Link URL;Link URL;"
-					+ "Closest date for Link URL").getBytes(Charset.defaultCharset()));
+					+ "Closest date for Link URL\n").getBytes(Charset.defaultCharset()));
 			LinkExtractor linkExtractor = new HtmlLinkExtractor();
-			CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerUrl, httpRetriever);
 			LinksLocator linkLocator = new LinksLocator(linkExtractor, cdxExtractor);
 			
 			WarcExtractor we = new WarcExtractor(warcFile);
@@ -174,6 +167,7 @@ public class ExtLinkAnalyser {
 			} else {
 				sb.append("N/A;");
 			}
+			sb.append("\n");
 			out.write(sb.toString().getBytes(Charset.defaultCharset()));
 		}
 	}

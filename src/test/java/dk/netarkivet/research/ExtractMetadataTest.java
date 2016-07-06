@@ -1,6 +1,7 @@
 package dk.netarkivet.research;
 
 import static org.testng.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import java.io.File;
 
@@ -11,7 +12,12 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import dk.netarkivet.research.ExtractMetadata.InputFormat;
+import dk.netarkivet.research.ExtractMetadata.OutputFormat;
+import dk.netarkivet.research.cdx.CDXExtractor;
+import dk.netarkivet.research.harvestdb.HarvestJobExtractor;
 import dk.netarkivet.research.testutils.TestFileUtils;
+import dk.netarkivet.research.utils.FileUtils;
 
 public class ExtractMetadataTest extends ExtendedTestCase {
 
@@ -36,6 +42,8 @@ public class ExtractMetadataTest extends ExtendedTestCase {
 	private File dir = new File("tempDir");
 	private File outdir = new File(dir, "outdir");
 	
+	private File csvFile = new File("src/test/resources/duplicates.csv");
+	
 	@BeforeClass
 	public void setup() throws Exception {
 		TestFileUtils.removeFile(dir);
@@ -56,6 +64,18 @@ public class ExtractMetadataTest extends ExtendedTestCase {
 	@AfterClass
 	public void tearDown() throws Exception {
 		TestFileUtils.removeFile(dir);
+	}
+	
+	@Test
+	public void testSuccess() throws Exception {
+		
+		CDXExtractor cdxExtractor = mock(CDXExtractor.class);
+		HarvestJobExtractor jobExtractor = mock(HarvestJobExtractor.class);
+		File outFile = new File(outdir, "output-" + Math.random() + ".txt");
+		
+		ExtractMetadata em = new ExtractMetadata(csvFile, cdxExtractor, jobExtractor, outFile);
+		
+		em.extractMetadata(InputFormat.INPUT_FORMAT_URL_INTERVAL, OutputFormat.EXPORT_FORMAT_CDX);
 	}
 	
 	@Test(expectedExceptions = IllegalArgumentException.class)

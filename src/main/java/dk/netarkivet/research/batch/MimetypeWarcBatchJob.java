@@ -49,7 +49,6 @@ public class MimetypeWarcBatchJob extends WARCBatchJob {
 			String line = mimetype + "##" + record.getHeader().getLength() + "\n";
 		
 			os.write(line.getBytes(Charset.defaultCharset()));
-//			os.write("Testing".getBytes(Charset.defaultCharset()));
 		} catch (IOException e) {
 			log.warn("Could not perform the batchjob.", e);
 			throw new IOFailure("Could not process the record.",e);

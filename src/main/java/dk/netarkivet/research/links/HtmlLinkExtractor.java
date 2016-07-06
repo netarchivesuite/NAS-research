@@ -60,6 +60,7 @@ public class HtmlLinkExtractor implements LinkExtractor {
 		} catch (Exception e) {
 			logger.warn("Could not extract links from HTML page.", e);
 		}
+		logger.trace("Found links for URL '" + contentUrl + "': " + links);
 		return links;
 	}
 

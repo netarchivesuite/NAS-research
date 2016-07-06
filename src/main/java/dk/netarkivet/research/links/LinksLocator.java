@@ -51,6 +51,7 @@ public class LinksLocator {
 			String mimetype = getMimetype(record);
 			// Needs to use 'start with', since the record mimetype can have suffices such as encoding.
 			if(!mimetype.startsWith(linkExtractor.supportedMimetype())) {
+				logger.debug("Found record with unsupported mimetype '" + mimetype + "'");
 				return new ArrayList<LinkStatus>();
 			}
 			

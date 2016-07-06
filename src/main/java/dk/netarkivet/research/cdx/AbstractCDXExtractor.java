@@ -100,6 +100,9 @@ public abstract class AbstractCDXExtractor implements CDXExtractor {
 	 * @return The entry with the filename. Or null, if no such entry was found.
 	 */
 	protected CDXEntry findCDXwithFile(Collection<CDXEntry> allCDXforUrl, String filename) {
+		if(filename == null) {
+			return null;
+		}
 		for(CDXEntry entry : allCDXforUrl) {
 			if(filename.equalsIgnoreCase(entry.getFilename())) {
 				return entry;
