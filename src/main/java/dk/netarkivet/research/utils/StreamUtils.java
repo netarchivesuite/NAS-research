@@ -61,7 +61,7 @@ public class StreamUtils {
 		} finally {
 			os.flush();
 			is.close();
-			is.close();
+			os.close();
 		}
 	}
 }

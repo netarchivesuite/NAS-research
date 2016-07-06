@@ -101,7 +101,7 @@ public class ExtWarcUnfolder {
 		try {
 			WarcExtractor we = new WarcExtractor(warcFile);
 			WarcRecord wr;
-			while((wr = we.getNext()) != null) {
+			while((wr = we.getNext()) != null) { // for each warc record (extracted)
 				if(wr.header.warcTypeIdx != WarcConstants.FN_IDX_WARC_WARCINFO_ID) {
 					printRecord(wr);
 				}
@@ -120,7 +120,7 @@ public class ExtWarcUnfolder {
 		String outputFileName = getFileName(wr);
 		File outputFile = new File(outputDirectory, outputFileName);
 		if(outputFile.exists()) {
-			FileUtils.deprecateFile(new File(outputFile.getAbsolutePath()));
+			FileUtils.deprecateFile(new File(outputFile.getAbsolutePath())); //make .old file of earlier
 		}
 		try (FileOutputStream fos = new FileOutputStream(outputFile)) {
 			StreamUtils.printInputStreamToOutputStream(wr.getPayloadContent(), fos);
