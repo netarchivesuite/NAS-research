@@ -163,7 +163,7 @@ public class ExtLinkAnalyser {
 			}
 			sb.append(ls.getLinkUrl() + ";");
 			if(ls.getLinkDate() != null) {
-				sb.append("\"" + DateUtils.dateToWaybackDate(ls.getLinkDate()) + "\"");
+				sb.append("\'" + DateUtils.dateToWaybackDate(ls.getLinkDate()) + "\'");
 			} else {
 				sb.append("N/A");
 			}
