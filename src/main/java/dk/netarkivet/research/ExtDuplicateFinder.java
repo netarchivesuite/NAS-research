@@ -175,7 +175,7 @@ public class ExtDuplicateFinder {
 					}
 					csvIndex = "" + (checksumIndex+1);
 				}
-				String output = csvIndex + ";\"" + DateUtils.dateToWaybackDate(new Date(entry.getKey())) + "\";" 
+				String output = csvIndex + ";\'" + DateUtils.dateToWaybackDate(new Date(entry.getKey())) + "\';" 
 						+ entry.getValue().getDigest() + ";" + entry.getValue().getStatusCode() + ";" + url;
 				HarvestJobInfo jobInfo = map.getHarvestJobInfo(entry.getValue());
 				if(jobInfo != null) {

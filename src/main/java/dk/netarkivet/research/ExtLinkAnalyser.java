@@ -155,7 +155,7 @@ public class ExtLinkAnalyser {
 		for(LinkStatus ls : links) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(ls.getReferralUrl() + ";");
-			sb.append("\"" + DateUtils.dateToWaybackDate(ls.getReferralDate()) + "\";");
+			sb.append("\'" + DateUtils.dateToWaybackDate(ls.getReferralDate()) + "\';");
 			if(ls.isFound()) {
 				sb.append("EXISTS_IN_ARCHIVE;");
 			} else {

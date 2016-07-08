@@ -117,7 +117,7 @@ public class DabCDXExtractor extends AbstractCDXExtractor {
 	 * @return The request URL for retrieving the CDX from the CDX server.
 	 */
 	protected String createRequestUrlForURL(String url) {
-		String urlWithoutProtocol = UrlUtils.stripProtocolAndWWW(url);
+		String urlWithoutProtocol = UrlUtils.stripProtocolAndWWWAndLowerCase(url);
 		StringBuilder res = new StringBuilder();
 		res.append(cdxUrl);
 		if(!cdxUrl.endsWith(QUERY_PREFIX)) {

@@ -58,12 +58,12 @@ public class UrlUtils {
 	 * @param url The URL to strip.
 	 * @return The stripped URL.
 	 */
-	public static String stripProtocolAndWWW(String url) {
+	public static String stripProtocolAndWWWAndLowerCase(String url) {
 		String res = stripProtocol(url);
 		if(res.startsWith("www")) {
 			res = res.replaceFirst("www[0-9]*[\\.]", "");
 		}
-		return res;
+		return res.toLowerCase();
 	}
 	
 	/**
