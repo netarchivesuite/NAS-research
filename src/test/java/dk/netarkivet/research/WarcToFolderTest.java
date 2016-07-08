@@ -1,6 +1,6 @@
 package dk.netarkivet.research;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 import java.io.File;
 
@@ -16,8 +16,6 @@ public class WarcToFolderTest extends ExtendedTestCase {
 
 	private File dir = new File("tempDir");
 	private File warcFile = new File("src/test/resources/test.warc");
-//	private File warcFile = new File("/home/jolf/research-output/CDX-EXTRACT-20160531153934-00000-kb-prod-acs-02.warc");
-//	private File warcFile = new File("/home/jolf/research-output/CDX-EXTRACT2.warc");
 	
 	@BeforeClass
 	public void setup() throws Exception {
@@ -60,44 +58,5 @@ public class WarcToFolderTest extends ExtendedTestCase {
 	public void testMainBadOutputDirFailure() throws Exception {
 		addDescription("Test the main function with the path to output directory being the path to a file.");
 		ExtWarcUnfolder.main(warcFile.getAbsolutePath(), warcFile.getAbsolutePath());
-	}
-	
-	@Test
-	public void testGetDirectoryNameFromFilenameWithWarc() {
-		addDescription("Test getting the directory name from a filename ending on 'WARC'");
-		String filename = "test.warc";
-		String dirname = ExtWarcUnfolder.getDirectoryNameFromFileName(filename);
-		
-		assertEquals(dirname, "test");
-	}
-
-	@Test
-	public void testGetDirectoryNameFromFilenameWithWarcButAlreadyExists() {
-		addDescription("Test getting the directory name from a filename ending on 'WARC', but another file with same name already exists.");
-		File folder = new File(dir, "test");
-		try {
-			folder.mkdirs();
-			assertTrue(folder.isDirectory());
-			String filename = new File(dir, "test.warc").getAbsolutePath();
-			String dirpath = ExtWarcUnfolder.getDirectoryNameFromFileName(filename);
-			String dirname = dirpath.replace(dir.getAbsolutePath() + "/", "");
-
-			assertTrue(dirname.startsWith("test"));
-			assertFalse(dirname.contains(".warc"));
-			assertEquals(dirname.length(), 18);
-		} finally {
-			folder.delete();
-		}
-	}
-	
-	@Test
-	public void testGetDirectoryNameFromFilenameWithNonWarc() {
-		addDescription("Test getting the directory name from a filename not ending on 'WARC'");
-		String filename = new File(dir, "test").getAbsolutePath();
-		String dirpath = ExtWarcUnfolder.getDirectoryNameFromFileName(filename);
-		String dirname = dirpath.replace(dir.getAbsolutePath() + "/", "");
-		
-		assertTrue(dirname.startsWith("test"));
-		assertEquals(dirname.length(), 18);
 	}
 }

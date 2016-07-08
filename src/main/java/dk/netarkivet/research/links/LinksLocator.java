@@ -115,7 +115,9 @@ public class LinksLocator {
 	 * @return The status of the link from the CDX server.
 	 */
 	protected LinkStatus getLinkStatus(String link, String originalUrl, Date originalDate) {
-		WaybackWID wid = WaybackWID.createNarkWaybackWID(null, link, originalDate);
+		String extractLink = link.contains("#") ? link.split("#")[0] : link;
+
+		WaybackWID wid = WaybackWID.createNarkWaybackWID(null, extractLink, originalDate);
 		CDXEntry entry = cdxExtractor.retrieveCDX(wid);
 		if(entry == null) {
 			return new LinkStatus(false, link, null, originalUrl, originalDate);

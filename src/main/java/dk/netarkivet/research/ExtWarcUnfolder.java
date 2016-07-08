@@ -45,7 +45,7 @@ public class ExtWarcUnfolder {
 		if(args.length > 1) {
 			outDir = new File(args[1]);
 		} else {
-			outDir = new File(getDirectoryNameFromFileName(warcFile.getAbsolutePath()));
+			outDir = new File(FileUtils.getDirectoryNameFromFileName(warcFile.getAbsolutePath()));
 		}
 		if(!outDir.isDirectory() && !outDir.mkdir()) {
 			throw new IllegalArgumentException("The output directory '" + outDir.getAbsolutePath() + "' is not a valid "
@@ -57,26 +57,6 @@ public class ExtWarcUnfolder {
 
 		System.out.println("Finished");
 		System.exit(0);
-	}
-
-	/**
-	 * Finds an appropriate directory name for a WARC-filename.
-	 * E.g. removes the extension, or adds the current date.
-	 * @param filename The name of the file, who we should 
-	 * @return 
-	 */
-	protected static String getDirectoryNameFromFileName(String filename) {
-		String res = "";
-		if(filename.endsWith(".warc")) {
-			res = filename.substring(0, filename.length()-".warc".length());
-			if(!(new File(res).exists())) {
-				return res;
-			}
-		} else {
-			res = filename;
-		}
-
-		return res + DateUtils.dateToWaybackDate(new Date());
 	}
 
 	/** The file to extract.*/

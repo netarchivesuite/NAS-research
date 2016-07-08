@@ -3,7 +3,6 @@ package dk.netarkivet.research;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -16,7 +15,6 @@ import dk.netarkivet.research.diff.Diff;
 import dk.netarkivet.research.diff.DiffFiles;
 import dk.netarkivet.research.diff.DiffOutputFormat;
 import dk.netarkivet.research.diff.SimpleDiffFiles;
-import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.utils.FileUtils;
 
 /**
@@ -154,26 +152,6 @@ public class ExtDiffFilesInFolder {
 		}
 		throw new IllegalArgumentException("Cannot instantiate the diff method '"
 				+ diffMethodName + "'. It might not be implemented yet.");
-	}
-
-	/**
-	 * Finds an appropriate directory name for a WARC-filename.
-	 * E.g. removes the extension, or adds the current date.
-	 * @param filename The name of the file, who we should 
-	 * @return 
-	 */
-	protected static String getDirectoryNameFromFileName(String filename) {
-		String res = "";
-		if(filename.endsWith(".warc")) {
-			res = filename.substring(0, filename.length()-".warc".length());
-			if(!(new File(res).exists())) {
-				return res;
-			}
-		} else {
-			res = filename;
-		}
-
-		return res + DateUtils.dateToWaybackDate(new Date());
 	}
 
 	/** The directory with the files to run diff upon.*/

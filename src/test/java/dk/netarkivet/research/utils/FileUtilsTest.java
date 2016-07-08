@@ -1,5 +1,6 @@
 package dk.netarkivet.research.utils;
 
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertNull;
@@ -225,5 +226,44 @@ public class FileUtilsTest extends ExtendedTestCase {
 		addDescription("Test the sorting, when it is done on a file instead of a directory.");
 		File f = new File("src/test/rersouces/jaccept.properties");
 		assertNull(FileUtils.getSortedListOfFilenames(f));
+	}
+	
+	@Test
+	public void testGetDirectoryNameFromFilenameWithWarc() {
+		addDescription("Test getting the directory name from a filename ending on 'WARC'");
+		String filename = "test.warc";
+		String dirname = FileUtils.getDirectoryNameFromFileName(filename);
+		
+		assertEquals(dirname, "test");
+	}
+
+	@Test
+	public void testGetDirectoryNameFromFilenameWithWarcButAlreadyExists() {
+		addDescription("Test getting the directory name from a filename ending on 'WARC', but another file with same name already exists.");
+		File folder = new File(dir, "test-" + Math.random());
+		try {
+			folder.mkdirs();
+			assertTrue(folder.isDirectory());
+			String filename = new File(dir, "test.warc").getAbsolutePath();
+			String dirpath = FileUtils.getDirectoryNameFromFileName(filename);
+			String dirname = dirpath.replace(dir.getAbsolutePath() + "/", "");
+
+			assertTrue(dirname.startsWith("test"));
+			assertFalse(dirname.contains(".warc"));
+			assertEquals(dirname.length(), 18);
+		} finally {
+			folder.delete();
+		}
+	}
+	
+	@Test
+	public void testGetDirectoryNameFromFilenameWithNonWarc() {
+		addDescription("Test getting the directory name from a filename not ending on 'WARC'");
+		String filename = new File(dir, "test").getAbsolutePath();
+		String dirpath = FileUtils.getDirectoryNameFromFileName(filename);
+		String dirname = dirpath.replace(dir.getAbsolutePath() + "/", "");
+		
+		assertTrue(dirname.startsWith("test"));
+		assertEquals(dirname.length(), 18);
 	}
 }

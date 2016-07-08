@@ -155,17 +155,17 @@ public class ExtLinkAnalyser {
 		for(LinkStatus ls : links) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(ls.getReferralUrl() + ";");
-			sb.append(DateUtils.dateToWaybackDate(ls.getReferralDate()) + ";");
+			sb.append("\"" + DateUtils.dateToWaybackDate(ls.getReferralDate()) + "\";");
 			if(ls.isFound()) {
 				sb.append("EXISTS_IN_ARCHIVE;");
 			} else {
 				sb.append("NOT_IN_ARCHIVE;");
 			}
-			sb.append(ls.getLinkUrl());
+			sb.append(ls.getLinkUrl() + ";");
 			if(ls.getLinkDate() != null) {
-				sb.append(DateUtils.dateToWaybackDate(ls.getLinkDate()) + ";");
+				sb.append("\"" + DateUtils.dateToWaybackDate(ls.getLinkDate()) + "\"");
 			} else {
-				sb.append("N/A;");
+				sb.append("N/A");
 			}
 			sb.append("\n");
 			out.write(sb.toString().getBytes(Charset.defaultCharset()));

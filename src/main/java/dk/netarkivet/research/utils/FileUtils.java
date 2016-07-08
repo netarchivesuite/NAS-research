@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -96,5 +97,25 @@ public class FileUtils {
 		List<String> filenames = Arrays.asList(list);
 		Collections.sort(filenames);
 		return filenames;
+	}
+	
+	/**
+	 * Finds an appropriate directory name for a WARC-filename.
+	 * E.g. removes the extension, or adds the current date.
+	 * @param filename The name of the file, who we should 
+	 * @return 
+	 */
+	public static String getDirectoryNameFromFileName(String filename) {
+		String res = "";
+		if(filename.endsWith(".warc")) {
+			res = filename.substring(0, filename.length()-".warc".length());
+			if(!(new File(res).exists())) {
+				return res;
+			}
+		} else {
+			res = filename;
+		}
+
+		return res + DateUtils.dateToWaybackDate(new Date());
 	}
 }
