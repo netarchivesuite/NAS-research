@@ -55,6 +55,7 @@ public class ExtLinkAnalyserTest extends ExtendedTestCase {
 	public void testExtractingLinksFromFile() throws Exception {
 		File outFile = new File(dir, "out" + Math.random() + ".txt");
 		
+		//next two lines are mockup of HttpRetriever
 		HttpRetriever httpRetriever = mock(HttpRetriever.class);
 		when(httpRetriever.retrieveFromUrl(anyString())).thenReturn(cdxReply1);
 

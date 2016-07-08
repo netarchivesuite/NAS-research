@@ -12,7 +12,7 @@ import dk.netarkivet.research.utils.StreamUtils;
 /**
  * Extracts harvest job info using a script. 
  * 
- * The script must take 1 argument: the job id.
+ * The script must take 1 argument: the job id. - e.g. script db_extract.sh
  * 
  * The script must then deliver 2 lines.
  * The first line must deliver whether or not it is a snapshot harvest (true/false). 

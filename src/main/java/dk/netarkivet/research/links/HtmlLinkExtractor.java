@@ -43,13 +43,11 @@ public class HtmlLinkExtractor implements LinkExtractor {
 		try {
 			String htmlContent = StreamUtils.extractInputStreamAsText(record);
 			URL baseUrl = new URL(UrlUtils.getBaseUrl(contentUrl));
-			NodeFilter filter;
-			NodeList list;
 			Parser p = new Parser();
-			filter = new NodeClassFilter(LinkTag.class);
+			NodeFilter filter = new NodeClassFilter(LinkTag.class);
 
 			p.setInputHTML(htmlContent);
-			list = p.extractAllNodesThatMatch(filter);
+			NodeList list = p.extractAllNodesThatMatch(filter);
 			for(int i = 0; i < list.size(); i++) {
 				LinkTag n = (LinkTag) list.elementAt(i);
 				URL url = extractUrlForLink(n, baseUrl);
