@@ -57,7 +57,7 @@ public class LinksLocator {
 			
 			List<LinkStatus> linkStates = new ArrayList<LinkStatus>();
 			
-			Date recordDate = getRecordDate(record);
+			Date recordDate =  record.header.warcDate; //elzi change from getRecordDate(record);
 			URL contentUrl = new URL(record.header.warcTargetUriStr);
 			Collection<String> links = linkExtractor.extractLinks(record.getPayloadContent(), contentUrl);
 			
