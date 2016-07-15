@@ -50,7 +50,6 @@ public class ExtLinkAnalyser {
 			System.err.println(" 1. WARC file");
 			System.err.println(" 2. URL for the DAB CDX server");
 			System.err.println(" 3. (OPTIONAL) output file location. Otherwise it will be named after the WARC file");
-			System.err.println(" and this is the corrected version");
 			System.exit(-1);
 		}
 

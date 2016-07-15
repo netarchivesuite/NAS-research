@@ -15,7 +15,6 @@ import dk.netarkivet.research.cdx.CDXEntry;
 import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.exception.ArgumentCheck;
 import dk.netarkivet.research.utils.DateUtils;
-import dk.netarkivet.research.utils.UrlUtils;
 import dk.netarkivet.research.wid.WaybackWID;
 
 /**
@@ -58,7 +57,7 @@ public class LinksLocator {
 			
 			List<LinkStatus> linkStates = new ArrayList<LinkStatus>();
 			
-			Date recordDate =  getWarcDate(record); //elzi change from getRecordDate(record);
+			Date recordDate =  getRecordDate(record); //elzi change from getRecordDate(record);
 			URL contentUrl = new URL(record.header.warcTargetUriStr);
 			Collection<String> links = linkExtractor.extractLinks(record.getPayloadContent(), contentUrl);
 			
@@ -72,28 +71,7 @@ public class LinksLocator {
 			return new ArrayList<LinkStatus>();
 		}
 	}
-	
-	/**
-	 * Extracts a filename for a WARC record, based on the target URI (or record ID if no target URI),
-	 * and the date (either from the HTTP header, or if no header, then the WARC record date).
-	 * @param wr The WARC record.
-	 * @return The filename.
-	 */
-	protected Date getWarcDate(WarcRecord wr) {
-		Date d;
-		HeaderLine hl;
-		if(wr.getHttpHeader() != null && ((hl = wr.getHttpHeader().getHeader("Date")) != null)) {
-			d = DateUtils.extractHttpHeaderDate(hl.value);
-		} else {
-			d = wr.header.warcDate;
-		}
-		if(d == null) {
-			d = new Date();
-		}
 		
-		return d;
-	}
-	
 	/**
 	 * Extracts the mimetype from the header of the WARC record.
 	 * If there is a mimetype in the HTTP header, then it is returned, otherwise
