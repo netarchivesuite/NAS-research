@@ -33,8 +33,8 @@ import dk.netarkivet.research.utils.FileUtils;
  * - diff url-1 url-2
  * - diff url-2 url-3
  * 
- *  The output format is either verbose (the complete output - one file per diff), summary (only count - one file total)
- *  or both.
+ *  The output format is either verbose (the complete output - one file per diff), 
+ *  summary (only count - one file total) or both.
  *  
  *  An optional argument is the output directory. 
  */

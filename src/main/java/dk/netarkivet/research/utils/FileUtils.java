@@ -103,7 +103,7 @@ public class FileUtils {
 	 * Finds an appropriate directory name for a WARC-filename.
 	 * E.g. removes the extension, or adds the current date.
 	 * @param filename The name of the file, who we should 
-	 * @return 
+	 * @return The name of the directory for the file-name.
 	 */
 	public static String getDirectoryNameFromFileName(String filename) {
 		String res = "";
