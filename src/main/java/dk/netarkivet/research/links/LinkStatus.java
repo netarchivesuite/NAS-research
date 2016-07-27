@@ -20,6 +20,8 @@ public class LinkStatus {
 	protected final String referralUrl;
 	/** The date for the resource, where the link was discovered.*/
 	protected final Date referralDate;
+	/** A comment about the status. E.g. where it was found.*/
+	protected final String comment;
 	
 	/**
 	 * Constructor.
@@ -29,7 +31,8 @@ public class LinkStatus {
 	 * @param referralUrl The URL for the resource, which contained the link.
 	 * @param referralDate The date for the resource, which contained the link.
 	 */
-	public LinkStatus(boolean found, String linkUrl, Date linkDate, String referralUrl, Date referralDate) {
+	public LinkStatus(boolean found, String linkUrl, Date linkDate, String referralUrl, Date referralDate, 
+			String comment) {
 		ArgumentCheck.checkIsTrue(linkDate != null || !found, "If the link is found, then the date may not be null");
 		this.found = found;
 		this.linkUrl = linkUrl;
@@ -40,6 +43,7 @@ public class LinkStatus {
 		}
 		this.referralUrl = referralUrl;
 		this.referralDate = new Date(referralDate.getTime());
+		this.comment = comment;
 	}
 	
 	/**
@@ -78,5 +82,12 @@ public class LinkStatus {
 	 */
 	public Date getReferralDate() {
 		return new Date(referralDate.getTime());
+	}
+	
+	/**
+	 * @return The comment about the status.
+	 */
+	public String getComment() {
+		return comment;
 	}
 }

@@ -1,13 +1,11 @@
 package dk.netarkivet.research.links;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertNotNull;
-
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +26,7 @@ import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.wid.WaybackWID;
 
-public class LinkLocatorTest extends ExtendedTestCase {
+public class CDXLinkLocatorTest extends ExtendedTestCase {
 	
 	File warcFile = new File("src/test/resources/test.warc");
 	String recordUri = "http://netarkivet.dk/";
@@ -63,7 +61,7 @@ public class LinkLocatorTest extends ExtendedTestCase {
 		CDXExtractor cdxExtractor = mock(CDXExtractor.class);
 		when(cdxExtractor.retrieveCDX(any(WaybackWID.class))).thenReturn(cdxEntry);
 		
-		LinksLocator ll = new LinksLocator(linkExtractor, cdxExtractor);
+		LinksLocator ll = new CDXLinksLocator(linkExtractor, cdxExtractor);
 		Collection<LinkStatus> res = ll.locateLinks(record);
 		assertNotNull(res);
 		assertEquals(res.size(), 1);

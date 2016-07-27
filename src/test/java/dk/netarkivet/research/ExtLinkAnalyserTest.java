@@ -1,10 +1,9 @@
 package dk.netarkivet.research;
 
-import static org.testng.Assert.*;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
 
 import java.io.File;
 
@@ -16,10 +15,12 @@ import org.testng.annotations.Test;
 
 import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.cdx.DabCDXExtractor;
-import dk.netarkivet.research.harvestdb.HarvestJobExtractor;
 import dk.netarkivet.research.http.HttpRetriever;
+import dk.netarkivet.research.links.CDXLinksLocator;
+import dk.netarkivet.research.links.HtmlLinkExtractor;
+import dk.netarkivet.research.links.LinkExtractor;
+import dk.netarkivet.research.links.LinksLocator;
 import dk.netarkivet.research.testutils.TestFileUtils;
-import dk.netarkivet.research.utils.FileUtils;
 
 public class ExtLinkAnalyserTest extends ExtendedTestCase {
 
@@ -60,8 +61,10 @@ public class ExtLinkAnalyserTest extends ExtendedTestCase {
 		when(httpRetriever.retrieveFromUrl(anyString())).thenReturn(cdxReply1);
 
 		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxServerUrl, httpRetriever);
+		LinkExtractor linkExtractor = new HtmlLinkExtractor();
+		LinksLocator linkLocator = new CDXLinksLocator(linkExtractor, cdxExtractor);
 
-		ExtLinkAnalyser analyser = new ExtLinkAnalyser(cdxExtractor);
+		ExtLinkAnalyser analyser = new ExtLinkAnalyser(linkLocator);
 
 		analyser.analyseWarcFile(warcFile, outFile);
 		

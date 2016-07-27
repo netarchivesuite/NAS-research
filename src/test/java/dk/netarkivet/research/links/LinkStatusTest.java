@@ -19,7 +19,7 @@ public class LinkStatusTest extends ExtendedTestCase {
 		Date date = DateUtils.waybackDateToDate("20140710050626");
 		String referralUrl = "http://netarkivet.dk/link";
 		Date referralDate = new Date(1234567890);
-		LinkStatus ls = new LinkStatus(found, url, date, referralUrl, referralDate);
+		LinkStatus ls = new LinkStatus(found, url, date, referralUrl, referralDate, "test");
 		
 		assertEquals(found, ls.isFound());
 		assertEquals(url, ls.getLinkUrl());

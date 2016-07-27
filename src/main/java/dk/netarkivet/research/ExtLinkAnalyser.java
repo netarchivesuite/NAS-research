@@ -14,10 +14,12 @@ import org.jwat.warc.WarcRecord;
 import dk.netarkivet.research.cdx.CDXExtractor;
 import dk.netarkivet.research.cdx.DabCDXExtractor;
 import dk.netarkivet.research.http.HttpRetriever;
+import dk.netarkivet.research.links.CDXLinksLocator;
 import dk.netarkivet.research.links.HtmlLinkExtractor;
 import dk.netarkivet.research.links.LinkExtractor;
 import dk.netarkivet.research.links.LinkStatus;
 import dk.netarkivet.research.links.LinksLocator;
+import dk.netarkivet.research.links.LiveLinksLocator;
 import dk.netarkivet.research.utils.DateUtils;
 import dk.netarkivet.research.utils.FileUtils;
 import dk.netarkivet.research.warc.WarcExtractor;
@@ -48,7 +50,7 @@ public class ExtLinkAnalyser {
 		if(args.length < 2) {
 			System.err.println("Not enough arguments. Requires the following arguments:");
 			System.err.println(" 1. WARC file");
-			System.err.println(" 2. URL for the DAB CDX server");
+			System.err.println(" 2. URL for the DAB CDX server, or 'n'/'no' to check the live net instead.");
 			System.err.println(" 3. (OPTIONAL) output file location. Otherwise it will be named after the WARC file");
 			System.exit(-1);
 		}
@@ -60,14 +62,8 @@ public class ExtLinkAnalyser {
 			System.exit(-1);
 		}
 		
-		String cdxBaseUrl = args[1];
-		try {
-			new URL(cdxBaseUrl);
-		} catch (MalformedURLException e) {
-			System.err.println("Invalid URL for the CDX server");
-			e.printStackTrace(System.err);
-			System.exit(-1);
-		}
+		LinkExtractor linkExtractor = new HtmlLinkExtractor();
+		LinksLocator linkLocator = getLinksLocatorForArgs(args[1], linkExtractor);
 
 		File outFile;
 		if(args.length > 2) {
@@ -83,9 +79,8 @@ public class ExtLinkAnalyser {
 			System.exit(-1);
 		}
 
-		CDXExtractor cdxExtractor = new DabCDXExtractor(cdxBaseUrl, new HttpRetriever());
 		
-		ExtLinkAnalyser wtf = new ExtLinkAnalyser(cdxExtractor);
+		ExtLinkAnalyser wtf = new ExtLinkAnalyser(linkLocator);
 		wtf.analyseWarcFile(warcFile, outFile);
 
 		System.out.println("Finished");
@@ -108,16 +103,41 @@ public class ExtLinkAnalyser {
 
 		return res + ".csv";
 	}
+	
+	/**
+	 * Creates the link extractor matching the argument.
+	 * @param arg Either 'n'/'no' for locating the links on the live web, or the URL for the DAB-CDX server to use
+	 * to locate the links in the CDX-indices.
+	 * @param linkExtractor The link extractor.
+	 * @return The LinksLocator.
+	 */
+	protected static LinksLocator getLinksLocatorForArgs(String arg, LinkExtractor linkExtractor) {
+		if(arg.equals("n") || arg.equals("no")) {
+			return new LiveLinksLocator(linkExtractor, new HttpRetriever());
+		} else {
+			String cdxBaseUrl = arg;
+			try {
+				new URL(cdxBaseUrl);
+			} catch (MalformedURLException e) {
+				System.err.println("Invalid URL for the CDX server");
+				e.printStackTrace(System.err);
+				System.exit(-1);
+			}
+			CDXExtractor cdxExtractor = new DabCDXExtractor(cdxBaseUrl, new HttpRetriever());
+
+			return new CDXLinksLocator(linkExtractor, cdxExtractor);
+		}
+	}
 
 	/** The CDX extractor. */
-	protected final CDXExtractor cdxExtractor;
+	protected final LinksLocator linkLocator;
 
 	/**
 	 * Constructor.
 	 * @param cdxExtractor The extractor for the CDX entries.
 	 */
-	public ExtLinkAnalyser(CDXExtractor cdxExtractor) {
-		this.cdxExtractor = cdxExtractor;
+	public ExtLinkAnalyser(LinksLocator linkLocator) {
+		this.linkLocator = linkLocator;
 	}
 	/**
 	 * Extracts the links from each HTML record, analyse them and print the results.
@@ -127,9 +147,7 @@ public class ExtLinkAnalyser {
 	public void analyseWarcFile(File warcFile, File outputFile) {
 		try (FileOutputStream fos = new FileOutputStream(outputFile)) {
 			fos.write(("URL of referral;Date for referral;Status for Link URL;Link URL;"
-					+ "Closest date for Link URL\n").getBytes(Charset.defaultCharset()));
-			LinkExtractor linkExtractor = new HtmlLinkExtractor();
-			LinksLocator linkLocator = new LinksLocator(linkExtractor, cdxExtractor);
+					+ "Closest date for Link URL;Comment\n").getBytes(Charset.defaultCharset()));
 			
 			WarcExtractor we = new WarcExtractor(warcFile);
 			WarcRecord wr;
@@ -163,10 +181,11 @@ public class ExtLinkAnalyser {
 			}
 			sb.append(ls.getLinkUrl() + ";");
 			if(ls.getLinkDate() != null) {
-				sb.append("\'" + DateUtils.dateToWaybackDate(ls.getLinkDate()) + "\'");
+				sb.append("\'" + DateUtils.dateToWaybackDate(ls.getLinkDate()) + "\';");
 			} else {
-				sb.append("N/A");
+				sb.append("N/A;");
 			}
+			sb.append(ls.getComment());
 			sb.append("\n");
 			out.write(sb.toString().getBytes(Charset.defaultCharset()));
 		}
