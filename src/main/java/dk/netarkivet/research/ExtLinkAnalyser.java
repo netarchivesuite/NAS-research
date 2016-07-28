@@ -25,7 +25,7 @@ import dk.netarkivet.research.utils.FileUtils;
 import dk.netarkivet.research.warc.WarcExtractor;
 
 /**
- * Extracts all the links from a HMTL page, and tries to find them in the CDX server.
+ * Extracts all the links from a HMTL page, and tries to find them in the CDX server or on the live net.
  * Takes an WARC file and analyzes all the HTML records, or especially the http responses containing HTML records.
  * Results are printed to a CSV file.
  * 
