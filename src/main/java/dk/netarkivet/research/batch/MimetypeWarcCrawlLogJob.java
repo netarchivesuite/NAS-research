@@ -38,7 +38,6 @@ public class MimetypeWarcCrawlLogJob extends WARCBatchJob {
 
 	@Override
 	public void processRecord(WARCRecord record, OutputStream os) {
-		record.getHeader().getHeaderFields().keySet();
 		String recordUri = (String) record.getHeader().getHeaderValue("WARC-Target-URI");
 		if(recordUri == null || !recordUri.contains("metadata://netarkivet.dk/crawl/logs/crawl.log?")) {
 			log.debug("Not crawllog: " + recordUri);
@@ -46,7 +45,7 @@ public class MimetypeWarcCrawlLogJob extends WARCBatchJob {
 		}
 		log.info("Examining crawl log: " + recordUri);
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(record));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(record, Charset.defaultCharset()));
 			String line;
 			while((line = reader.readLine()) != null) {
 				List<String> split = removeEmptyElements(line.split("\\s"));

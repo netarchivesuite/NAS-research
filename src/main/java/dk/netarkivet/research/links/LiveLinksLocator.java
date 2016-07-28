@@ -22,6 +22,7 @@ public class LiveLinksLocator extends LinksLocator {
 	
 	/**
 	 * Constructor.
+	 * @param linkExtractor The link extractor.
 	 * @param httpRetriever For locating the links on the live net.
 	 */
 	public LiveLinksLocator(LinkExtractor linkExtractor, HttpRetriever httpRetriever) {

@@ -66,8 +66,8 @@ public class ExtDiffFilesInFolder {
 
 		File inputDir = new File(args[0]);
 		if(!inputDir.isDirectory()) {
-			throw new IllegalArgumentException("The folder '" + inputDir.getAbsolutePath() + "' is not a proper directory"
-					+ "(either does not exists or is a file) - try giving the complete path.");
+			throw new IllegalArgumentException("The folder '" + inputDir.getAbsolutePath() + "' is not a proper "
+					+ "directory (either does not exists or is a file) - try giving the complete path.");
 		}
 
 		DiffStrategy diffStrategy = extractDiffStrategy(args[1]);

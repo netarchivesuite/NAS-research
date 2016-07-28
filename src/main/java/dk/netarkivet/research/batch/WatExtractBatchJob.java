@@ -10,11 +10,17 @@ import org.archive.resource.producer.WARCFile;
 
 import dk.netarkivet.common.utils.batch.FileBatchJob;
 
+/**
+ * BatchJob for extracting WAT files.
+ */
 public class WatExtractBatchJob extends FileBatchJob {
+	/** Serial uid.*/
 	private static final long serialVersionUID = -6188973901869528806L;
 	
-	WARCFile wf;
-	WATExtractorOutput extractorOut;
+	/** IA WARC file producer.*/
+	protected WARCFile wf;
+	/** WAT output extractor.*/
+	protected WATExtractorOutput extractorOut;
 	
 	@Override
 	public void initialize(OutputStream os) {

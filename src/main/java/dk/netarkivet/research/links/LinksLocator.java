@@ -28,7 +28,6 @@ public abstract class LinksLocator {
 	/**
 	 * Constructor.
 	 * @param linkExtractor The extractor of the links.
-	 * @param cdxExtractor The extractor of CDX entries.
 	 */
 	public LinksLocator(LinkExtractor linkExtractor) {
 		this.linkExtractor = linkExtractor;

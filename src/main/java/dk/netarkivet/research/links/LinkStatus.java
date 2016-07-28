@@ -30,6 +30,7 @@ public class LinkStatus {
 	 * @param linkDate The date for the found link (null if not found).
 	 * @param referralUrl The URL for the resource, which contained the link.
 	 * @param referralDate The date for the resource, which contained the link.
+	 * @param comment Comment about how the reference was found.
 	 */
 	public LinkStatus(boolean found, String linkUrl, Date linkDate, String referralUrl, Date referralDate, 
 			String comment) {

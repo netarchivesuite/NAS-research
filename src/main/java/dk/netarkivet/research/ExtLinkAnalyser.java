@@ -134,7 +134,7 @@ public class ExtLinkAnalyser {
 
 	/**
 	 * Constructor.
-	 * @param cdxExtractor The extractor for the CDX entries.
+	 * @param linkLocator The link locator to use to extract and locate the links from the records.
 	 */
 	public ExtLinkAnalyser(LinksLocator linkLocator) {
 		this.linkLocator = linkLocator;
