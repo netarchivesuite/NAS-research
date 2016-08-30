@@ -83,7 +83,7 @@ public class DiffResult {
 		if(origDiff.containsKey(type)) {
 			return new ArrayList<String>(origDiff.get(type));
 		} 
-		return null;
+		return new ArrayList<String>();
 	}
 	
 	/** 
@@ -95,7 +95,7 @@ public class DiffResult {
 		if(revisedDiff.containsKey(type)) {
 			return new ArrayList<String>(revisedDiff.get(type));
 		} 
-		return null;
+		return new ArrayList<String>();
 	}
 
 	/**
