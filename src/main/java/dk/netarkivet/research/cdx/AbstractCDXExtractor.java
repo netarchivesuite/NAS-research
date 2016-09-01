@@ -83,7 +83,7 @@ public abstract class AbstractCDXExtractor implements CDXExtractor {
 		CDXEntry res = null;
 		
 		for(CDXEntry entry : allCDXforUrl) {
-			Long timeDiff = Math.abs(entry.getDate() - date.getTime());
+			Long timeDiff = Math.abs(entry.getDateAsLong() - date.getTime());
 			if(timeDiff < closestDate) {
 				closestDate = timeDiff;
 				res = entry;

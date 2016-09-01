@@ -151,7 +151,7 @@ public class WarcPacker {
             }
             warcHeader.warcTypeIdx = WarcConstants.RT_IDX_RESPONSE;
             warcHeader.addHeader(WarcConstants.FN_WARC_RECORD_ID, recordId, null);
-            warcHeader.addHeader(WarcConstants.FN_WARC_DATE, cdxEntry.getDate(), null);
+            warcHeader.addHeader(WarcConstants.FN_WARC_DATE, cdxEntry.getDateAsDate(), null);
             warcHeader.addHeader(WarcConstants.FN_WARC_WARCINFO_ID, currentWarcInfoUUID, null);
     		warcHeader.addHeader(WarcConstants.FN_WARC_IP_ADDRESS, cdxEntry.getIP());
             warcHeader.addHeader(WarcConstants.FN_WARC_TARGET_URI, cdxEntry.getUrl());

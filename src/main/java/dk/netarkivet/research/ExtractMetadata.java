@@ -350,7 +350,7 @@ public class ExtractMetadata {
     		CDXUtils.addCDXElementToStringBuffer(entry.getUrlNorm(), line);
     		line.append(";");
     		line.append("\'");
-    		CDXUtils.addCDXElementToStringBuffer(DateUtils.dateToWaybackDate(entry.getDate()), line);
+    		CDXUtils.addCDXElementToStringBuffer(DateUtils.dateToWaybackDate(entry.getDateAsLong()), line);
     		line.append("\'");
     		line.append(";");
     		CDXUtils.addCDXElementToStringBuffer(entry.getContentType(), line);

@@ -32,7 +32,7 @@ public class DuplicateMap {
 	 * @param jobInfo The Harvest Job Info for the CDX entry.
 	 */
 	public void addElement(CDXEntry entry, HarvestJobInfo jobInfo) {
-		dateMap.put(entry.getDate(), entry);
+		dateMap.put(entry.getDateAsLong(), entry);
 		jobMap.put(entry, jobInfo);
 	}
 	
@@ -51,7 +51,7 @@ public class DuplicateMap {
 	public Map<String, List<Long>> getChecksumToDateListMap() {
 		Map<String, List<Long>> res = new HashMap<String, List<Long>>();
 		for(CDXEntry entry : jobMap.keySet()) {
-			insertEntryIntoMap(entry.getDate(), entry.getDigest(), res);
+			insertEntryIntoMap(entry.getDateAsLong(), entry.getDigest(), res);
 		}
 		
 		return res;

@@ -34,7 +34,7 @@ public class CDXLinksLocator extends LinksLocator {
 		if(entry == null) {
 			return new LinkStatus(false, link, null, originalUrl, originalDate, "cdx");
 		} else {
-			return new LinkStatus(true, link, new Date(entry.getDate()), originalUrl, originalDate, "cdx");
+			return new LinkStatus(true, link, entry.getDateAsDate(), originalUrl, originalDate, "cdx");
 		}
 	}
 }

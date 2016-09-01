@@ -79,12 +79,19 @@ public class CDXEntry {
 	public String getUrlNorm() {
 		return urlNorm;
 	}
-	/** @return CDX element b. */
-	public Long getDate() {
+	/** @return CDX element b; the date - as a long. */
+	public Long getDateAsLong() {
 		if(date == null) {
 			return 0L;
 		}
 		return date;
+	}
+	/** @return CDX element b; the date - as a Date object. */
+	public Date getDateAsDate() {
+		if(date == null) {
+			return null;
+		}
+		return new Date(date);
 	}
 	/** @return CDX element e. */
 	public String getIP() {
@@ -142,7 +149,7 @@ public class CDXEntry {
 		for(Character c : charKeys) {
 			switch(c) {
 			case CDXConstants.CDX_CHAR_DATE:
-				CDXUtils.addCDXElementToStringBuffer(DateUtils.dateToWaybackDate(new Date(getDate())), res);
+				CDXUtils.addCDXElementToStringBuffer(DateUtils.dateToWaybackDate(getDateAsLong()), res);
 				break;
 			case CDXConstants.CDX_CHAR_IP:
 				CDXUtils.addCDXElementToStringBuffer(ip, res);

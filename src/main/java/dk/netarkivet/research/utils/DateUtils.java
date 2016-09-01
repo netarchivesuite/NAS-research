@@ -124,10 +124,10 @@ public class DateUtils {
 	 * @return Whether or not the date of the CDX is in the interval.
 	 */
 	public static boolean checkDateInterval(CDXEntry entry, Date earliest, Date latest) {
-		if(earliest != null && entry.getDate() < earliest.getTime()) {
+		if(earliest != null && entry.getDateAsLong() < earliest.getTime()) {
 			return false;
 		}
-		if(latest != null && entry.getDate() > latest.getTime()) {
+		if(latest != null && entry.getDateAsLong() > latest.getTime()) {
 			return false;
 		}
 		return true;

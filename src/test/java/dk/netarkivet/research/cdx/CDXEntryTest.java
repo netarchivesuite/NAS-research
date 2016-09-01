@@ -87,7 +87,7 @@ public class CDXEntryTest extends ExtendedTestCase {
     	CDXEntry entry = CDXEntry.createCDXEntry(cdxLine, format);
     	
     	assertEquals(entry.getUrlNorm(), A);
-    	assertEquals(DateUtils.dateToWaybackDate(new Date(entry.getDate())), b);
+    	assertEquals(DateUtils.dateToWaybackDate(entry.getDateAsDate()), b);
     	assertEquals(entry.getUrl(), a);
     	assertEquals(entry.getContentType(), m);
     	assertEquals(entry.getStatusCode().toString(), s);
@@ -219,7 +219,7 @@ public class CDXEntryTest extends ExtendedTestCase {
     	assertNull(entry.getUrl());
     	assertNull(entry.getUrlNorm());
     	
-    	assertEquals(0L, entry.getDate().longValue());
+    	assertEquals(0L, entry.getDateAsLong().longValue());
     	assertEquals(0L, entry.getLength().longValue());
     	assertEquals(0L, entry.getOffset().longValue());
     	assertEquals(200, entry.getStatusCode().intValue());
