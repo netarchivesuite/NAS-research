@@ -123,11 +123,12 @@ public class ExtWarcUnfolder {
 
 		Date d;
 		HeaderLine hl;
-		if(wr.getHttpHeader() != null && ((hl = wr.getHttpHeader().getHeader("Date")) != null)) {
-			d = DateUtils.extractHttpHeaderDate(hl.value);
-		} else {
-			d = wr.header.warcDate;
-		}
+		//Elzi trying to get the right date
+		//if(wr.getHttpHeader() != null && ((hl = wr.getHttpHeader().getHeader("Date")) != null)) {
+		//	d = DateUtils.extractHttpHeaderDate(hl.value);
+		//} else {
+		d = wr.header.warcDate;
+		//}
 		if(d == null) {
 			d = new Date();
 		}
