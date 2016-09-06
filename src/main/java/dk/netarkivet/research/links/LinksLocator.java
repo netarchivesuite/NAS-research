@@ -89,11 +89,11 @@ public abstract class LinksLocator {
 	protected Date getRecordDate(WarcRecord record) {
 		Date d;
 		HeaderLine hl;
-		if(record.getHttpHeader() != null && ((hl = record.getHttpHeader().getHeader("Date")) != null)) {
-			d = DateUtils.extractHttpHeaderDate(hl.value);
-		} else {
+		//if(record.getHttpHeader() != null && ((hl = record.getHttpHeader().getHeader("Date")) != null)) {
+		//	d = DateUtils.extractHttpHeaderDate(hl.value);
+		// else {
 			d = record.header.warcDate;
-		}
+		//}
 		if(d == null) {
 			d = new Date();
 		}
