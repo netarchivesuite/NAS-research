@@ -28,13 +28,19 @@ public class CDXLinksLocator extends LinksLocator {
 	@Override
 	protected LinkStatus getLinkStatus(String link, String originalUrl, Date originalDate) {
 		String extractLink = link.contains("#") ? link.split("#")[0] : link;
-
 		WaybackWID wid = WaybackWID.createNarkWaybackWID(null, extractLink, originalDate);
-		CDXEntry entry = cdxExtractor.retrieveCDX(wid);
-		if(entry == null) {
+		if(extractLink.equals("http:") || extractLink.equals("https:") 
+		   || extractLink.equals("http:/") || extractLink.equals("https:/") 
+		   || extractLink.equals("http://") || extractLink.equals("https://") 
+		   || !extractLink.startsWith("http"))  {
 			return new LinkStatus(false, link, null, originalUrl, originalDate, "cdx");
 		} else {
-			return new LinkStatus(true, link, entry.getDateAsDate(), originalUrl, originalDate, "cdx");
+			CDXEntry entry = cdxExtractor.retrieveCDX(wid);
+			if(entry == null) {
+				return new LinkStatus(false, link, null, originalUrl, originalDate, "cdx");
+			} else {
+				return new LinkStatus(true, link, entry.getDateAsDate(), originalUrl, originalDate, "cdx");
+			}
 		}
 	}
 }
