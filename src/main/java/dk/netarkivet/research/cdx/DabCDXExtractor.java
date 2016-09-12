@@ -89,6 +89,7 @@ public class DabCDXExtractor extends AbstractCDXExtractor {
 		if(res != null) {
 			logger.debug("Using already extracted CDX entries for the URL '" + url + "'.");
 		} else {
+			
 			logger.debug("Extracting CDX entries for URL '" + url + "'.");
 			String requestUrlString = createRequestUrlForURL(url);
 			String response = httpRetriever.retrieveFromUrl(requestUrlString);

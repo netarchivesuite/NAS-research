@@ -63,6 +63,10 @@ public class UrlUtils {
 		if(res.startsWith("www")) {
 			res = res.replaceFirst("www[0-9]*[\\.]", "");
 		}
+		res = res.toLowerCase(); //ELZI HACK for '?'
+		if (res.contains("?")) {
+			res.replaceAll("\\?", "%3F");
+		}
 		return res.toLowerCase();
 	}
 	
