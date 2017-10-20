@@ -1,0 +1,155 @@
+<%--
+File:        $Id$
+Revision:    $Revision$
+Author:      $Author$
+Date:        $Date$
+
+ Copyright Det Kongelige Bibliotek og Statsbiblioteket, Danmark
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ --%>
+<%@page import="java.util.TimeZone"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.util.GregorianCalendar"%>
+<%@page import="java.util.List"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.text.DecimalFormat"%>
+<%@page import="dk.netarkivet.harvester.webinterface.ExtendedFieldConstants"%>
+<%@ page
+        import="
+        java.util.Map,
+        java.util.Iterator,
+        dk.netarkivet.harvester.datamodel.extendedfield.ExtendableEntity,
+        dk.netarkivet.harvester.datamodel.extendedfield.ExtendedField,
+        dk.netarkivet.harvester.datamodel.extendedfield.ExtendedFieldDAO,
+        dk.netarkivet.harvester.datamodel.extendedfield.ExtendedFieldDataTypes,
+        dk.netarkivet.harvester.datamodel.extendedfield.ExtendedFieldValue" %>
+<%
+    ExtendedFieldDAO extdao = ExtendedFieldDAO.getInstance();
+    List<ExtendedField> extlist = extdao.getAll(extendedFieldType);
+    
+    String selectedAttribute = " selected=\"selected\" ";
+    String checkedAttribute = " checked=\"checked\" ";
+    
+    for (ExtendedField field : extlist) {
+        String fieldname = field.getJspFieldname();
+        
+        ExtendedFieldValue fieldValue = extendableEntity.getExtendedFieldValue(field.getExtendedFieldID());
+        
+        int maxlen = field.getMaxlen();
+        String mandatoryStr = "";
+        if (field.isMandatory()) {
+        	mandatoryStr = "*";
+        }
+
+        %>
+        <%=mandatoryStr %><%=field.getName() %>:
+        <%
+        
+        switch(field.getDatatype()) {
+            case ExtendedFieldDataTypes.STRING:
+            case ExtendedFieldDataTypes.NUMBER:
+            case ExtendedFieldDataTypes.TIMESTAMP:
+            case ExtendedFieldDataTypes.JSCALENDAR:
+            	String pattern = "";
+            	if (field.getFormattingPattern() != null) {
+                    pattern = field.getFormattingPattern();
+            	}
+            	
+            	String content = fieldValue.getContent();
+            	if (field.getFormattingPattern() != null && field.getFormattingPattern().length() > 0 && 
+            		fieldValue.getContent() != null && fieldValue.getContent().length() > 0) {
+            		pattern = field.getFormattingPattern();
+            		
+                    if (ExtendedFieldDataTypes.NUMBER == field.getDatatype()) {
+                        content = new DecimalFormat(pattern).format(Double.valueOf(fieldValue.getContent()));
+                    }
+                    else if (ExtendedFieldDataTypes.TIMESTAMP == field.getDatatype() || ExtendedFieldDataTypes.JSCALENDAR == field.getDatatype()) {
+                        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+                        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+                        content = sdf.format(new Date(Long.parseLong(fieldValue.getContent())));
+                    }
+            	}
+            	
+                %>
+                <input name="<%=fieldname %>" id="<%=fieldname %>" size="50" type="text" maxlength="<%=maxlen %>" value="<%=content%>"
+                <%
+                if (ExtendedFieldDataTypes.JSCALENDAR == field.getDatatype()) {
+                	String jsPattern = "";
+                	//TODO Possbile Pattern need to go to Settings.xml -> modify also in Definitions-edit-extendedfield.jsp
+                	if ("dd/MM/yyyy".equals(field.getFormattingPattern())) {
+                		jsPattern = "%d/%m/%Y";
+                	}
+                	else {
+                        jsPattern = "%d/%m/%Y %H:%M";
+                	}
+                    %>
+                    onclick="setupExtendedFieldCalendar('<%=fieldname %>', '<%=jsPattern %>')";/><img src="calendar16x16.png" width="16" height="16"/>
+                    <% 
+                }
+                else {
+                	%>
+                	/>
+                	<%
+                	
+                }
+                %>
+                <small><%=pattern %></small>
+                <%
+                break;
+            case ExtendedFieldDataTypes.BOOLEAN:
+                %>
+                <input name="<%=fieldname %>" type="checkbox" value="<%=ExtendedFieldConstants.TRUE %>" <%= (fieldValue.getBooleanValue()) ? checkedAttribute : "" %> />
+                <%
+                break;
+            case ExtendedFieldDataTypes.NOTE:
+                %>
+                <textarea name="<%=fieldname %>" rows="5" cols="50" maxlength="<%=maxlen %>"><%=fieldValue.getContent()%></textarea>
+                <%
+                break;
+            case ExtendedFieldDataTypes.SELECT:
+                %>
+                <select name="<%=fieldname %>" size="1">
+                    <%
+                    Map<String,String> options = field.getOptionValues();
+                    Iterator<String> it = options.keySet().iterator();
+                    
+                    if (!field.isMandatory()) {
+                        %>
+                        <option value=""></option>
+                        <%
+                    }
+                    
+                    while(it.hasNext()) {
+                        String key = it.next();
+                        String value = options.get(key);
+                    %>
+                
+                    <option value="<%= key %>" <%= (fieldValue.getContent().equals(key)) ? selectedAttribute : "" %>>
+                    <%= value %> 
+                    </option>
+                    <%
+                    }
+                    %>
+                </select>
+                
+                <%
+                break;
+        }
+        %>
+        <br/>
+        <%
+    }
+ %>

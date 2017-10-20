@@ -16,9 +16,47 @@
 		<assembly.config.env.name>RESEARCH_CONF_DIR</assembly.config.env.name>
 		<assembly.config.env.name.ref>${RESEARCH_CONF_DIR}</assembly.config.env.name.ref>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<netarchivesuite.version>5.0</netarchivesuite.version>
+		<netarchivesuite.version>5.2.2</netarchivesuite.version>
 		<jwat.version>1.0.4</jwat.version>
 	</properties>
+
+<distributionManagement>
+    <repository>
+      <id>sbforge-nexus</id>
+      <name>SBForge Nexus Repo manager</name>
+      <url>https://sbforge.org/nexus/content/repositories/releases</url>
+    </repository>
+
+    <snapshotRepository>
+      <id>sbforge-nexus</id>
+      <name>SBForge Nexus Repo manager</name>
+      <url>https://sbforge.org/nexus/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <repositories>
+    <repository>
+      <id>sbforge-nexus</id>
+      <url>https://sbforge.org/nexus/content/groups/public</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+    <repository>
+      <id>builds.archive.org,maven2</id>
+      <url>http://builds.archive.org/maven2</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
 	<dependencies>
 		<dependency>
