@@ -4,7 +4,7 @@
       dk.netarkivet.research.webinterface.PrintMonitorRegistryClient
       </class>
       </monitorregistryClient>
-      <environmentName>WEBDANICA</environmentName>
+      <environmentName>PWID-DEMO</environmentName>
       <applicationInstanceId/>
       <remoteFile>
         <class>dk.netarkivet.common.distribute.HTTPRemoteFile</class>
@@ -69,4 +69,17 @@
 		
   <viewerproxy>
         <baseDir>viewerproxy</baseDir>
-      </viewerproxy></settings>
+      </viewerproxy>
+<pwid>
+<archives>
+<archive>
+<archiveid>dab.dk</archiveid>
+<waybackprefix>http://kb-prod-dab-01.kb.dk:8080/wayback/</waybackprefix>
+</archive>
+<archive>
+<archiveid>netarkivet.dk</archiveid>
+<waybackprefix>http://kb-prod-wayback.kb.dk:8080/wayback/</waybackprefix>
+</archive>
+</archives>
+</pwid>
+</settings>

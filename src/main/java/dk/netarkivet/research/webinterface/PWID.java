@@ -25,9 +25,10 @@ public class PWID {
 		Date dabDate = getDateFormat(ARC_DATE_FORMAT).parse(dabDateString);
 		//System.out.println(getDateFormat(ARC_DATE_FORMAT).format(dabDate));	
 		String TIMESTAMP = getDateFormat(WARC_DATE_FORMAT).format(dabDate);
-		System.out.println(TIMESTAMP);
 		String dabPWIDString = "pwid:dab.dk:" + TIMESTAMP + ":page:http://www.statensnet.dk/betaenkninger/1001-1200/1179-1989/1179-1989_pdf/searchable_1179-1989.pdf";
+		System.out.println(dabPWIDString);
 		PWID dabPWID = PWID.parsePWID(dabPWIDString);
+		System.out.println(dabPWID);
 		String url = Archive.getUrlFromPwid(a, dabPWID);
 		System.out.println(url);
 	}	
@@ -50,6 +51,23 @@ public class PWID {
 	public String toString() {
 		return "pwid:" + archiveId + ":" + getDateFormat(WARC_DATE_FORMAT).format(timestamp) + ":" + coverage + ":" + uri; 
 	}
+	
+	public String getArchiveId() {
+		return archiveId;
+	}
+	
+	public PwidCoverage getcoverage() {
+		return coverage;
+	}
+	
+	public String getUri() {
+		return uri;
+	}
+	
+	public Date getTimestamp() {
+		return (Date) timestamp.clone();
+	}
+	
 	
 	public static DateFormat getDateFormat(String pattern) {
 		DateFormat warcDateFormat = new SimpleDateFormat(pattern);
@@ -115,6 +133,4 @@ public class PWID {
 		}
 		return new PWID(archiveId, uri, timestamp, c);
 	}
-	
-	
 }
