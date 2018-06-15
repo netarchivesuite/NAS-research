@@ -28,11 +28,11 @@ This is a summary page displaying all known schedules. It takes no
 parameters.
 --%><%@ page import="dk.netarkivet.common.utils.I18n,
                  dk.netarkivet.common.webinterface.HTMLUtils,
-                 dk.netarkivet.research.webinterface.RequestHandler,
-                 dk.netarkivet.research.webinterface.PWID,
+                 dk.netarkivet.research.pwid.RequestHandler,
+                 dk.netarkivet.research.pwid.PWID,
                  dk.netarkivet.research.webinterface.Constants,
-                 dk.netarkivet.research.webinterface.PwidParseException,
-                 dk.netarkivet.research.webinterface.Archive,
+                 dk.netarkivet.research.pwid.PwidParseException,
+                 dk.netarkivet.research.pwid.Archive,
                  java.util.Map
 "
     pageEncoding="UTF-8"

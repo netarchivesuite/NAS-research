@@ -1,4 +1,4 @@
-package dk.netarkivet.research.webinterface;
+package dk.netarkivet.research.pwid;
 
 public class PwidParseException extends Exception {
 
