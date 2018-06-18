@@ -21,8 +21,8 @@ import dk.netarkivet.common.utils.Settings;
 </settings>
  */
 public class Archive {
-    String id;
-    String waybackPrefix;
+    private String id;
+    private String waybackPrefix;
 
     public Archive(String id, String waybackPrefix){
         this.id = id;
@@ -60,7 +60,6 @@ public class Archive {
         }
     }
 
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -84,5 +83,21 @@ public class Archive {
         } else if (!id.equals(other.id))
             return false;
         return true;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getWaybackPrefix() {
+        return waybackPrefix;
+    }
+
+    public void setWaybackPrefix(String waybackPrefix) {
+        this.waybackPrefix = waybackPrefix;
     }
 }
