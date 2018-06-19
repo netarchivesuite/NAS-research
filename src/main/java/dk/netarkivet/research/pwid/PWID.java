@@ -121,7 +121,13 @@ public class PWID {
         input = input.substring(nextColonIndex+1, input.length());
         // check3: contains a valid timestamp e.g '2018-04-10T14:04:11Z'
         nextColonIndex = input.indexOf(':');
+        if (nextColonIndex == -1) {
+            throw new PwidParseException("The input '" + originalInput + "' is not a valid pwid. It does not contain a timestamp");
+        }
         nextColonIndex = input.indexOf(':', nextColonIndex+1);
+        if (nextColonIndex == -1) {
+            throw new PwidParseException("The input '" + originalInput + "' is not a valid pwid. It does not contain a timestamp");
+        }
         nextColonIndex = input.indexOf(':', nextColonIndex+1);
         if (nextColonIndex == -1) {
             throw new PwidParseException("The input '" + originalInput + "' is not a valid pwid. It does not contain a timestamp");
