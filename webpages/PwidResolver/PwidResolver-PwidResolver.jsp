@@ -74,14 +74,15 @@ parameters.
     %>
     	
 
-    <!-- //We only reach this point if no wpid was in the request -->
+<!-- //We only reach this point if no wpid was in the request -->
 
-<h3 class="page_heading"><fmt:message key="pagetitle;pwidresolver"/></h3>
-
+<h3 class="page_heading">
+    Prototype PWID resolver service
+<!-- <fmt:message key="pagetitle;pwidresolver"/> -->
+</h3> 
 <h4><%=message%></h4>
 
 <form method="post" action="PwidResolver-PwidResolver.jsp">
-    <!-- <fmt:message key="harvestdefinition.domains.enter"/>  -->
     Enter Pwid to resolve:
     <br />
     <span id="focusElement">

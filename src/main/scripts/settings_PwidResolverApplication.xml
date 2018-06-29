@@ -12,7 +12,7 @@
 </archive>
 <archive>
 <archiveid>archive.org</archiveid>
-<waybackprefix>https://web.archive.org/web/</waybackprefix>
+<waybackprefix>http://web.archive.org/web/</waybackprefix>
 </archive>
 <archive>
 <archiveid>archive.it</archiveid>
@@ -36,7 +36,7 @@
 </archive>
 <archive>
 <archiveid>stanford.edu</archiveid>
-<waybackprefix>https://swap.stanford.edu/</waybackprefix>
+<waybackprefix>http://swap.stanford.edu/</waybackprefix>
 </archive>
 </archives>
 </pwid>
