@@ -77,8 +77,9 @@
         <url/>
       <class>dk.netarkivet.harvester.datamodel.PostgreSQLSpecifics</class><baseUrl>jdbc:postgresql</baseUrl><machine>localhost</machine><dir>test_harvestdb</dir><port>5432</port><username>netarchivesuite</username><password>netarchivesuite</password></database>
       <tempDir>tmpdircommon</tempDir>
-    <useReplicaId>A</useReplicaId><mail>
-          <server>post.kb.dk</server>
+    <useReplicaId>A</useReplicaId>
+       <mail>
+          <server>localhost</server>
         </mail><notifications>
           <class>dk.netarkivet.common.utils.EMailNotifications</class>
           <receiver>test@localhost</receiver>
@@ -93,7 +94,7 @@
                 <name>English</name>
             </language>
             <siteSection>
-                <class>dk.netarkivet.research.webinterface.PwidResolverSitesection</class>
+                <class>dk.netarkivet.research.pwid.PwidResolverSitesection</class>
                 <webapplication>webpages/PwidResolver.war</webapplication>
             </siteSection>
             <harvestStatus>
