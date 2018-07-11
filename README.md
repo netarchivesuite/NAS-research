@@ -25,7 +25,7 @@ urn:pwid:archive.org:2018-02-22T11:54:11Z:page:https://ipres2018.org/
 
 Download the latest zip-file (research-version.zip), and the associated PwidResolver.war from https://github.com/netarchivesuite/NAS-research/releases
 ```
-$VERSION=version
+VERSION=version
 unzip research-$VERSION.zip
 mkdir research-$VERSION/webpages
 cp PwidResolver.war research-$VERSION/webpages/
